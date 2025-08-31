@@ -1,7 +1,7 @@
 // components/AppWrapper.tsx
 
 "use client";
-import Footer from "./Footer/footer";
+// import Footer from "./Footer/Footer_old";
 import LoginHandler from "./auth/login-handler";
 import LoginModal from "./loginModal/LoginModal";
 
@@ -9,6 +9,7 @@ import LoginModal from "./loginModal/LoginModal";
 import { useAppSelector, useAppDispatch } from "../store/hook";
 import { closeModal, setModalScreen } from "../store/slices/modalSlice";
 import Header from "./Navbar/navbar";
+import BlissFooter from "./Footer/Footer";
 
 // This component contains the logic that was previously in your layout
 function ClientLogicWrapper({ children }: { children: React.ReactNode }) {
@@ -20,7 +21,7 @@ function ClientLogicWrapper({ children }: { children: React.ReactNode }) {
       <LoginHandler />
       <Header />
       <main>{children}</main>
-      <Footer />
+      <BlissFooter />
 
       {/* The global modal is rendered here, controlled by Redux */}
       <LoginModal

@@ -287,7 +287,7 @@ import { FiArrowLeft, FiCalendar, FiUser, FiClock } from "react-icons/fi";
 import { useMemo, useEffect, useRef, useState } from "react";
 import { IoCutSharp } from "react-icons/io5";
 import Image from "next/image";
-import ContactDetails from "@/components/Home/kayaa-home/contactDetails/ContactDetails";
+import ContactDetails from "@/components/Home/contactDetails/ContactDetails";
 
 // --- HELPER FUNCTIONS ---
 

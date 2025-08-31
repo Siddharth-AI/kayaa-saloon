@@ -380,7 +380,8 @@ import LocationSelectorPanel from "../ui/LocationSelectorPanel";
 import CartPopup from "../ui/CartPopup";
 import ProfileDropdown from "../ui/ProfileDropdown";
 import MobileMenu from "../ui/MobileMenu";
-
+import Image from "next/image";
+import Logo from "@/assets/kayaa-home/hedarKayaBeauty.png";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/saloon-services" },
@@ -453,26 +454,29 @@ export default function Header() {
 
         <div className="max-w-7xl mx-auto flex items-center justify-between h-20 px-4 sm:px-8 relative z-10">
           {/* Enhanced Left Logo + Location */}
-          <div className="flex items-center group">
+          <div className="flex items-center space-x-4 group">
+            {/* Logo with Hover Glow */}
             <div className="relative">
-              {/* Glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] rounded-lg blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+              {/* Glow behind logo */}
+              <div className="absolute inset-0  rounded-lg blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
 
-              <div className="relative border-2 rounded-lg w-10 h-10 flex items-center justify-center mr-3 border-white/60 hover:border-[#c59d5f] transition-all duration-300 bg-black/30 backdrop-blur-sm group-hover:scale-110 group-hover:rotate-3">
-                <span className="text-lg font-bold bg-gradient-to-r from-white to-[#c59d5f] bg-clip-text text-transparent">
-                  B
-                </span>
+              <div className="relative rounded-lg overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <Image
+                  src={Logo} // put your logo in public/images/logo.png
+                  alt="Belle Femme Logo"
+                  width={100}
+                  height={100}
+                  className="object-contain"
+                />
               </div>
             </div>
 
+            {/* Location Selector with Hover Effect */}
             <div className="relative">
-              <span className="hidden sm:inline font-bold text-xl text-white tracking-wide group-hover:text-[#c59d5f] transition-colors duration-300">
-                BELLE FEMME
-              </span>
-              {/* Underline animation */}
-              <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] group-hover:w-full transition-all duration-500" />
+              <LocationSelectorPanel />
+
+              {/* Glow underline for location */}
             </div>
-            <LocationSelectorPanel />
           </div>
 
           {/* Improved Center Nav (Desktop) */}
