@@ -286,8 +286,8 @@ import { fetchAppointments } from "@/store/slices/appointmentsSlice";
 import { FiArrowLeft, FiCalendar, FiUser, FiClock } from "react-icons/fi";
 import { useMemo, useEffect, useRef, useState } from "react";
 import { IoCutSharp } from "react-icons/io5";
-import ContactDetails from "@/components/Home/contactDetails/ContactDetails";
 import Image from "next/image";
+import ContactDetails from "@/components/Home/kayaa-home/contactDetails/ContactDetails";
 
 // --- HELPER FUNCTIONS ---
 
