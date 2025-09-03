@@ -217,7 +217,7 @@ export default function AppointmentDetailsPage() {
 
   return (
     <div className="lg:w-3/4 space-y-3 animate-fadeIn">
-      <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl p-2 shadow-2xl">
+      <div className="bg-white/95 backdrop-blur-sm shadow-sm border-2 border-[#F28C8C]/30 rounded-2xl p-2">
         <button
           onClick={() => router.back()}
           className="flex items-center gap-2 text-[#C59D5F]/80 hover:text-[#B11C5F] transition-all duration-300 group font-lato font-semibold">
@@ -225,11 +225,11 @@ export default function AppointmentDetailsPage() {
           <span className="font-medium text-xl">Back to Appointments</span>
         </button>
       </div>
-      <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl p-6 shadow-2xl">
+      <div className="bg-white/95 backdrop-blur-sm shadow-sm border-2 border-[#F28C8C]/30 rounded-2xl">
         <ContactDetails />
       </div>
 
-      <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl p-6 shadow-2xl">
+      <div className="bg-white/95 backdrop-blur-sm shadow-sm border-2 border-[#F28C8C]/30 rounded-2xl p-6">
         <div className="flex justify-between items-center mb-4 border-b border-[#F28C8C]/30 pb-4 -z-1">
           <h3 className="text-xl font-playfair font-semibold text-[#B11C5F]">
             Appointment Details
@@ -307,7 +307,7 @@ export default function AppointmentDetailsPage() {
         </div>
       </div>
 
-      <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl p-6 shadow-2xl">
+      <div className="bg-white/95 backdrop-blur-sm shadow-sm border-2 border-[#F28C8C]/30 rounded-2xl p-6">
         <h3 className="text-xl font-playfair font-semibold text-[#B11C5F] mb-3">
           Instruction
         </h3>

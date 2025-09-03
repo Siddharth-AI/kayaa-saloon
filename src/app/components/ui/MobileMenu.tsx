@@ -130,7 +130,7 @@ export default function MobileMenu() {
               {/* User Section */}
               <div className="border-t border-[#F28C8C]/20 p-6 bg-gradient-to-r from-[#FFF6F8] to-white">
                 {user?.isLoggedIn ? (
-                  <div className="space-y-4">
+                  <div className="space-y-4 pb-10">
                     <div className="text-center">
                       <h3 className="font-playfair text-lg font-bold text-[#B11C5F]">
                         Welcome Back!

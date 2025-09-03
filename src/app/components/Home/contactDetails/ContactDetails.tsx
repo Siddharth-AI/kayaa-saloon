@@ -73,8 +73,8 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ bookButton }) => {
   }, []);
 
   return (
-    <div className="p-1 relative w-full mx-auto z-50">
-      <div className="card flex flex-row justify-between flex-wrap items-center gap-3 rounded-2xl p-6 bg-white/95 backdrop-blur-sm border border-[#F28C8C]/30 shadow-2xl">
+    <div className="relative w-full mx-auto z-50">
+      <div className="card flex flex-row justify-between flex-wrap items-center gap-3 rounded-2xl p-6 bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="">
           <h2 className="mb-3 text-xl font-playfair font-bold text-[#B11C5F]">
             The Kaya Beauty Salon
@@ -118,7 +118,7 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ bookButton }) => {
               )}
               <button
                 className="btn ml-3 flex w-24 cursor-pointer items-center justify-center gap-1 font-lato font-semibold transition-all duration-300 hover:text-[#B11C5F] hover:scale-105"
-                onClick={() => setShowOpeningTimes((prev) => !prev)}
+                // onClick={() => setShowOpeningTimes((prev) => !prev)}
                 aria-expanded={showOpeningTimes}
                 aria-label="Toggle opening times"
                 disabled={loading || !!error}>
