@@ -279,7 +279,7 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
       <div
-        className="w-full bg-[#B11C5F] py-24 lg:py-32 pl-11 relative"
+        className="w-full py-24 lg:py-32 pl-11 relative"
         style={{
           backgroundImage: "url('/images/service/viewBooking.webp')",
           backgroundSize: "cover",

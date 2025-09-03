@@ -350,7 +350,7 @@ const Slots: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
       <div
-        className="w-full bg-[#B11C5F] py-28 pl-11 pt-32 relative"
+        className="w-full py-28 pl-11 pt-32 relative"
         style={{
           backgroundImage: "url('/images/service/slotbooking.webp')",
           backgroundSize: "cover",

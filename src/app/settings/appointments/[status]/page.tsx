@@ -490,12 +490,12 @@ export default function MyAppointments() {
                 </button>
               )}
             </div>
-            <button
+            {/* <button
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center justify-center gap-2 bg-white border border-[#F28C8C]/30 rounded-2xl px-4 py-2 text-[#B11C5F] font-lato font-semibold hover:bg-[#FFF6F8] transition-all duration-300 hover:scale-105">
               <Filter className="h-4 w-4" />
               <span>Filter</span>
-            </button>
+            </button> */}
           </div>
         </div>
 

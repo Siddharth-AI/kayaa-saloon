@@ -146,7 +146,7 @@ export default function MobileMenu() {
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-4 pb-10">
                     <div className="text-center">
                       <h3 className="font-playfair text-lg font-bold text-[#B11C5F]">
                         Join Kaya Beauty
