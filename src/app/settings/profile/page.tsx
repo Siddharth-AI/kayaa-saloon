@@ -178,19 +178,19 @@ export default function ProfileSettings() {
   if (isLoadingProfile) {
     return (
       <div className="flex items-center justify-center p-8 w-full">
-        <div className="w-12 h-12 border-4 border-[#c59d5f] border-t-transparent rounded-full animate-spin" />
+        <div className="loader"></div>
       </div>
     );
   }
 
   return (
-    <div className="lg:w-3/4 bg-black/80 backdrop-blur-xl border-2 border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="lg:w-3/4 bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl overflow-hidden shadow-2xl">
       <div className="p-6">
         {/* Success Message */}
         {showSuccess && (
-          <div className="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-xl flex items-center space-x-3">
-            <CheckCircle size={20} className="text-green-400" />
-            <span className="text-green-400 font-medium">
+          <div className="mb-6 p-4 bg-green-50 border border-green-300 rounded-2xl flex items-center space-x-3">
+            <CheckCircle size={20} className="text-green-600" />
+            <span className="text-green-700 font-lato font-medium">
               Profile updated successfully!
             </span>
           </div>
@@ -198,8 +198,10 @@ export default function ProfileSettings() {
 
         {/* Profile Header */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-white">Profile Settings</h2>
-          <p className="text-gray-400">
+          <h2 className="text-2xl font-playfair font-bold text-[#B11C5F]">
+            Profile Settings
+          </h2>
+          <p className="text-[#C59D5F] font-lato">
             Manage your personal information and preferences
           </p>
         </div>
@@ -207,7 +209,7 @@ export default function ProfileSettings() {
         {/* Profile Card */}
         <div className="space-y-6">
           {/* Profile Header */}
-          <div className="p-6 bg-gradient-to-r from-[#c59d5f]/20 to-[#f4d03f]/20 border border-white/10 rounded-xl relative">
+          <div className="p-6 bg-gradient-to-r from-[#FFF6F8] to-[#FEFAF4] border border-[#F28C8C]/30 rounded-2xl relative">
             <div className="flex flex-col sm:flex-row items-center gap-6">
               {/* Profile Picture */}
               <div className="relative group">
@@ -218,7 +220,7 @@ export default function ProfileSettings() {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                   disabled={!isEditing}
                 />
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] flex items-center justify-center overflow-hidden">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] flex items-center justify-center overflow-hidden">
                   {imagePreview || user?.profile_pic ? (
                     <img
                       src={
@@ -228,11 +230,11 @@ export default function ProfileSettings() {
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <User size={40} className="text-black" />
+                    <User size={40} className="text-white" />
                   )}
                 </div>
                 {isEditing && (
-                  <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="absolute inset-0 bg-[#B11C5F]/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     <Camera size={20} className="text-white" />
                     <span className="text-white text-xs ml-1">Upload</span>
                   </div>
@@ -242,7 +244,7 @@ export default function ProfileSettings() {
               {/* Show selected image name when editing */}
               {isEditing && selectedImage && (
                 <div className="mt-2 text-center">
-                  <span className="text-sm text-[#c59d5f] bg-white/10 px-3 py-1 rounded-full">
+                  <span className="text-sm text-[#B11C5F] bg-[#FFF6F8] px-3 py-1 rounded-full font-lato">
                     📷 {getImageFileName()}
                   </span>
                 </div>
@@ -250,15 +252,15 @@ export default function ProfileSettings() {
 
               {/* User Info */}
               <div className="flex-1 text-center sm:text-left">
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-playfair font-bold text-[#B11C5F]">
                   {user?.display_name ||
                     `${user?.fname} ${user?.lname}` ||
                     "User"}
                 </h2>
-                <p className="text-[#c59d5f] text-sm mb-2">
+                <p className="text-[#C59D5F] text-sm mb-2 font-lato">
                   {user?.email || getFormattedMobile()}
                 </p>
-                <span className="px-3 py-1 bg-white/10 rounded-full text-xs font-medium">
+                <span className="px-3 py-1 bg-[#FFF6F8] rounded-full text-xs font-lato font-medium text-[#B11C5F]">
                   Member since{" "}
                   {new Date(user?.createdAt || Date.now()).getFullYear()}
                 </span>
@@ -267,11 +269,11 @@ export default function ProfileSettings() {
               {/* Edit Button */}
               <button
                 onClick={() => setIsEditing(!isEditing)}
-                className={`p-3 rounded-xl ${
+                className={`p-3 rounded-2xl transition-all duration-300 ${
                   isEditing
-                    ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
-                    : "bg-[#c59d5f]/20 text-[#c59d5f] hover:bg-[#c59d5f]/30"
-                } transition-colors`}
+                    ? "bg-red-50 text-red-500 hover:bg-red-100"
+                    : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] hover:scale-105"
+                }`}
                 disabled={isLoading}>
                 {isEditing ? <X size={20} /> : <Edit2 size={20} />}
               </button>
@@ -282,8 +284,8 @@ export default function ProfileSettings() {
           <form onSubmit={handleSubmit}>
             <div className="space-y-6">
               {/* Personal Information Section */}
-              <div className="p-6 border border-white/10 rounded-xl">
-                <h3 className="text-lg font-semibold text-[#c59d5f] mb-4 flex items-center">
+              <div className="p-6 border border-[#F28C8C]/30 rounded-2xl bg-white/50">
+                <h3 className="text-lg font-playfair font-semibold text-[#B11C5F] mb-4 flex items-center">
                   <User size={18} className="mr-2" />
                   Personal Information
                 </h3>
@@ -291,7 +293,7 @@ export default function ProfileSettings() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Name */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Name
                     </label>
                     {isEditing ? (
@@ -300,11 +302,11 @@ export default function ProfileSettings() {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#232526]/80 border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white"
+                        className="w-full px-4 py-3 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] font-lato"
                         required
                       />
                     ) : (
-                      <p className="text-white py-3">
+                      <p className="text-[#444444] py-3 font-lato">
                         {`${user?.fname} ${user?.lname}` || "Not provided"}
                       </p>
                     )}
@@ -312,7 +314,7 @@ export default function ProfileSettings() {
 
                   {/* Date of Birth */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Date of Birth
                     </label>
                     {isEditing ? (
@@ -321,10 +323,10 @@ export default function ProfileSettings() {
                         name="dob"
                         value={formData.dob}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#232526]/80 border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white"
+                        className="w-full px-4 py-3 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] font-lato"
                       />
                     ) : (
-                      <p className="text-white py-3">
+                      <p className="text-[#444444] py-3 font-lato">
                         {user?.dob || "Not provided"}
                       </p>
                     )}
@@ -332,7 +334,7 @@ export default function ProfileSettings() {
 
                   {/* Anniversary */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Anniversary
                     </label>
                     {isEditing ? (
@@ -341,10 +343,10 @@ export default function ProfileSettings() {
                         name="anniversary"
                         value={formData.anniversary}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#232526]/80 border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white"
+                        className="w-full px-4 py-3 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] font-lato"
                       />
                     ) : (
-                      <p className="text-white py-3">
+                      <p className="text-[#444444] py-3 font-lato">
                         {user?.anniversary || "Not provided"}
                       </p>
                     )}
@@ -352,7 +354,7 @@ export default function ProfileSettings() {
 
                   {/* Gender */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Gender
                     </label>
                     {isEditing ? (
@@ -360,14 +362,14 @@ export default function ProfileSettings() {
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
-                        className="w-full px-4 py-[13px] border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white bg-[#232526]/80 outline-none">
+                        className="w-full px-4 py-[13px] border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] bg-white outline-none font-lato">
                         <option value="">Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                         <option value="other">Other</option>
                       </select>
                     ) : (
-                      <p className="text-white py-3">
+                      <p className="text-[#444444] py-3 font-lato">
                         {user?.gender || "Not provided"}
                       </p>
                     )}
@@ -376,8 +378,8 @@ export default function ProfileSettings() {
               </div>
 
               {/* Contact Information Section */}
-              <div className="p-6 border border-white/10 rounded-xl">
-                <h3 className="text-lg font-semibold text-[#c59d5f] mb-4 flex items-center">
+              <div className="p-6 border border-[#F28C8C]/30 rounded-2xl bg-white/50">
+                <h3 className="text-lg font-playfair font-semibold text-[#B11C5F] mb-4 flex items-center">
                   <Mail size={18} className="mr-2" />
                   Contact Information
                 </h3>
@@ -385,7 +387,7 @@ export default function ProfileSettings() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Email */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Email Address
                     </label>
                     {isEditing ? (
@@ -394,15 +396,15 @@ export default function ProfileSettings() {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#232526]/80 border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white"
+                        className="w-full px-4 py-3 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] font-lato"
                       />
                     ) : (
-                      <p className="text-white py-3">
+                      <p className="text-[#444444] py-3 font-lato">
                         {user?.email || "Not provided"}
                       </p>
                     )}
                     {user?.is_email_verify && (
-                      <span className="text-xs text-green-400 mt-1 inline-block">
+                      <span className="text-xs text-green-600 mt-1 inline-block font-lato">
                         ✓ Verified
                       </span>
                     )}
@@ -410,7 +412,7 @@ export default function ProfileSettings() {
 
                   {/* Mobile */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Mobile Number
                     </label>
                     {isEditing ? (
@@ -420,13 +422,15 @@ export default function ProfileSettings() {
                         value={formData.mobile}
                         onChange={handleChange}
                         placeholder="10-digit mobile number"
-                        className="w-full px-4 py-3 bg-[#232526]/80 border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white"
+                        className="w-full px-4 py-3 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] font-lato"
                       />
                     ) : (
-                      <p className="text-white py-3">{getFormattedMobile()}</p>
+                      <p className="text-[#444444] py-3 font-lato">
+                        {getFormattedMobile()}
+                      </p>
                     )}
                     {user?.is_mobile_verify && (
-                      <span className="text-xs text-green-400 mt-1 inline-block">
+                      <span className="text-xs text-green-600 mt-1 inline-block font-lato">
                         ✓ Verified
                       </span>
                     )}
@@ -435,8 +439,8 @@ export default function ProfileSettings() {
               </div>
 
               {/* Address Information Section */}
-              <div className="p-6 border border-white/10 rounded-xl">
-                <h3 className="text-lg font-semibold text-[#c59d5f] mb-4 flex items-center">
+              <div className="p-6 border border-[#F28C8C]/30 rounded-2xl bg-white/50">
+                <h3 className="text-lg font-playfair font-semibold text-[#B11C5F] mb-4 flex items-center">
                   <MapPin size={18} className="mr-2" />
                   Address Information
                 </h3>
@@ -444,7 +448,7 @@ export default function ProfileSettings() {
                 <div className="grid grid-cols-1 gap-6">
                   {/* Address */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Address
                     </label>
                     {isEditing ? (
@@ -453,10 +457,10 @@ export default function ProfileSettings() {
                         name="address"
                         value={formData.address}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#232526]/80 border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white"
+                        className="w-full px-4 py-3 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] font-lato"
                       />
                     ) : (
-                      <p className="text-white py-3">
+                      <p className="text-[#444444] py-3 font-lato">
                         {user?.address || "Not provided"}
                       </p>
                     )}
@@ -464,7 +468,7 @@ export default function ProfileSettings() {
 
                   {/* Locality */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">
+                    <label className="block text-sm font-lato font-medium text-[#C59D5F] mb-1">
                       Locality
                     </label>
                     {isEditing ? (
@@ -473,10 +477,10 @@ export default function ProfileSettings() {
                         name="locality"
                         value={formData.locality}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 bg-[#232526]/80 border border-white/10 rounded-lg focus:outline-none focus:border-[#c59d5f] text-white"
+                        className="w-full px-4 py-3 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:border-[#B11C5F] text-[#444444] font-lato"
                       />
                     ) : (
-                      <p className="text-white py-3">
+                      <p className="text-[#444444] py-3 font-lato">
                         {user?.locality || "Not provided"}
                       </p>
                     )}
@@ -508,13 +512,13 @@ export default function ProfileSettings() {
                       });
                     }
                   }}
-                  className="px-6 py-3 border-2 border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors"
+                  className="px-6 py-3 border-2 border-[#F28C8C]/50 rounded-2xl text-[#B11C5F] hover:bg-[#FFF6F8] transition-all duration-300 font-lato font-semibold"
                   disabled={isLoading}>
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] rounded-lg text-black font-semibold hover:shadow-lg hover:shadow-[#c59d5f]/30 transition-all flex items-center space-x-2"
+                  className="px-6 py-3 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-2xl text-white font-lato font-semibold hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 flex items-center space-x-2 hover:scale-105"
                   disabled={isLoading}>
                   {isLoading ? (
                     <>

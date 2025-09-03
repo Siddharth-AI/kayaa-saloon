@@ -1,38 +1,52 @@
 "use client";
-
-import React from "react";
-
+import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
-import { useEffect, useState } from "react";
 import { store } from "@/store/store";
 import { initializeAuth } from "@/store/slices/authSlice";
 import { initializeCart } from "@/store/slices/cartSlice";
 
+export const Loader = () => {
+  return (
+    <div className="flex items-center justify-center min-h-screen min-w-screen bg-gradient-to-br from-[#FFF6F8] to-pink-50">
+      <div className="loader"></div>
+    </div>
+  );
+};
+
+// 🔹 Hydration component
 function HydrateAuth({ children }: { children: any }) {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     console.log("Providers: Starting initialization");
 
-    // Initialize auth (checks for token, doesn't load user data from storage)
+    // Initialize auth + cart
     store.dispatch(initializeAuth());
-
-    // Initialize cart
     store.dispatch(initializeCart());
 
-    setIsHydrated(true);
-    console.log("Providers: Initialization complete");
+    // ⏳ Force at least 2 sec loader
+    const timer = setTimeout(() => {
+      setIsHydrated(true);
+      console.log("Providers: Initialization complete (after delay)");
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  // Prevent hydration mismatch by suppressing warnings during initial render
   return (
     <div suppressHydrationWarning>
-      {isHydrated ? children : <div>Loading...</div>}
+      {isHydrated ? (
+        children
+      ) : (
+        <div className="flex items-center justify-center min-h-screen bg-white">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 }
 
-// Error boundary component
+// 🔹 Error boundary
 class AuthErrorBoundary extends React.Component<
   { children: any },
   { hasError: boolean }
@@ -54,16 +68,16 @@ class AuthErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div>
+        <div className="flex items-center justify-center min-h-screen text-red-600">
           Something went wrong with authentication. Please refresh the page.
         </div>
       );
     }
-
     return this.props.children;
   }
 }
 
+// 🔹 Final Providers wrapper
 export default function Providers({ children }: { children: any }) {
   return (
     <Provider store={store}>

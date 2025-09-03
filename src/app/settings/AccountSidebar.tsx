@@ -93,10 +93,10 @@ export default function AccountSidebar() {
               <Link
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
+                className={`w-full flex items-center gap-3 p-3 rounded-2xl transition-all duration-300 font-lato ${
                   active
-                    ? "bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black font-semibold shadow-lg shadow-[#c59d5f]/20"
-                    : "text-gray-300 hover:bg-white/10"
+                    ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-semibold shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] hover:scale-105"
+                    : "text-[#444444] hover:bg-[#FFF6F8] hover:text-[#B11C5F] hover:scale-105"
                 }`}>
                 <link.icon size={20} />
                 <span>{link.label}</span>
@@ -105,7 +105,7 @@ export default function AccountSidebar() {
           );
         })}
       </ul>
-      <div className="border-t border-white/10 my-4"></div>
+      <div className="border-t border-[#F28C8C]/30 my-4"></div>
       <ul className="space-y-1">
         {HELP_LINKS.map((link) => {
           const active = isActive(link.href);
@@ -114,10 +114,10 @@ export default function AccountSidebar() {
               <Link
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors ${
+                className={`w-full flex items-center gap-3 p-3 rounded-2xl transition-all duration-300 font-lato ${
                   active
-                    ? "bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black font-semibold shadow-lg shadow-[#c59d5f]/20"
-                    : "text-gray-300 hover:bg-white/10"
+                    ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-semibold shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] "
+                    : "text-[#444444] hover:bg-[#FFF6F8] hover:text-[#B11C5F]"
                 }`}>
                 <link.icon size={20} />
                 <span>{link.label}</span>
@@ -128,7 +128,7 @@ export default function AccountSidebar() {
         <li>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400 transition-colors">
+            className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-red-50 text-red-500 hover:text-red-600 transition-all duration-300 hover:scale-105 font-lato">
             <LogOut size={20} />
             <span>Logout</span>
           </button>
@@ -139,35 +139,37 @@ export default function AccountSidebar() {
 
   return (
     <div className="w-full">
-      <div className="hidden lg:block bg-black/80 backdrop-blur-xl border-2 border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-        <div className="p-4 bg-black/50 border-b border-white/10">
-          <h2 className="text-xl font-bold">Account</h2>
+      <div className="hidden lg:block bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl overflow-hidden shadow-2xl">
+        <div className="p-4 bg-[#FFF6F8] border-b border-[#F28C8C]/30">
+          <h2 className="text-xl font-playfair font-bold text-[#B11C5F]">
+            Account
+          </h2>
         </div>
         <NavigationList />
       </div>
       <div ref={dropdownRef} className="relative lg:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full flex items-center justify-between p-4 bg-black/80 backdrop-blur-xl border-2 border-white/10 rounded-2xl shadow-2xl">
+          className="w-full flex items-center justify-between p-4 bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl shadow-2xl hover:bg-[#FFF6F8] transition-all duration-300">
           <div className="flex items-center gap-3">
             {activeLink ? (
-              <activeLink.icon size={20} className="text-[#c59d5f]" />
+              <activeLink.icon size={20} className="text-[#B11C5F]" />
             ) : (
-              <User size={20} />
+              <User size={20} className="text-[#B11C5F]" />
             )}
-            <span className="font-bold text-lg">
+            <span className="font-playfair font-bold text-lg text-[#B11C5F]">
               {activeLink ? activeLink.label : "Account Menu"}
             </span>
           </div>
           <ChevronDown
             size={20}
-            className={`transition-transform duration-300 ${
+            className={`transition-transform duration-300 text-[#C59D5F] ${
               isOpen ? "rotate-180" : ""
             }`}
           />
         </button>
         <div
-          className={`absolute top-full mt-2 w-full bg-[#1c1c22] rounded-2xl border-2 border-white/10 overflow-hidden shadow-2xl z-50 transition-all duration-300 ease-in-out ${
+          className={`absolute top-full mt-2 w-full bg-white/95 backdrop-blur-md rounded-2xl border-2 border-[#F28C8C]/30 overflow-hidden shadow-2xl z-50 transition-all duration-300 ease-in-out ${
             isOpen
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-4 pointer-events-none"

@@ -1,33 +1,3 @@
-// import { createSlice } from '@reduxjs/toolkit'
-
-// export interface Operator {
-//   name: string
-//   img: string
-// }
-
-// const initialState: Operator[] = [
-//   { name: 'Jason', img: 'https://randomuser.me/api/portraits/men/1.jpg' },
-//   { name: 'Sasa', img: 'https://randomuser.me/api/portraits/women/2.jpg' },
-//   { name: 'Vishnu', img: 'https://randomuser.me/api/portraits/men/3.jpg' },
-//   { name: 'Devendra', img: 'https://randomuser.me/api/portraits/men/4.jpg' },
-//   { name: 'Gilden', img: 'https://randomuser.me/api/portraits/men/5.jpg' },
-//   { name: 'Lorenzo', img: 'https://randomuser.me/api/portraits/men/6.jpg' },
-//   { name: 'Sultanch', img: 'https://randomuser.me/api/portraits/men/7.jpg' },
-//   { name: 'Sultanch', img: 'https://randomuser.me/api/portraits/men/8.jpg' },
-//   { name: 'Sultanch', img: 'https://randomuser.me/api/portraits/men/9.jpg' },
-//   { name: 'Sultanch', img: 'https://randomuser.me/api/portraits/men/10.jpg' },
-//   { name: 'Sultanch', img: 'https://randomuser.me/api/portraits/men/11.jpg' },
-// ]
-
-// const operatorsSlice = createSlice({
-//   name: 'operators',
-//   initialState,
-//   reducers: {},
-// })
-
-// export default operatorsSlice.reducer
-
-
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit"
 import axios from "axios"
 

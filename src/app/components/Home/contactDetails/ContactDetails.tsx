@@ -73,82 +73,86 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ bookButton }) => {
   }, []);
 
   return (
-    <div className="relative py-5 shadow-sm">
-      <div className="w-[80%] mx-auto">
-        <div className="card flex flex-row justify-between flex-wrap items-center gap-3 rounded-lg p-4">
-          <div className="">
-            <h2 className="mb-3 text-xl font-bold text-white">
-              The Belle Femme Salon
-            </h2>
-            {/* The ref is placed here to contain both the button and the popup */}
-            <div className="flex flex-col text-gray-300" ref={containerRef}>
-              {/* Location */}
-              <div className="mb-2 flex items-center gap-2">
-                <IoLocationSharp className="text-[#c59d5f]" />
-                <span>{selectedLocationByName || "Select a Location"}</span>
-                <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${selectedLocationByName}`}
-                  target="_blank"
-                  className="btn flex h-[30px] w-[30px] items-center justify-center rounded-full bg-[#c59d5f] text-white transition-transform duration-200 hover:scale-110"
-                  title="Location link">
-                  <PiArrowBendDoubleUpRightBold className="text-[18px] text-white" />
-                </a>
-              </div>
+    <div className="p-1 relative w-full mx-auto z-50">
+      <div className="card flex flex-row justify-between flex-wrap items-center gap-3 rounded-2xl p-6 bg-white/95 backdrop-blur-sm border border-[#F28C8C]/30 shadow-2xl">
+        <div className="">
+          <h2 className="mb-3 text-xl font-playfair font-bold text-[#B11C5F]">
+            The Kaya Beauty Salon
+          </h2>
+          {/* The ref is placed here to contain both the button and the popup */}
+          <div className="flex flex-col text-[#C59D5F]" ref={containerRef}>
+            {/* Location */}
+            <div className="mb-2 flex items-center gap-2">
+              <IoLocationSharp className="text-[#B11C5F]" />
+              <span className="font-lato font-medium">
+                {selectedLocationByName || "Select a Location"}
+              </span>
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${selectedLocationByName}`}
+                target="_blank"
+                className="btn flex h-[30px] w-[30px] items-center justify-center rounded-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white transition-all duration-300 hover:scale-110 hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-lg"
+                title="Location link">
+                <PiArrowBendDoubleUpRightBold className="text-[16px] text-white" />
+              </a>
+            </div>
 
-              {/* Telephone */}
-              <div className="mb-2 flex items-center gap-2">
-                <IoCall className="text-[#c59d5f]" />
-                <span>5712494457</span>
-              </div>
+            {/* Telephone */}
+            <div className="mb-2 flex items-center gap-2">
+              <IoCall className="text-[#B11C5F]" />
+              <span className="font-lato font-medium">5712494457</span>
+            </div>
 
-              {/* Timings */}
-              <div className="flex items-center gap-2">
-                <IoTime className="text-[#c59d5f]" />
-                {loading ? (
-                  <span>Loading hours...</span>
-                ) : error ? (
-                  <span className="text-red-400">Error</span>
-                ) : (
-                  <span>{hours?.today_hour || "Not available"}</span>
-                )}
-                <button
-                  className="btn ml-3 flex w-24 cursor-pointer items-center justify-center gap-1 font-semibold transition-colors duration-200 hover:text-[#c59d5f]"
-                  onClick={() => setShowOpeningTimes((prev) => !prev)}
-                  aria-expanded={showOpeningTimes}
-                  aria-label="Toggle opening times"
-                  disabled={loading || !!error}>
-                  <span
-                    className={
-                      isCurrentlyOpen ? "text-green-400" : "text-red-400"
-                    }>
-                    {isCurrentlyOpen ? "Open" : "Closed"}
-                  </span>
-                  <FaCaretDown
-                    className={
-                      isCurrentlyOpen
-                        ? "text-green-400 mt-1"
-                        : "text-red-400 mt-1"
-                    }
-                  />
-                </button>
-              </div>
+            {/* Timings */}
+            <div className="flex items-center gap-2">
+              <IoTime className="text-[#B11C5F]" />
+              {loading ? (
+                <span className="font-lato font-medium">Loading hours...</span>
+              ) : error ? (
+                <span className="text-red-500 font-lato font-medium">
+                  Error
+                </span>
+              ) : (
+                <span className="font-lato font-medium">
+                  {hours?.today_hour || "Not available"}
+                </span>
+              )}
+              <button
+                className="btn ml-3 flex w-24 cursor-pointer items-center justify-center gap-1 font-lato font-semibold transition-all duration-300 hover:text-[#B11C5F] hover:scale-105"
+                onClick={() => setShowOpeningTimes((prev) => !prev)}
+                aria-expanded={showOpeningTimes}
+                aria-label="Toggle opening times"
+                disabled={loading || !!error}>
+                <span
+                  className={
+                    isCurrentlyOpen ? "text-green-500" : "text-red-500"
+                  }>
+                  {isCurrentlyOpen ? "Open" : "Closed"}
+                </span>
+                <FaCaretDown
+                  className={
+                    isCurrentlyOpen
+                      ? "text-green-500 mt-1"
+                      : "text-red-500 mt-1"
+                  }
+                />
+              </button>
+            </div>
 
-              {/* Conditional Rendering for the popup */}
-              <div className="relative  ">
-                {showOpeningTimes && hours && (
-                  <ShowTimes ifSlot={true} hours={hours} />
-                )}
-              </div>
+            {/* Conditional Rendering for the popup */}
+            <div className="relative">
+              {showOpeningTimes && hours && (
+                <ShowTimes ifSlot={true} hours={hours} />
+              )}
             </div>
           </div>
-          {bookButton && (
-            <button
-              onClick={() => Router.push("/services")}
-              className="px-8 py-3 bg-gradient-to-r from-[#c59d5f] to-[#b88a44] rounded-full font-semibold text-lg text-white shadow-lg hover:from-[#b88a44] hover:to-[#c59d5f] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#c59d5f] focus:ring-offset-2 active:scale-95">
-              Book Appointment
-            </button>
-          )}
         </div>
+        {bookButton && (
+          <button
+            onClick={() => Router.push("/services")}
+            className="px-8 py-3 bg-[#F28C8C] to-[#C59D5F] rounded-2xl font-lato font-semibold text-lg text-white shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#F28C8C] focus:ring-offset-2 hover:bg-[#F28C8C]/90">
+            Book Appointment
+          </button>
+        )}
       </div>
     </div>
   );

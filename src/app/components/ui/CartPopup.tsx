@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { ShoppingBag, X, Trash2, ArrowRight } from "lucide-react";
+import { ShoppingBag, X, Trash2, ArrowRight, IndianRupee } from "lucide-react";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
 import { removeFromCart } from "@/store/slices/cartSlice";
 import ClientOnly from "../common/ClientOnly";
@@ -12,7 +12,7 @@ export default function CartPopup() {
   const cart = useAppSelector((state) => state.cart.items);
   const isHydrated = useAppSelector((state) => state.cart.isHydrated);
   const dispatch = useAppDispatch();
-  const cartRef = useRef<HTMLDivElement | null>(null);
+  const cartRef = useRef<HTMLDivElement>(null);
 
   // Close cart on outside click
   useEffect(() => {
@@ -22,6 +22,7 @@ export default function CartPopup() {
         setShowCart(false);
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -33,19 +34,19 @@ export default function CartPopup() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" ref={cartRef}>
       {/* Enhanced Cart Button */}
       <button
-        id="cart-icon"
-        className="relative p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 group"
-        onClick={() => setShowCart((prev) => !prev)}>
-        <ShoppingBag className="w-5 h-5 text-white group-hover:text-[#c59d5f] transition-colors duration-300" />
+        onClick={() => setShowCart((prev) => !prev)}
+        className="group relative p-2 rounded-full bg-white shadow-md hover:shadow-lg hover:bg-[#FFF6F8] transition-all duration-300 hover:scale-110"
+        id="cart-icon">
+        <ShoppingBag className="w-5 h-5 text-[#B11C5F] group-hover:text-[#F28C8C] transition-colors duration-300" />
 
-        {/* Cart Count Badge - wrapped in ClientOnly */}
+        {/* Cart Count Badge */}
         <ClientOnly>
           {isHydrated && cart.length > 0 && (
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] rounded-full flex items-center justify-center animate-pulse">
-              <span className="text-xs font-bold text-black">
+            <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-white text-xs font-bold">
                 {cart.length}
               </span>
             </div>
@@ -53,108 +54,106 @@ export default function CartPopup() {
         </ClientOnly>
 
         {/* Animated background */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#c59d5f]/20 to-[#f4d03f]/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </button>
 
       {/* Enhanced Cart Popup */}
       {showCart && (
-        <ClientOnly
-          fallback={
-            <div className="absolute right-0 top-16 w-96 h-32 bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#c59d5f]"></div>
-            </div>
-          }>
-          <div
-            ref={cartRef}
-            className="absolute -right-[75px] w-80 sm:right-0 top-16 sm:w-96 max-h-[550px] bg-black/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/50 overflow-hidden animate-in slide-in-from-top duration-300">
-            {/* Header */}
-            <div className="flex justify-between items-center p-4 bg-gradient-to-r from-[#c59d5f]/20 to-[#f4d03f]/20 border-b border-white/10">
-              <div className="flex items-center space-x-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] rounded-xl blur-md opacity-75 animate-pulse" />
-                  <div className="relative w-10 h-10 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] rounded-xl flex items-center justify-center shadow-xl">
-                    <ShoppingBag className="w-5 h-5 text-black animate-bounce" />
-                  </div>
-                </div>
-                <span className="font-semibold text-white">Cart</span>
+        <div className="absolute right-0 top-full mt-5 w-64 sm:w-80 bg-gradient-to-br from-[#FFF6F8] to-white backdrop-blur-md border border-[#F28C8C]/20 rounded-2xl shadow-2xl z-50 animate-in slide-in-from-top-5 duration-300">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-[#F28C8C]/20 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 rounded-t-2xl">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center">
+                <ShoppingBag className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <h3 className="font-playfair text-lg font-bold text-[#B11C5F]">
+                  Cart
+                </h3>
                 {cart.length > 0 && (
-                  <span className="px-2 py-1 bg-[#c59d5f]/20 text-[#c59d5f] text-xs rounded-full font-medium">
+                  <p className="font-cormorant text-sm text-[#C59D5F] italic">
                     {cart.length} items
-                  </span>
+                  </p>
                 )}
               </div>
-              <button
-                onClick={() => setShowCart(false)}
-                className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300 group">
-                <X className="w-4 h-4 text-gray-400 group-hover:text-white" />
-              </button>
             </div>
+            <button
+              onClick={() => setShowCart(false)}
+              className="p-2 rounded-lg hover:bg-white/50 transition-colors duration-300 group">
+              <X className="w-4 h-4 text-[#B11C5F] group-hover:text-[#F28C8C] transition-colors duration-300" />
+            </button>
+          </div>
 
-            {/* Cart Content */}
-            <div className="flex-1 overflow-y-auto max-h-80 categories_scroll">
-              {cart.length === 0 ? (
-                <div className="flex flex-col items-center justify-center p-8 text-center">
-                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                    <ShoppingBag className="w-8 h-8 text-gray-400" />
-                  </div>
-                  <p className="text-gray-400 font-medium mb-2">
-                    Your cart is empty
-                  </p>
-                  <p className="text-gray-500 text-sm">
-                    Add some services to get started
-                  </p>
+          {/* Cart Content */}
+          <div className="max-h-64 overflow-y-auto p-2">
+            {cart.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShoppingBag className="w-8 h-8 text-[#B11C5F]" />
                 </div>
-              ) : (
-                <div className="p-4 space-y-3">
-                  {cart.map((item: any, index: any) => (
-                    <div
-                      key={`cart-item-${index}-${item.id}`}
-                      className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group animate-in slide-in-from-left"
-                      style={{ animationDelay: `${index * 100}ms` }}>
-                      <div className="flex-1">
-                        <h4 className="text-white font-medium text-sm group-hover:text-[#c59d5f] transition-colors duration-300">
-                          {item.name}
-                        </h4>
-                        <p className="text-gray-400 text-xs mt-1">Service</p>
-                      </div>
+                <h4 className="font-playfair text-[#B11C5F] font-semibold mb-2">
+                  Your cart is empty
+                </h4>
+                <p className="font-lato text-sm text-[#444444]">
+                  Add some services to get started
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {cart.map((item: any, index: any) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-3 rounded-xl hover:bg-white/50 transition-all duration-300 group border border-transparent hover:border-[#F28C8C]/20">
+                    <div className="flex-1">
+                      <h4 className="font-lato font-medium text-[#B11C5F] text-sm">
+                        {item.name}
+                      </h4>
+                      <p className="font-cormorant text-xs text-[#C59D5F] italic">
+                        Service
+                      </p>
+                      <div className="flex items-center gap-1 mt-1">
+                        <IndianRupee className="w-4 h-4 text-[#B11C5F]" />
 
-                      <div className="flex sm:flex-row flex-col ml-3 sm:ml-0 items-center space-x-3">
-                        <span className="text-[#c59d5f] font-semibold text-sm">
-                          ₹{item.price}
-                        </span>
-                        <button
-                          onClick={() => handleRemoveItem(index)}
-                          className="p-1 rounded-lg hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-all duration-300">
-                          <Trash2 className="w-3 h-3" />
-                        </button>
+                        <p className="font-lato font-bold text-[#444444]">
+                          {item.price}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Footer */}
-            {cart.length > 0 && (
-              <div className="p-4 border-t border-white/10 bg-gradient-to-r from-black/50 to-black/30">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-gray-400 font-medium">Total</span>
-                  <span className="text-white font-bold text-lg">
-                    ₹{totalPrice}
-                  </span>
-                </div>
-
-                <Link
-                  href="/saloon-services/slots"
-                  className="w-72 flex mx-auto items-center justify-center space-x-2 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black font-semibold py-3 rounded-xl hover:shadow-lg hover:shadow-[#c59d5f]/25 transition-all duration-300 transform hover:scale-105 group"
-                  onClick={() => setShowCart(false)}>
-                  <span className="text-lg">Proceed to Checkout</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                </Link>
+                    <button
+                      onClick={() => handleRemoveItem(index)}
+                      className="p-2 rounded-lg hover:bg-red-50 text-[#444444] hover:text-red-500 transition-all duration-300 group/trash">
+                      <Trash2 className="w-4 h-4 group-hover/trash:scale-110 transition-transform duration-300" />
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </div>
-        </ClientOnly>
+
+          {/* Footer */}
+          {cart.length > 0 && (
+            <div className="border-t border-[#F28C8C]/20 p-4 bg-gradient-to-r from-[#FFF6F8] to-white rounded-b-2xl">
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-playfair text-lg font-bold text-[#B11C5F]">
+                  Total
+                </span>
+                <span className="flex items-center space-x-1 font-lato text-lg font-bold text-[#444444]">
+                  <IndianRupee className="w-5 h-5 text-[#B11C5F]" />
+                  <span>{totalPrice}</span>
+                </span>
+              </div>
+              <div className="flex justify-center">
+                <Link
+                  href="/saloon-services/slots"
+                  onClick={() => setShowCart(false)}
+                  className="w-40 flex items-center justify-center space-x-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-lato font-medium py-3 rounded-full hover:shadow-lg transform transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] group">
+                  <span>Proceed</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

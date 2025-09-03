@@ -7,6 +7,7 @@ import {
   resetChangePasswordState,
 } from "@/store/slices/changePasswordSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { toastError, toastSuccess } from "@/components/common/toastService";
 
 export default function ChangePasswordPage() {
   const { selectedLocationUuid } = useAppSelector((state) => state.services);
@@ -38,12 +39,16 @@ export default function ChangePasswordPage() {
     setFormError("");
 
     if (newPassword.length < 8) {
-      setFormError("New password must be at least 8 characters long.");
+      toastError("New password must be at least 8 characters long.");
       return;
     }
     if (newPassword !== confirmPassword) {
-      setFormError("New and confirm passwords do not match.");
+      toastError("New and confirm passwords do not match.");
       return;
+    }
+
+    if (apiError) {
+      toastError("Network error. Please try again.");
     }
 
     dispatch(
@@ -55,45 +60,27 @@ export default function ChangePasswordPage() {
     );
   };
 
+  useEffect(() => {
+    if (successMessage) {
+      toastSuccess(successMessage);
+      setCurrentPassword("");
+      setConfirmPassword("");
+      setNewPassword("");
+    }
+  }, [successMessage]);
+
   return (
     // --- ENHANCEMENT: Responsive padding for the page container ---
-    <div className="lg:w-3/4 bg-black/80 overflow-hidden shadow-2xl">
-      <main className="w-full max-w-md bg-black text-white rounded-2xl border-2 border-white/10 shadow-2xl p-6 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-white text-center">
+    <div className="lg:w-3/4 bg-white/95 backdrop-blur-sm overflow-hidden shadow-2xl">
+      <main className="w-full max-w-md bg-white/95 backdrop-blur-sm text-[#444444] rounded-2xl  p-6 sm:p-8">
+        <h1 className="text-2xl sm:text-3xl font-playfair font-bold mb-6 text-[#B11C5F] text-center">
           Change Password
         </h1>
-
-        {successMessage && (
-          <div
-            className="bg-green-500/20 border border-green-500 text-green-300 px-4 py-3 rounded-md mb-4 text-sm"
-            role="alert">
-            <strong className="font-bold">Success! </strong>
-            <span className="block sm:inline">{successMessage}</span>
-          </div>
-        )}
-
-        {apiError && (
-          <div
-            className="bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-md mb-4 text-sm"
-            role="alert">
-            <strong className="font-bold">Error: </strong>
-            <span className="block sm:inline">{apiError}</span>
-          </div>
-        )}
-
-        {formError && !apiError && (
-          <div
-            className="bg-red-500/20 border border-red-500 text-red-300 px-4 py-3 rounded-md mb-4 text-sm"
-            role="alert">
-            <strong className="font-bold">Error: </strong>
-            <span className="block sm:inline">{formError}</span>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* --- Current Password with Visibility Toggle --- */}
           <div>
-            <label className="block text-sm mb-2 text-gray-400">
+            <label className="block text-sm mb-2 text-[#C59D5F] font-lato font-medium">
               Current Password
             </label>
             <div className="relative">
@@ -101,13 +88,13 @@ export default function ChangePasswordPage() {
                 type={showCurrent ? "text" : "password"}
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c59d5f] text-white pr-10"
+                className="w-full px-4 py-2.5 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#B11C5F] text-[#444444] pr-10 font-lato transition-all duration-300"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-white">
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300">
                 {showCurrent ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -115,7 +102,7 @@ export default function ChangePasswordPage() {
 
           {/* --- New Password with Visibility Toggle --- */}
           <div>
-            <label className="block text-sm mb-2 text-gray-400">
+            <label className="block text-sm mb-2 text-[#C59D5F] font-lato font-medium">
               New Password
             </label>
             <div className="relative">
@@ -123,13 +110,13 @@ export default function ChangePasswordPage() {
                 type={showNew ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c59d5f] text-white pr-10"
+                className="w-full px-4 py-2.5 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#B11C5F] text-[#444444] pr-10 font-lato transition-all duration-300"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-white">
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300">
                 {showNew ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -137,7 +124,7 @@ export default function ChangePasswordPage() {
 
           {/* --- Confirm Password with Visibility Toggle --- */}
           <div>
-            <label className="block text-sm mb-2 text-gray-400">
+            <label className="block text-sm mb-2 text-[#C59D5F] font-lato font-medium">
               Confirm Password
             </label>
             <div className="relative">
@@ -145,13 +132,13 @@ export default function ChangePasswordPage() {
                 type={showConfirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white/5 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c59d5f] text-white pr-10"
+                className="w-full px-4 py-2.5 bg-white border border-[#F28C8C]/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#B11C5F] text-[#444444] pr-10 font-lato transition-all duration-300"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-white">
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300">
                 {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
@@ -160,7 +147,7 @@ export default function ChangePasswordPage() {
           <button
             type="submit"
             disabled={loading === "pending"}
-            className="w-full bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black py-2.5 rounded-lg font-semibold hover:shadow-lg hover:shadow-[#c59d5f]/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transform hover:scale-105">
+            className="w-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white py-2.5 rounded-2xl font-lato font-semibold hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transform">
             {loading === "pending" ? (
               <>
                 <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />

@@ -277,9 +277,9 @@ const Page = () => {
   const totalPayable = serviceTotal + tax;
 
   return (
-    <div className="min-h-screen bg-white/10">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
       <div
-        className="w-full bg-[#2d2d2d] py-24 lg:py-32 pl-11 relative"
+        className="w-full bg-[#B11C5F] py-24 lg:py-32 pl-11 relative"
         style={{
           backgroundImage: "url('/images/service/viewBooking.webp')",
           backgroundSize: "cover",
@@ -287,88 +287,90 @@ const Page = () => {
           backgroundAttachment: "fixed",
           zIndex: 0,
         }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent" />
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <h1 className="text-4xl pt-10 font-bold tracking-wide text-white drop-shadow-lg">
-            Appointment Booking
+        <div className="absolute inset-0 bg-gradient-to-b from-[#C59D5F]/20 via-[#C59D5F]/20 to-transparent" />
+        <div className="max-w-7xl mx-auto sm:px-4 relative z-10">
+          <h1 className="text-4xl pt-10 font-playfair font-bold tracking-wide text-shadow-[#F28C8C]/60 text-shadow-sm text-[#2C1810] drop-shadow-lg">
+            APPOINMENT BOOKING
           </h1>
         </div>
       </div>
 
-      <div className="px-4bg-white/10 py-5">
+      <div className="px-4 bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4] py-5">
         <div className="flex flex-col lg:flex-row gap-6 max-w-7xl mx-auto">
           {/* Left Panel */}
           <div className="w-full lg:w-[800px] relative">
             <div
-              className="bg-gradient-to-br from-[#232526]/80 via-[#414345]/90 to-[#c59d5f]/10 p-6 shadow relative rounded-2xl border border-white/10 hover:text-[#c59d5f] text-white transition-colors duration-200 group mb-4 py-2 hover:shadow-2xl hover:shadow-[#c59d5f]/10"
+              className="bg-white/80 backdrop-blur-sm p-6 shadow-lg relative rounded-2xl border-2 border-[#F28C8C]/20 hover:border-[#B11C5F] text-[#B11C5F] transition-all duration-300 group mb-4 py-2 hover:shadow-xl hover:shadow-[#F28C8C]/20"
               onClick={() => router.back()}>
               <button
-                className="rounded-2xl flex items-center gap-2"
+                className="rounded-2xl flex items-center gap-2 font-lato"
                 aria-label="Go back to previous page">
                 <FiArrowLeft className="w-7 h-7 transition-transform duration-300 group-hover:-translate-x-1" />
-                <span className="font-semibold text-xl pr-1 ">Back</span>
+                <span className="font-semibold text-xl pr-1">Back</span>
               </button>
             </div>
             <LeftPanel />
           </div>
 
           {/* Right Panel */}
-          <div className="w-full bg-gradient-to-br from-[#232526]/80 via-[#414345]/90 to-[#c59d5f]/10 p-6 shadow relative rounded-2xl border border-white/10">
+          <div className="w-full bg-white/80 backdrop-blur-sm p-6 shadow-lg relative rounded-2xl border-2 border-[#F28C8C]/20">
             {/* Error Display */}
             {/* {bookingState.error && (
-              <div className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-300 flex justify-between items-center animate-fadeIn">
-                <div>
-                  <p className="font-semibold">Booking Failed</p>
-                  <p className="text-sm">
-                    The selected time slot may have just become unavailable.
-                    Please try selecting a different slot or time.
-                  </p>
-                </div>
-                <button
-                  onClick={() => dispatch(clearBookingError())}
-                  className="p-1 rounded-full hover:bg-white/20 transition-colors"
-                  aria-label="Close error message">
-                  <FiX size={20} />
-                </button>
+            <div className="mb-4 p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-red-600 flex justify-between items-center animate-fadeIn">
+              <div>
+                <p className="font-semibold">Booking Failed</p>
+                <p className="text-sm">
+                  The selected time slot may have just become unavailable.
+                  Please try selecting a different slot or time.
+                </p>
               </div>
-            )} */}
+              <button
+                onClick={() => dispatch(clearBookingError())}
+                className="p-1 rounded-full hover:bg-red-100 transition-colors"
+                aria-label="Close error message">
+                <FiX size={20} />
+              </button>
+            </div>
+          )} */}
 
             {/* Main Card */}
-            <div className="rounded-2xl p-6 border shadow-sm bg-white/10 mb-4 border-white/20">
-              <h4 className="text-xl font-bold mb-4 text-[#c59d5f]">
+            <div className="rounded-2xl p-6 border-2 shadow-lg bg-white/90 mb-4 border-[#F28C8C]/30">
+              <h4 className="text-xl font-playfair font-bold mb-4 text-[#B11C5F]">
                 Add Instruction
               </h4>
               <div className="mb-6">
                 <textarea
                   value={bookingComment}
                   onChange={handleCommentChange}
-                  className="w-full p-4 border bg-white/10 border-gray-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                  className="w-full p-4 border-2 bg-white border-[#F28C8C]/30 rounded-2xl resize-none focus:outline-none focus:border-[#B11C5F] transition-all duration-300 text-[#444444] placeholder-[#C59D5F] font-lato"
                   placeholder="Write something..."
                   rows={4}
                 />
               </div>
 
-              <h4 className="text-xl font-bold mb-4 text-[#c59d5f]">
+              <h4 className="text-xl font-playfair font-bold mb-4 text-[#B11C5F]">
                 Pricing Summary
               </h4>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-white">Service Total</span>
-                  <span className="font-bold text-white">
+                  <span className="text-[#444444] font-lato">
+                    Service Total
+                  </span>
+                  <span className="font-bold text-[#B11C5F] font-lato">
                     ₹ {serviceTotal.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-white">Tax</span>
-                  <span className="font-bold text-white">
+                  <span className="text-[#444444] font-lato">Tax</span>
+                  <span className="font-bold text-[#B11C5F] font-lato">
                     ₹ {tax.toFixed(2)}
                   </span>
                 </div>
-                <div className="border-t pt-3 mt-3 flex justify-between items-center">
-                  <span className="font-bold text-lg text-[#c59d5f]">
+                <div className="border-t-2 border-[#F28C8C]/30 pt-3 mt-3 flex justify-between items-center">
+                  <span className="font-bold text-lg text-[#B11C5F] font-playfair">
                     Total Payable
                   </span>
-                  <span className="font-bold text-lg text-white">
+                  <span className="font-bold text-lg text-[#B11C5F] font-lato">
                     ₹ {totalPayable.toFixed(2)}
                   </span>
                 </div>
@@ -376,35 +378,39 @@ const Page = () => {
             </div>
 
             {/* Policy and Button Card */}
-            <div className="bg-white/10 rounded-2xl p-6 border shadow-sm border-white/20 hidden md:block">
+            <div className="bg-white/90 rounded-2xl p-6 border-2 shadow-lg border-[#F28C8C]/30 hidden md:block">
               <div className="flex items-start space-x-3 mb-4">
                 <input
                   type="checkbox"
                   id="policyCheck"
                   checked={accepted}
                   onChange={handleCheckbox}
-                  className="mt-1 w-4 h-4 text-[#c59d5f] border-gray-300 rounded focus:ring-[#c59d5f]"
+                  className="mt-1 w-4 h-4 text-[#B11C5F] border-[#F28C8C]/30 rounded focus:ring-[#B11C5F]"
                 />
-                <label htmlFor="policyCheck" className="text-sm text-gray-300">
+                <label
+                  htmlFor="policyCheck"
+                  className="text-sm text-[#444444] font-lato">
                   <button
                     onClick={handleOpenModal}
-                    className="text-[#c59d5f] hover:underline transition-colors">
+                    className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors">
                     Read and accept all policies
                   </button>
                 </label>
               </div>
 
               <button
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-all relative ${
+                className={`
+                group/btn relative shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] w-full py-4 rounded-2xl font-bold text-lg transition-all font-lato ${
                   accepted && !bookingState.loading
-                    ? "bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black rounded-xl font-bold shadow hover:scale-101 hover:shadow-[#c59d5f]/40 transition-all duration-200"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-70"
+                    ? "bg-[#F28C8C] text-white shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                    : "bg-gray-200 text-gray-500 cursor-not-allowed opacity-70"
                 }`}
                 disabled={!accepted || bookingState.loading}
                 onClick={handleConfirmation}>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
                 {bookingState.loading ? (
                   <div className="flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-black/30 border-t-black mr-2"></div>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white mr-2"></div>
                     Creating Booking...
                   </div>
                 ) : (
@@ -418,46 +424,57 @@ const Page = () => {
         {/* Modal */}
         {showModal && (
           <>
-            <div className="fixed inset-0 bg-black bg-opacity-40 z-40" />
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40" />
             <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl">
-                <div className="p-6 pb-3 border-b">
-                  <h5 className="text-xl font-bold">Terms and Conditions</h5>
+              <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl border-2 border-[#F28C8C]/30">
+                <div className="p-6 pb-3 border-b-2 border-[#F28C8C]/20">
+                  <h5 className="text-xl font-playfair font-bold text-[#B11C5F]">
+                    Terms and Conditions
+                  </h5>
                 </div>
 
                 <div className="p-6 max-h-96 overflow-y-auto">
-                  <div className="space-y-4 text-gray-700">
+                  <div className="space-y-4 text-[#444444] font-lato">
                     <p>
-                      <strong>1. Booking Policy:</strong> All appointments are
-                      subject to availability and confirmation.
+                      <strong className="text-[#B11C5F]">
+                        1. Booking Policy:
+                      </strong>{" "}
+                      All appointments are subject to availability and
+                      confirmation.
                     </p>
                     <p>
-                      <strong>2. Cancellation:</strong> Cancellations must be
-                      made at least 24 hours in advance.
+                      <strong className="text-[#B11C5F]">
+                        2. Cancellation:
+                      </strong>{" "}
+                      Cancellations must be made at least 24 hours in advance.
                     </p>
                     <p>
-                      <strong>3. Payment:</strong> Payment is required at the
-                      time of service.
+                      <strong className="text-[#B11C5F]">3. Payment:</strong>{" "}
+                      Payment is required at the time of service.
                     </p>
                     <p>
-                      <strong>4. Late Arrival:</strong> Please arrive 10 minutes
-                      before your appointment time.
+                      <strong className="text-[#B11C5F]">
+                        4. Late Arrival:
+                      </strong>{" "}
+                      Please arrive 10 minutes before your appointment time.
                     </p>
                     <p>
-                      <strong>5. Health & Safety:</strong> Please inform us of
-                      any allergies or health conditions.
+                      <strong className="text-[#B11C5F]">
+                        5. Health & Safety:
+                      </strong>{" "}
+                      Please inform us of any allergies or health conditions.
                     </p>
                   </div>
                 </div>
 
-                <div className="p-6 border-t bg-gray-50 flex justify-end space-x-3">
+                <div className="p-6 border-t-2 border-[#F28C8C]/20 bg-[#FFF6F8] flex justify-end space-x-3">
                   <button
-                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                    className="px-6 py-2 border-2 border-[#F28C8C]/30 rounded-xl text-[#B11C5F] hover:bg-[#F28C8C]/10 transition-colors font-lato font-medium"
                     onClick={() => setShowModal(false)}>
                     Cancel
                   </button>
                   <button
-                    className="bg-[#c59d5f] hover:bg-[#b8914f] text-white font-semibold px-6 py-2 rounded-lg transition-colors min-w-[100px]"
+                    className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato"
                     onClick={handleAccept}>
                     Accept
                   </button>

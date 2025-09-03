@@ -8,8 +8,9 @@ import CartPopup from "../ui/CartPopup";
 import ProfileDropdown from "../ui/ProfileDropdown";
 import MobileMenu from "../ui/MobileMenu";
 import Image from "next/image";
+import { FiMenu, FiX } from "react-icons/fi";
 import Logo from "@/assets/kayaa-home/hedarKayaBeauty.png";
-import { Router } from "next/router";
+
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/saloon-services" },
@@ -22,21 +23,18 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Re-instated the full scroll logic to handle visibility
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // Set scrolled state for basic style changes
       setScrolled(currentScrollY > 0);
 
-      // Determine visibility for hide/show effect on larger screens
       if (currentScrollY > lastScrollY && currentScrollY > 70) {
-        setIsVisible(false); // Hide on scroll down
+        setIsVisible(false);
       } else {
-        setIsVisible(true); // Show on scroll up
+        setIsVisible(true);
       }
 
       setLastScrollY(currentScrollY);
@@ -47,156 +45,71 @@ export default function Header() {
   }, [lastScrollY]);
 
   return (
-    <>
-      <header
-        className={`w-full left-0 z-50 transition-all duration-500 ease-out ${
-          scrolled
-            ? // When scrolled, this complex class applies:
-              // - Default (mobile/tablet): It's fixed at the top (`top-0`).
-              // - Desktop (`lg:`): The top position depends on the `isVisible` state, creating the hide/show effect.
-              `fixed top-0 ${
-                isVisible ? "lg:top-0" : "lg:-top-24"
-              } backdrop-blur-xl bg-black/90 shadow-2xl border-b border-white/10`
-            : // When not scrolled, it's positioned absolutely at the top.
-              "absolute top-0 bg-gradient-to-b from-black/80 via-black/60 to-transparent backdrop-blur-md"
-        }`}
-        style={{ fontFamily: "'Poppins', sans-serif" }}>
-        {/* Animated background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#c59d5f]/5 via-transparent to-[#c59d5f]/5 opacity-50" />
-
-        {/* Floating particles effect */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div
-            className="absolute w-2 h-2 bg-[#c59d5f]/30 rounded-full animate-float-1"
-            style={{ top: "20%", left: "10%" }}
-          />
-          <div
-            className="absolute w-1 h-1 bg-white/20 rounded-full animate-float-2"
-            style={{ top: "60%", left: "80%" }}
-          />
-          <div
-            className="absolute w-1.5 h-1.5 bg-[#c59d5f]/20 rounded-full animate-float-3"
-            style={{ top: "40%", left: "60%" }}
-          />
-        </div>
-
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-20 px-4 sm:px-8 relative z-10">
-          {/* Enhanced Left Logo + Location */}
-          <div className="flex items-center space-x-4 group">
-            {/* Logo with Hover Glow */}
-            <div className="relative">
-              {/* Glow behind logo */}
-              <div className="absolute inset-0  rounded-lg blur-md opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
-
-              <Link href="/">
-                <div className="relative rounded-lg overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3 cursor-pointer">
-                  <Image
-                    src={Logo} // put your logo in public/images/logo.png
-                    alt="Belle Femme Logo"
-                    width={100}
-                    height={100}
-                    className="object-contain"
-                  />
-                </div>
+    <header
+      className={`w-screen fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } ${
+        scrolled
+          ? "bg-white/95 backdrop-blur-md shadow-xl border-b border-[#F28C8C]/20"
+          : "bg-white/95 backdrop-blur-sm"
+      }`}>
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo Section */}
+          <div className="overflow-hidden h-20">
+            <div className="flex space-x-4 group">
+              <Link href="/" className="transition-transform duration-300">
+                <Image
+                  src={Logo}
+                  alt="Kaya Beauty"
+                  width={80}
+                  height={80}
+                  className="w-32 h-24 object-contain filter group-hover:brightness-110 transition-all duration-300 group-hover:scale-105"
+                />
               </Link>
             </div>
+          </div>
 
-            {/* Location Selector with Hover Effect */}
-            <div className="relative">
-              <LocationSelectorPanel />
+          {/* Desktop Navigation Links */}
+          <div className="hidden lg:flex items-center space-x-1 gap-2">
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`relative px-4 py-2 rounded-full font-lato font-bold transition-all duration-300 group ${
+                    isActive
+                      ? "text-white bg-gradient-to-br from-[#F28C8C] to-[#B11C5F]/80 shadow-md"
+                      : "text-[#7F8CAA] hover:text-[#B11C5F] hover:bg-[#FFF6F8]/50"
+                  }`}>
+                  <span className="relative z-10 capitalize">{link.label}</span>
+                  {!isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
 
-              {/* Glow underline for location */}
+          {/* Right Side Actions */}
+          <div className="flex items-center space-x-3">
+            {/* Location Selector */}
+
+            <LocationSelectorPanel />
+
+            {/* Cart and Profile */}
+            <div className="flex items-center space-x-2">
+              <CartPopup />
+              <div className=" hidden md:block">
+                <ProfileDropdown />
+              </div>
+              {/* Mobile Menu */}
+              <MobileMenu />
             </div>
           </div>
-
-          {/* Improved Center Nav (Desktop) */}
-          <nav className="flex-1 justify-center hidden lg:flex">
-            <ul className="flex space-x-6 uppercase font-semibold tracking-wider text-sm relative text-white">
-              {NAV_LINKS.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <li key={link.href} className="relative">
-                    <Link
-                      href={link.href}
-                      className={`${
-                        isActive ? "text-[#c59d5f]" : "text-white"
-                      } relative px-2 py-1 inline-block transition-all duration-200 hover:text-[#c59d5f]`}>
-                      {link.label}
-                      {/* Enhanced underline for active link */}
-                      <span
-                        className={`absolute left-0 right-0 -bottom-1 h-0.5 rounded-full transition-all duration-300 ${
-                          isActive
-                            ? "bg-[#c59d5f] w-full scale-x-100"
-                            : "bg-[#c59d5f]/70 w-0 scale-x-0 group-hover:w-full group-hover:scale-x-100"
-                        }`}
-                      />
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-
-          {/* Enhanced Right Icons (Desktop) */}
-          <div
-            id="cart-icon"
-            className="hidden lg:flex items-center text-xl relative text-white h-[80px] space-x-1">
-            <CartPopup />
-            <ProfileDropdown />
-          </div>
-          <div
-            id="cart-icon"
-            className="lg:hidden flex items-center text-xl relative text-white gap-5">
-            <CartPopup />
-            <MobileMenu navLinks={NAV_LINKS} />
-          </div>
-
-          {/* Mobile Menu */}
         </div>
-
-        {/* Bottom glow line */}
-        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#c59d5f]/50 to-transparent" />
-      </header>
-
-      {/* Enhanced Animations */}
-      <style jsx>{`
-        @keyframes float-1 {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-20px) rotate(180deg);
-          }
-        }
-        @keyframes float-2 {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-15px) rotate(-180deg);
-          }
-        }
-        @keyframes float-3 {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-25px) rotate(90deg);
-          }
-        }
-        .animate-float-1 {
-          animation: float-1 6s ease-in-out infinite;
-        }
-        .animate-float-2 {
-          animation: float-2 8s ease-in-out infinite;
-        }
-        .animate-float-3 {
-          animation: float-3 7s ease-in-out infinite;
-        }
-      `}</style>
-    </>
+      </nav>
+    </header>
   );
 }

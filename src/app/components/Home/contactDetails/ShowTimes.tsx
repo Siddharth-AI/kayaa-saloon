@@ -48,23 +48,26 @@ const ShowTimes: React.FC<ShowTimesProps> = ({ ifSlot, hours }) => {
   const todayName = new Date().toLocaleDateString("en-US", { weekday: "long" });
 
   // Base classes that are always applied
-  const baseContainerClasses = "rounded-lg bg-white p-3 text-black shadow-lg";
+  const baseContainerClasses =
+    "rounded-2xl bg-white/95 backdrop-blur-sm p-4 text-[#444444] shadow-2xl border border-[#F28C8C]/30";
 
   // Conditional classes based on the 'ifSlot' prop
   const conditionalContainerClasses = ifSlot
-    ? "absolute lg:-right-[26rem] -right-11 top-0 lg:-top-8 z-50 ml-[-7rem] mt-4 w-[300px] sm:min-w-[400px] border border-gray-200"
+    ? "absolute lg:-right-[26rem] -right-11 top-0 lg:-top-8 z-50 ml-[-7rem] mt-4 w-[300px] sm:min-w-[400px] border border-[#F28C8C]/30"
     : "mt-[30px] w-[420px] z-50";
 
   return (
     <div className={`${baseContainerClasses} ${conditionalContainerClasses}`}>
-      <h6 className="mb-3 flex items-center gap-2 font-bold">
-        <IoTime /> Opening times
+      <h6 className="mb-3 flex items-center gap-2 font-playfair font-bold text-[#B11C5F]">
+        <IoTime className="text-[#C59D5F]" /> Opening times
       </h6>
       <ul className="m-0 list-none">
         {openingTimes.map(({ day, time }) => {
           // Conditional classes for the list item
-          const listItemClasses = `flex justify-between py-1 ${
-            day === todayName ? "font-bold text-[#c59d5f]" : "font-normal"
+          const listItemClasses = `flex justify-between py-1 font-lato ${
+            day === todayName
+              ? "font-bold text-[#B11C5F]"
+              : "font-normal text-[#C59D5F]"
           }`;
 
           return (

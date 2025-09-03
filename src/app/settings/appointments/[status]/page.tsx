@@ -95,27 +95,29 @@ const ConfirmationModal = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 transition-opacity"
+      className="fixed bg-[#FFF6F8]/40 backdrop-blur-sm flex justify-center items-center z-50 transition-opacity"
       onClick={handleClose}>
       <div
-        className="bg-[#1c1c22] border border-white/20 rounded-xl shadow-2xl p-6 w-full max-w-md m-4 transform transition-all"
+        className="bg-white/95 backdrop-blur-md border border-[#F28C8C]/30 rounded-2xl shadow-2xl p-6 w-full max-w-md m-4 transform transition-all"
         onClick={handleModalClick}>
         <div className="flex items-center mb-4">
-          <div className="mr-4 bg-red-500/10 p-2 rounded-full">
-            <AlertTriangle className="h-6 w-6 text-red-400" />
+          <div className="mr-4 bg-[#F28C8C]/20 p-2 rounded-full">
+            <AlertTriangle className="h-6 w-6 text-[#B11C5F]" />
           </div>
-          <h2 className="text-xl font-bold text-white">{title}</h2>
+          <h2 className="text-xl font-playfair font-bold text-[#B11C5F]">
+            {title}
+          </h2>
         </div>
-        <div className="text-gray-400 mb-6">{children}</div>
+        <div className="text-[#C59D5F] font-lato mb-6">{children}</div>
         <div className="flex justify-end gap-4">
           <button
             onClick={handleClose}
-            className="px-4 py-2 bg-black/50 border border-white/20 rounded-lg text-white hover:bg-white/10 transition-colors">
+            className="px-4 py-2 bg-[#FFF6F8] border border-[#F28C8C]/30 rounded-2xl text-[#B11C5F] font-lato font-semibold hover:bg-[#F28C8C]/10 hover:border-[#B11C5F] transition-all duration-300">
             No, Keep It
           </button>
           <button
             onClick={handleConfirm}
-            className="px-4 py-2 bg-red-600/80 border border-red-500/50 rounded-lg text-white hover:bg-red-500 transition-colors">
+            className="px-4 py-2 bg-red-500 border border-red-400 rounded-2xl text-white font-lato font-semibold hover:bg-red-600 hover:scale-105 transition-all duration-300">
             Yes, Cancel
           </button>
         </div>
@@ -277,50 +279,54 @@ const AppointmentCard = ({
       </ConfirmationModal>
 
       <div
-        className={`bg-black/50 backdrop-blur-sm border ${statusStyles.border} rounded-xl p-4 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 hover:bg-white/5 transition-colors relative`}>
+        className={`bg-white/95 backdrop-blur-sm border ${statusStyles.border} rounded-2xl p-6 flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 hover:shadow-2xl transition-all duration-300 relative shadow-lg`}>
         <div className="flex-grow">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-lg font-semibold text-white">Date & Time</h3>
+          <div className="flex justify-between items-start mb-4 gap-1">
+            <h3 className="text-lg font-playfair font-semibold text-[#B11C5F]">
+              Date & Time
+            </h3>
             <span
-              className={`text-xs px-2 py-1 mr-14 rounded-full capitalize ${statusStyles.tagBg} ${statusStyles.tagText}`}>
+              className={`text-xs px-3 py-1 mr-14 rounded-full capitalize font-lato font-semibold ${statusStyles.tagBg} ${statusStyles.tagText}`}>
               {appointment.booking_status}
             </span>
           </div>
 
           <div className="space-y-3">
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
-              <Calendar className="h-4 w-4 text-[#c59d5f] flex-shrink-0" />
+            <div className="flex items-center gap-3 text-[#C59D5F] text-sm font-lato">
+              <Calendar className="h-4 w-4 text-[#B11C5F] flex-shrink-0" />
               <span>{formatDate(appointment.date)}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
-              <Clock className="h-4 w-4 text-[#c59d5f] flex-shrink-0" />
+            <div className="flex items-center gap-3 text-[#C59D5F] text-sm font-lato">
+              <Clock className="h-4 w-4 text-[#B11C5F] flex-shrink-0" />
               <span>{appointment.time}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
-              <IoCutSharp className="h-4 w-4 text-[#c59d5f] flex-shrink-0" />
+            <div className="flex items-center gap-3 text-[#C59D5F] text-sm font-lato">
+              <IoCutSharp className="h-4 w-4 text-[#B11C5F] flex-shrink-0" />
               <span>{appointment.salon_name}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-400 text-sm">
-              <MapPin className="h-4 w-4 text-[#c59d5f] flex-shrink-0" />
+            <div className="flex items-center gap-3 text-[#C59D5F] text-sm font-lato">
+              <MapPin className="h-4 w-4 text-[#B11C5F] flex-shrink-0" />
               <span>{appointment.location}</span>
             </div>
-            <div className="flex items-start gap-3 text-gray-400 text-sm">
-              <LucidePackagePlus className="h-4 w-4 text-[#c59d5f] flex-shrink-0 mt-1" />
+            <div className="flex items-start gap-3 text-[#C59D5F] text-sm font-lato">
+              <LucidePackagePlus className="h-4 w-4 text-[#B11C5F] flex-shrink-0 mt-1" />
               <div>
                 {firstService ? (
                   <div>
-                    <h3 className="font-medium text-white">
+                    <h3 className="font-playfair font-medium text-[#B11C5F]">
                       {firstService.service_name}
                     </h3>
                     {additionalServicesCount > 0 && (
-                      <h6 className="text-gray-400 text-xs font-normal">
+                      <h6 className="text-[#C59D5F] text-xs font-lato font-normal">
                         +{additionalServicesCount} more service
                         {additionalServicesCount > 1 ? "s" : ""}
                       </h6>
                     )}
                   </div>
                 ) : (
-                  <h3 className="font-medium text-white">No services found</h3>
+                  <h3 className="font-playfair font-medium text-[#B11C5F]">
+                    No services found
+                  </h3>
                 )}
               </div>
             </div>
@@ -331,15 +337,15 @@ const AppointmentCard = ({
           <div className="absolute top-[19px] right-4 z-50" ref={menuRef}>
             <button
               onClick={handleMenuClick}
-              className="text-gray-400 cursor-pointer hover:text-white focus:outline-none bg-black/50 p-2 rounded-lg border border-white/20 hover:bg-white/10 transition-colors">
+              className="text-[#C59D5F] cursor-pointer hover:text-[#B11C5F] focus:outline-none bg-white/80 p-2 rounded-2xl border border-[#F28C8C]/30 hover:bg-[#FFF6F8] transition-all duration-300 hover:scale-105">
               <MoreVertical className="h-5 w-5" />
             </button>
             {isMenuOpen && (
-              <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-[#1c1c22] ring-1 ring-white/10 z-10">
+              <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg bg-white/95 backdrop-blur-sm ring-1 ring-[#F28C8C]/20 z-10">
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <button
                     onClick={handleCancelClick}
-                    className="w-full text-left block px-4 py-2 text-sm text-red-400 hover:bg-white/5 disabled:opacity-50"
+                    className="w-full text-left block px-4 py-2 text-sm font-lato text-red-500 hover:bg-red-50 hover:text-red-600 disabled:opacity-50 rounded-2xl mx-1 transition-all duration-300"
                     role="menuitem"
                     disabled={loading && isCancelling}>
                     {loading && isCancelling
@@ -455,12 +461,14 @@ export default function MyAppointments() {
   );
 
   return (
-    <div className="lg:w-3/4 bg-black/80 backdrop-blur-xl border-2 border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="lg:w-3/4 bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl overflow-hidden shadow-2xl">
       <div className="p-4 sm:p-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-white">My Appointments</h2>
-            <p className="text-gray-400 mt-1">
+            <h2 className="text-2xl font-playfair font-bold text-[#B11C5F]">
+              My Appointments
+            </h2>
+            <p className="text-[#C59D5F] mt-1 font-lato">
               View and manage your salon appointments
             </p>
           </div>
@@ -469,37 +477,37 @@ export default function MyAppointments() {
               <input
                 type="text"
                 placeholder="Search appointments..."
-                className="w-full bg-black/50 border border-white/20 rounded-xl px-4 py-2 pl-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#c59d5f]"
+                className="w-full bg-white border border-[#F28C8C]/30 rounded-2xl px-4 py-2 pl-10 text-[#444444] placeholder-[#C59D5F] font-lato focus:outline-none focus:border-[#B11C5F] transition-all duration-300"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#C59D5F]" />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300">
                   <X className="h-4 w-4" />
                 </button>
               )}
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center justify-center gap-2 bg-black/50 border border-white/20 rounded-xl px-4 py-2 text-white hover:bg-white/10 transition-colors">
+              className="flex items-center justify-center gap-2 bg-white border border-[#F28C8C]/30 rounded-2xl px-4 py-2 text-[#B11C5F] font-lato font-semibold hover:bg-[#FFF6F8] transition-all duration-300 hover:scale-105">
               <Filter className="h-4 w-4" />
               <span>Filter</span>
             </button>
           </div>
         </div>
 
-        <div className="border-b border-white/10 mb-6">
+        <div className="border-b border-[#F28C8C]/30 mb-6">
           <div className="overflow-x-auto whitespace-nowrap -mb-px">
             {(["upcoming", "completed", "cancelled"] as const).map((tab) => (
               <button
                 key={tab}
-                className={`px-4 py-3 font-medium text-sm capitalize inline-block ${
+                className={`px-4 py-3 font-playfair font-semibold text-sm capitalize inline-block transition-all duration-300 ${
                   activeTab === tab
-                    ? "text-[#c59d5f] border-b-2 border-[#c59d5f]"
-                    : "text-gray-400 hover:text-white"
+                    ? "text-[#B11C5F] border-b-2 border-[#B11C5F]"
+                    : "text-[#C59D5F] hover:text-[#B11C5F]"
                 }`}
                 onClick={() => handleTabClick(tab)}>
                 {tab}
@@ -511,7 +519,7 @@ export default function MyAppointments() {
         <div>
           {status === "loading" ? (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#c59d5f]"></div>
+              <div className="loader"></div>
             </div>
           ) : filteredAppointments.length > 0 ? (
             <div
@@ -521,7 +529,7 @@ export default function MyAppointments() {
                 <Link
                   key={appointment.id}
                   href={`/settings/appointments/${activeTab}/${appointment.id}`}
-                  className="block hover:scale-[1.02] transition-transform duration-300 cursor-auto">
+                  className="block cursor-pointer transition-transform duration-300">
                   <AppointmentCard
                     appointment={appointment}
                     vendorLocationUuid={selectedLocationUuid}
@@ -531,20 +539,20 @@ export default function MyAppointments() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12 bg-black/30 border border-white/10 rounded-xl mt-8">
-              <div className="inline-flex justify-center items-center w-16 h-16 bg-black/50 rounded-full mb-4">
-                <Calendar className="h-8 w-8 text-[#c59d5f]" />
+            <div className="text-center py-12 bg-white/80 border border-[#F28C8C]/30 rounded-2xl mt-8">
+              <div className="inline-flex justify-center items-center w-16 h-16 bg-[#FFF6F8] rounded-full mb-4">
+                <Calendar className="h-8 w-8 text-[#B11C5F]" />
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">
+              <h3 className="text-xl font-playfair font-semibold text-[#B11C5F] mb-2">
                 No {activeTab} appointments
               </h3>
-              <p className="text-gray-400 max-w-md mx-auto px-4">
+              <p className="text-[#C59D5F] max-w-md mx-auto px-4 font-lato">
                 {activeTab === "upcoming"
                   ? "You don't have any upcoming appointments. Book a new one to get started."
                   : `You don't have any ${activeTab} appointments in your history.`}
               </p>
               {activeTab === "upcoming" && (
-                <button className="mt-6 bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black font-medium rounded-lg px-6 py-2 hover:shadow-lg hover:shadow-[#c59d5f]/20 transition-all">
+                <button className="mt-6 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-lato font-semibold rounded-2xl px-8 py-3 hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 hover:scale-105">
                   Book Appointment
                 </button>
               )}

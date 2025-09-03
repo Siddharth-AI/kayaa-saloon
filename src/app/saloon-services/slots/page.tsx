@@ -287,10 +287,10 @@ const Slots: React.FC = () => {
   function renderSlotSection(title: string, slots: any[], isLoading: boolean) {
     return (
       <div className="mb-4">
-        <h4 className="text-center font-bold mb-3 text-white">
+        <h4 className="text-center font-playfair font-bold mb-3 text-[#B11C5F]">
           {title}
           {!isLoading && (
-            <span className="text-xs font-normal ml-2 text-gray-400">
+            <span className="text-xs font-normal ml-2 text-[#C59D5F] font-lato">
               ({slots.filter((s) => s.available).length} available)
             </span>
           )}
@@ -298,11 +298,13 @@ const Slots: React.FC = () => {
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
           {isLoading && slots.length === 0 ? (
             <div className="col-span-full flex items-center justify-center h-20">
-              <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#c59d5f]/30 border-t-[#c59d5f]"></div>
-              <span className="ml-2 text-gray-400">Loading slots...</span>
+              <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#F28C8C]/30 border-t-[#B11C5F]"></div>
+              <span className="ml-2 text-[#C59D5F] font-lato">
+                Loading slots...
+              </span>
             </div>
           ) : slots.length === 0 ? (
-            <div className="col-span-full text-center italic text-gray-400 py-4">
+            <div className="col-span-full text-center italic text-[#C59D5F] py-4 font-cormorant">
               No slots available for this time period.
             </div>
           ) : (
@@ -314,12 +316,12 @@ const Slots: React.FC = () => {
               return (
                 <button
                   key={`${slot.start_time}-${slot.end_time}`}
-                  className={`rounded-lg px-2 py-1.5 border text-center cursor-pointer transition-all duration-200 text-sm ${
+                  className={`rounded-xl px-2 py-2 border-2 text-center cursor-pointer transition-all duration-300 text-sm font-lato font-medium ${
                     isDisabled
-                      ? "bg-gray-700/50 text-gray-500 border-gray-700 cursor-not-allowed"
+                      ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
                       : selectedSlot === slot.start_time_formatted
-                      ? "bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black border-[#c59d5f] font-bold shadow-md"
-                      : "bg-white/5 text-white border-white/20 hover:border-[#c59d5f]/50 hover:bg-white/10"
+                      ? "bg-gradient-to-r from-[#F28C8C]/80 to-[#C59D5F]/80 text-white border-[#B11C5F] font-bold shadow-lg transform scale-105"
+                      : "bg-white text-[#444444] border-[#F28C8C]/30 hover:border-[#B11C5F] hover:bg-[#FFF6F8] hover:shadow-md hover:scale-102"
                   }`}
                   // --- MODIFIED: onClick now calls our new handler ---
                   onClick={() =>
@@ -346,9 +348,9 @@ const Slots: React.FC = () => {
 
   // ... The rest of your JSX return statement remains unchanged ...
   return (
-    <div className="min-h-screen bg-white/10">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
       <div
-        className="w-full bg-[#2d2d2d] py-28 pl-11 pt-32 relative"
+        className="w-full bg-[#B11C5F] py-28 pl-11 pt-32 relative"
         style={{
           backgroundImage: "url('/images/service/slotbooking.webp')",
           backgroundSize: "cover",
@@ -356,9 +358,9 @@ const Slots: React.FC = () => {
           backgroundAttachment: "fixed",
           zIndex: 0,
         }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#C59D5F]/20 via-[#C59D5F]/20 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <h1 className="text-4xl pt-10 font-bold tracking-wide text-white drop-shadow-lg">
+          <h1 className="text-4xl pt-10 font-playfair font-bold tracking-wide text-shadow-[#F28C8C]/60 text-shadow-sm text-[#2C1810] drop-shadow-lg">
             SELECT A TIME & OPERATOR
           </h1>
         </div>
@@ -372,30 +374,32 @@ const Slots: React.FC = () => {
 
           <div className="w-full lg:w-2/3 xl:w-3/4 min-w-0">
             <div
-              className="bg-gradient-to-br from-[#232526]/80 via-[#414345]/90 to-[#c59d5f]/10 p-4 sm:p-6 shadow-xl flex flex-col gap-4 rounded-2xl border border-white/10"
+              className="bg-white/90 backdrop-blur-sm p-4 sm:p-6 shadow-xl flex flex-col gap-4 rounded-2xl border-2 border-[#F28C8C]/20"
               style={{ backdropFilter: "blur(12px)" }}>
-              <div className="bg-gradient-to-r from-[#c59d5f]/20 to-[#f4d03f]/20 rounded-lg px-4 py-3 shadow font-semibold text-lg text-white border border-white/10">
+              <div className="bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-2xl px-4 py-3 shadow-md font-playfair font-bold text-lg text-[#B11C5F] border-2 border-[#F28C8C]/30">
                 Choose Your Operator
                 {cart.length > 0 && (
-                  <span className="block sm:inline text-sm font-normal sm:ml-2 text-gray-300">
+                  <span className="block sm:inline text-sm font-normal sm:ml-2 text-[#C59D5F] font-lato">
                     (Showing operators for all selected services)
                   </span>
                 )}
               </div>
               {operatorsState.loading ? (
                 <div className="flex items-center justify-center h-20">
-                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#c59d5f]/30 border-t-[#c59d5f]"></div>
-                  <span className="ml-3 text-white">Loading operators...</span>
+                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#F28C8C]/30 border-t-[#B11C5F]"></div>
+                  <span className="ml-3 text-[#444444] font-lato">
+                    Loading operators...
+                  </span>
                 </div>
               ) : (
                 //  operatorsState.error ? (
-                //   <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-300 text-sm">
+                //   <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-3 text-red-600 text-sm font-lato">
                 //     Error loading operators: {operatorsState.error}
                 //   </div>
                 // ) :
                 <>
                   {displayOperators.length === 1 && cart.length > 0 && (
-                    <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-3 text-yellow-300 text-sm">
+                    <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-3 text-yellow-700 text-sm font-lato">
                       No single operator provides all selected services. Please
                       modify your cart or choose &quot;No Preference&quot;.
                     </div>
@@ -404,12 +408,12 @@ const Slots: React.FC = () => {
                     {displayOperators.map((op, idx) => (
                       <div
                         key={idx}
-                        className={`flex flex-col items-center justify-start text-center cursor-pointer p-2 transition-all duration-200 rounded-lg flex-shrink-0 w-24
-                                ${
-                                  selectedOperator === idx
-                                    ? "border-[#c59d5f] bg-gradient-to-b from-[#c59d5f]/20 to-transparent"
-                                    : "border-transparent"
-                                } border-2`}
+                        className={`flex flex-col items-center justify-start text-center cursor-pointer p-2 transition-all duration-300 rounded-2xl flex-shrink-0 w-24
+                              ${
+                                selectedOperator === idx
+                                  ? "border-[#B11C5F] bg-gradient-to-b from-[#F28C8C]/20 to-[#C59D5F]/10 shadow-lg"
+                                  : "border-[#F28C8C]/30 hover:border-[#B11C5F] hover:bg-[#FFF6F8]"
+                              } border-2`}
                         onClick={() => dispatch(setSelectedOperator(idx))}
                         title={op.name}>
                         <Image
@@ -421,26 +425,21 @@ const Slots: React.FC = () => {
                               : "/images/user.png"
                           }
                           alt={op.name}
-                          className="rounded-full object-cover w-14 h-14 mb-2 border-2 border-white/20"
+                          className="rounded-full object-cover w-14 h-14 mb-2 border-2 border-[#F28C8C]/30"
                         />
-                        <div className="text-xs text-white w-full truncate">
+                        <div className="text-xs text-[#444444] w-full truncate font-lato font-medium">
                           {op.name}
                         </div>
-                        {op.id === -1 && (
-                          <div className="text-[10px] text-gray-400">
-                            Any available
-                          </div>
-                        )}
                       </div>
                     ))}
                   </div>
                 </>
               )}
 
-              <div className="bg-gradient-to-r from-[#c59d5f]/20 to-[#f4d03f]/20 rounded-lg px-4 py-3 shadow font-semibold text-lg text-white border border-white/10 flex justify-between items-center">
+              <div className="bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-2xl px-4 py-3 shadow-md font-playfair font-bold text-lg text-[#B11C5F] border-2 border-[#F28C8C]/30 flex-wrap flex justify-between items-center">
                 <div>Choose Your Appointment</div>
                 <select
-                  className="bg-[#232526]/80 text-[#c59d5f] font-bold outline-none rounded-md px-2 py-1 border border-white/20 text-sm"
+                  className="bg-white/90 text-[#B11C5F] font-bold outline-none rounded-xl px-3 py-2 border-2 border-[#F28C8C]/30 text-sm font-lato focus:border-[#B11C5F]"
                   value={`${currentMonthIndex}-${currentYear}`}
                   onChange={(e) => {
                     const [month, year] = e.target.value.split("-").map(Number);
@@ -479,12 +478,12 @@ const Slots: React.FC = () => {
                   return (
                     <button
                       key={dateObj.toDateString()}
-                      className={`flex flex-col items-center gap-1 p-2 rounded-lg border w-14 flex-shrink-0 transition-all duration-200
-                              ${
-                                isSameDate(dateObj, selectedDateObj)
-                                  ? "bg-gradient-to-b from-[#c59d5f] to-[#f4d03f]/80 text-black border-[#c59d5f] font-bold"
-                                  : "bg-white/5 text-white border-white/20 hover:border-[#c59d5f]/50"
-                              }`}
+                      className={`flex flex-col items-center gap-1 p-2 rounded-2xl border-2 w-14 flex-shrink-0 transition-all duration-300
+                            ${
+                              isSameDate(dateObj, selectedDateObj)
+                                ? "bg-gradient-to-r from-[#F28C8C]/80 to-[#C59D5F]/80 text-white border-[#B11C5F] font-bold shadow-lg"
+                                : "bg-white text-[#444444] border-[#F28C8C]/30 hover:border-[#B11C5F] hover:bg-[#FFF6F8]"
+                            } font-lato`}
                       onClick={() =>
                         dispatch(setSelectedDate(dateObj.toISOString()))
                       }>
@@ -498,7 +497,7 @@ const Slots: React.FC = () => {
                   );
                 })}
               </div>
-              <div className="font-semibold text-[#c59d5f] text-center md:text-left">
+              <div className="font-playfair font-bold text-[#B11C5F] text-center md:text-left">
                 {selectedDateObj.toLocaleDateString("en-US", {
                   month: "long",
                   day: "numeric",
@@ -506,12 +505,14 @@ const Slots: React.FC = () => {
                   weekday: "long",
                 })}
                 {isSameDate(now, selectedDateObj) && (
-                  <span className="text-xs ml-2 text-yellow-400">(Today)</span>
+                  <span className="text-xs ml-2 text-[#C59D5F] font-lato">
+                    (Today)
+                  </span>
                 )}
               </div>
 
               {timeSlotsState.error && (
-                <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-red-300 text-sm">
+                <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-3 text-red-600 text-sm font-lato">
                   Error loading time slots: {timeSlotsState.error}
                 </div>
               )}
@@ -533,9 +534,9 @@ const Slots: React.FC = () => {
               )}
 
               <div className="hidden md:block mt-4">
-                <div className="flex justify-between items-center bg-gradient-to-r from-[#c59d5f]/20 to-[#f4d03f]/20 px-4 py-2 rounded-lg font-semibold border border-white/10">
-                  <div className="text-white">{cart.length} services</div>
-                  <div className="text-[#c59d5f]">
+                <div className="flex justify-between items-center bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 px-4 py-3 rounded-2xl font-lato font-bold border-2 border-[#F28C8C]/30">
+                  <div className="text-[#444444]">{cart.length} services</div>
+                  <div className="text-[#B11C5F]">
                     ₹
                     {cart
                       .reduce(
@@ -546,13 +547,14 @@ const Slots: React.FC = () => {
                   </div>
                 </div>
                 <button
-                  className={`w-full mt-4 py-3 rounded-xl font-bold text-lg transition ${
+                  className={`group/btn relative w-full mt-4 py-3 rounded-2xl font-bold text-lg transition-all duration-300 font-lato shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] ${
                     cart.length > 0
-                      ? "bg-gradient-to-r from-[#c59d5f] to-[#f4d03f] text-black hover:scale-105"
-                      : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                      ? "bg-[#F28C8C] text-white shadow-lg cursor-pointer"
+                      : "bg-gray-200 text-gray-500 cursor-not-allowed"
                   }`}
                   disabled={cart.length === 0}
                   onClick={handleContinueClick}>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
                   Continue
                 </button>
               </div>
