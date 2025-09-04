@@ -11,6 +11,7 @@ import serviceImage from "@/assets/kayaa-home/Kaya-Beauty.png";
 import { IoCart } from "react-icons/io5";
 import { FaAnglesRight } from "react-icons/fa6";
 import { FaAnglesLeft } from "react-icons/fa6";
+import CategoryDropdown from "./CategoryDropdown";
 // --- Fly to Cart Animation Helper ---
 // --- Enhanced Fly Card to Cart Animation ---
 function flyCardToCart({
@@ -40,7 +41,7 @@ function flyCardToCart({
   clonedCard.style.pointerEvents = "none";
   clonedCard.style.borderRadius = "12px";
   clonedCard.style.boxShadow = "0 8px 32px 0 rgba(242, 140, 140, 0.8)";
-  clonedCard.style.transition = "all 0.8s cubic-bezier(.68,-0.55,.27,1.55)";
+  clonedCard.style.transition = "all 0.4s cubic-bezier(.68,-0.55,.27,1.55)";
 
   // Add a glow effect
   clonedCard.style.outline = "2px solid #F28C8C";
@@ -86,24 +87,12 @@ export default function Services() {
     ];
     return [
       { name: "All", slug: null },
-      ...uniqueCategories.map((cat) => ({ name: cat, slug: cat })),
+      ...uniqueCategories.map((cat) => ({
+        name: String(cat),
+        slug: cat !== null && cat !== undefined ? String(cat) : null,
+      })),
     ];
   }, [allServices]);
-
-  // Get price range from services
-  const { minPrice, maxPrice } = useMemo(() => {
-    if (allServices.length === 0) return { minPrice: 0, maxPrice: 1000 };
-    const prices = allServices.map((s: any) => s.price);
-    return {
-      minPrice: Math.min(...prices),
-      maxPrice: Math.max(...prices),
-    };
-  }, [allServices]);
-
-  const [priceRange, setPriceRange] = useState<[number, number]>([
-    minPrice,
-    maxPrice,
-  ]);
 
   useEffect(() => {
     dispatch(setSelectedSlot(""));
@@ -115,9 +104,7 @@ export default function Services() {
       (service.service.toLowerCase().includes(search.toLowerCase()) ||
         (service.subcategory || "")
           .toLowerCase()
-          .includes(search.toLowerCase())) &&
-      service.price >= priceRange[0] &&
-      service.price <= priceRange[1]
+          .includes(search.toLowerCase()))
     );
   });
 
@@ -134,22 +121,10 @@ export default function Services() {
       )
     : filteredProducts.slice(0, visibleProducts);
 
-  // Update price range when services change
-  useEffect(() => {
-    setPriceRange([minPrice, maxPrice]);
-  }, [minPrice, maxPrice]);
-
   useEffect(() => {
     setVisibleProducts(8);
     setCurrentPage(1);
-  }, [selectedCategory, search, priceRange]);
-
-  const handleRange = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
-    const val = Number(e.target.value);
-    setPriceRange((prev) =>
-      idx === 0 ? [val, Math.max(val, prev[1])] : [Math.min(val, prev[0]), val]
-    );
-  };
+  }, [selectedCategory, search]);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -272,26 +247,13 @@ export default function Services() {
                   CATEGORIES
                 </h2>
 
-                {/* Dropdown for small screens */}
+                {/* Custom dropdown for small screens */}
                 <div className="block md:hidden">
-                  <select
-                    value={selectedCategory || ""}
-                    onChange={(e) =>
-                      setSelectedCategory(e.target.value || null)
-                    }
-                    className="w-full px-4 py-3 bg-white text-[#B11C5F] font-medium outline-none rounded-xl border border-[#F28C8C]/30 text-sm shadow-sm">
-                    {categories.map((cat) => (
-                      <option
-                        key={String(cat.slug ?? "all")}
-                        value={
-                          cat.slug !== null && cat.slug !== undefined
-                            ? String(cat.slug)
-                            : ""
-                        }>
-                        {String(cat.name)}
-                      </option>
-                    ))}
-                  </select>
+                  <CategoryDropdown
+                    categories={categories}
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                  />
                 </div>
 
                 {/* List for large screens */}
@@ -317,59 +279,6 @@ export default function Services() {
                     </li>
                   ))}
                 </ul>
-              </div>
-
-              {/* Price Range Filter */}
-              <div className="py-6 border-y border-[#F28C8C]/30">
-                <h2 className="font-playfair font-bold mb-4 text-[#B11C5F] text-xl">
-                  PRICE RANGE
-                </h2>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min={minPrice}
-                      max={maxPrice}
-                      value={priceRange[0]}
-                      onChange={(e) => handleRange(e, 0)}
-                      className="w-full h-2 bg-[#fefaf4] border border-[#F28C8C]/30 rounded-lg appearance-none cursor-pointer slider"
-                      style={{
-                        background: `linear-gradient(to right, #F28C8C 0%, #C59D5F ${
-                          ((priceRange[0] - minPrice) / (maxPrice - minPrice)) *
-                          100
-                        }%, #FFF6F8 ${
-                          ((priceRange[0] - minPrice) / (maxPrice - minPrice)) *
-                          100
-                        }%, #FFF6F8 100%)`,
-                      }}
-                    />
-                    <span className="text-sm text-[#B11C5F] font-bold bg-[#fefaf4] px-3 py-1 rounded-full border border-[#F28C8C]/20 text-center">
-                      Rs{priceRange[0]}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min={minPrice}
-                      max={maxPrice}
-                      value={priceRange[1]}
-                      onChange={(e) => handleRange(e, 1)}
-                      className="w-full h-2 bg-[#fefaf4] border border-[#F28C8C]/30 rounded-lg appearance-none cursor-pointer slider"
-                      style={{
-                        background: `linear-gradient(to right, #F28C8C 0%, #C59D5F ${
-                          ((priceRange[1] - minPrice) / (maxPrice - minPrice)) *
-                          100
-                        }%, #FFF6F8 ${
-                          ((priceRange[1] - minPrice) / (maxPrice - minPrice)) *
-                          100
-                        }%, #FFF6F8 100%)`,
-                      }}
-                    />
-                    <span className="text-sm text-[#B11C5F] font-bold bg-[#fefaf4] px-3 py-1 rounded-full border border-[#F28C8C]/20  text-center">
-                      Rs{priceRange[1]}
-                    </span>
-                  </div>
-                </div>
               </div>
 
               <div className="sticky top-0 hidden md:block mt-6">
