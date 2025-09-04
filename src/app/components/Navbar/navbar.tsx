@@ -46,7 +46,7 @@ export default function Header() {
 
   return (
     <header
-      className={`w-screen fixed top-0 left-0 right-0 z-50 transition-all duration-500 overflow-hidden ${
+      className={`w-screen fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       } ${
         scrolled
