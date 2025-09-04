@@ -6,7 +6,6 @@ import OurStory from "@/components/aboutus/ourStory/OurStory";
 export default function Home() {
   return (
     <div className="relative">
-      <div className="mt-20"></div>
       <Hero />
       <OurStory />
       <Newsletter />

@@ -360,7 +360,7 @@ const Slots: React.FC = () => {
         }}>
         <div className="absolute inset-0 bg-gradient-to-b from-[#C59D5F]/20 via-[#C59D5F]/20 to-transparent" />
         <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <h1 className="text-4xl pt-10 font-playfair font-bold tracking-wide text-shadow-[#F28C8C]/60 text-shadow-sm text-[#2C1810] drop-shadow-lg">
+          <h1 className="text-4xl pt-10 font-playfair font-bold tracking-wide text-shadow-sm text-[#2C1810] drop-shadow-lg">
             SELECT A TIME & OPERATOR
           </h1>
         </div>

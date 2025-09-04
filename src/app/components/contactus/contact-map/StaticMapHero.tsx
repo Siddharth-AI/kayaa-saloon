@@ -7,7 +7,6 @@ import locationMap from "@/assets/kayaa-home/location.jpg";
 export default function StaticMapHero() {
   return (
     <>
-      <div className="mt-20"></div>
       <div className="relative w-full h-[60vh] md:h-[70vh] overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100">
         {/* Enhanced Background */}
         <div className="absolute inset-0">
@@ -24,7 +23,7 @@ export default function StaticMapHero() {
 
         {/* Animated Location Icons */}
         <motion.div
-          className="absolute top-1/3 left-1/4 transform -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-1/3 left-1/4 transform -translate-x-1/2 -translate-y-1/2 "
           animate={{
             y: [0, -10, 0],
             scale: [1, 1.1, 1],
@@ -89,20 +88,17 @@ export default function StaticMapHero() {
         </motion.div>
 
         {/* Hero Content */}
-        <div className="absolute inset-0 flex mt-3 justify-center z-10">
+        <div className="absolute inset-0 flex mt-3 justify-center z-10 pt-24">
           <motion.div
-            className="text-center text-white h-48 shadow-2xl p-4 shadow-black/60"
+            className="text-center text-black h-48 p-4 shadow-black/20"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}>
-            <p className="text-lg md:text-xl font-playfair italic mb-4 text-pink-100">
-              Visit Us Today
-            </p>
-            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold font-playfair text-white/90 drop-shadow-lg">
+            <h1 className="bg-pink-50 p-2 text-2xl sm:text-4xl md:text-5xl font-bold font-playfair text-gray-900  drop-shadow-lg">
               FIND KAYA BEAUTY SPA
             </h1>
 
-            <p className="mt-6 text-lg font-extrabold text-white max-w-2xl mx-auto">
+            <p className="bg-pink-50 p-2 text-lg font-extrabold text-gray-900 max-w-2xl mx-auto">
               92 Highland Ave, Somerville, MA 02143
             </p>
           </motion.div>

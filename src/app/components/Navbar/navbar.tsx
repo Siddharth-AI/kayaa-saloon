@@ -46,13 +46,19 @@ export default function Header() {
 
   return (
     <header
-      className={`w-screen fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`w-screen fixed top-0 left-0 right-0 z-50 transition-all duration-500 overflow-hidden ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       } ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-xl border-b border-[#F28C8C]/20"
-          : "bg-white/95 backdrop-blur-sm"
-      }`}>
+          ? "bg-gradient-to-r from-black/70 via-gray-900/70 to-black/70 backdrop-blur-2xl shadow-[0_12px_48px_rgba(0,0,0,0.5)] border-b-2 border-[#F28C8C]/50"
+          : "bg-gradient-to-r from-black/55 via-gray-900/55 to-black/55 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] border-b border-[#F28C8C]/30"
+      } animate-gradient bg-[length:400%_400%]`}>
+      {/* Floating animated particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-4 left-10 w-1 h-1 bg-[#F28C8C] rounded-full opacity-40 animate-ping"></div>
+        <div className="absolute top-8 right-16 w-0.5 h-0.5 bg-[#C59D5F] rounded-full opacity-60 animate-pulse"></div>
+        <div className="absolute bottom-4 left-1/4 w-1 h-1 bg-[#F28C8C] rounded-full opacity-30 animate-bounce"></div>
+      </div>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo Section */}
@@ -64,7 +70,7 @@ export default function Header() {
                   alt="Kaya Beauty"
                   width={80}
                   height={80}
-                  className="w-32 h-24 object-contain filter group-hover:brightness-110 transition-all duration-300 group-hover:scale-105"
+                  className="w-32 h-24 object-contain -translate-y-2  filter transition-all duration-300 group-hover:scale-105"
                 />
               </Link>
             </div>
