@@ -349,21 +349,145 @@ const Slots: React.FC = () => {
   // ... The rest of your JSX return statement remains unchanged ...
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
-      <div
-        className="w-full py-28 pl-11 pt-32 relative"
-        style={{
-          backgroundImage: "url('/images/service/slotbooking.webp')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundAttachment: "fixed",
-          zIndex: 0,
-        }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#C59D5F]/20 via-[#C59D5F]/20 to-transparent" />
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <h1 className="text-4xl pt-10 font-playfair font-bold tracking-wide text-shadow-sm text-[#2C1810] drop-shadow-lg">
-            SELECT A TIME & OPERATOR
-          </h1>
+      <div className="w-full py-28 pl-11 pt-32 relative overflow-hidden group">
+        {/* Animated Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/service/slotbooking.webp"
+            alt="Slot booking background"
+            fill
+            priority
+            sizes="100vw"
+            className="object-center object-cover filter brightness-75 transition-transform duration-[8000ms] ease-out group-hover:scale-105"
+            style={{
+              zIndex: 1,
+            }}
+          />
         </div>
+
+        {/* Animated Gradient Overlays */}
+        <div className="absolute inset-0 z-[2] animate-pulse-slow" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent z-[3]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent z-[4]" />
+
+        {/* Floating Decoration Elements */}
+        <div className="absolute top-20 right-28 w-6 h-6 bg-[#FFF6F8]/30 rounded-full animate-bounce-slow blur-sm" />
+        <div className="absolute top-44 right-20 w-4 h-4 bg-[#F28C8C]/50 rounded-full animate-pulse delay-1000 blur-sm" />
+        <div className="absolute bottom-36 right-44 w-5 h-5 bg-white/20 rounded-full animate-bounce-slow delay-2000 blur-sm" />
+        <div className="absolute top-1/3 right-12 w-3 h-3 bg-[#C59D5F]/60 rounded-full animate-pulse delay-1500 blur-sm" />
+        <div className="absolute bottom-20 right-16 w-2 h-2 bg-[#FFF6F8]/40 rounded-full animate-bounce-slow delay-500 blur-sm" />
+
+        {/* Animated Border Lines */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#FFF6F8]/60 to-transparent animate-shimmer" />
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F28C8C]/80 to-transparent animate-shimmer delay-1000" />
+
+        {/* Side Accent Lines */}
+        <div className="absolute left-0 top-1/3 w-1 h-40 bg-gradient-to-b from-transparent via-[#FFF6F8]/40 to-transparent animate-shimmer delay-500" />
+        <div className="absolute right-0 bottom-1/3 w-1 h-32 bg-gradient-to-t from-transparent via-[#F28C8C]/50 to-transparent animate-shimmer delay-1500" />
+
+        {/* Clock/Time Theme Decorative Elements */}
+        <div className="absolute top-16 left-16 w-8 h-8 border-2 border-[#FFF6F8]/20 rounded-full animate-spin-slow">
+          <div className="absolute top-1/2 left-1/2 w-0.5 h-2 bg-[#FFF6F8]/40 transform -translate-x-1/2 -translate-y-full origin-bottom animate-pulse" />
+        </div>
+        <div className="absolute bottom-24 left-24 w-6 h-6 border border-[#F28C8C]/30 rounded-full animate-spin-slow-reverse">
+          <div className="absolute top-1/2 left-1/2 w-0.5 h-1.5 bg-[#F28C8C]/50 transform -translate-x-1/2 -translate-y-full origin-bottom" />
+        </div>
+
+        {/* Content Container with Enhanced Animation */}
+        <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out">
+          <div className="relative">
+            {/* Glowing Background for Title */}
+            <div className="absolute -inset-6 blur-2xl rounded-3xl animate-pulse-glow" />
+
+            {/* Main Title with Multiple Animations */}
+            <h1 className="text-4xl lg:text-5xl pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
+              {/* Gradient Text Effect */}
+              <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-sm">
+                SELECT A TIME & OPERATOR
+              </span>
+
+              {/* Animated Underline */}
+              <div className="absolute -bottom-1 left-0 w-0 h-1 bg-gradient-to-r from-[#FFF6F8] via-[white] to-[#FFF6F8] animate-expand-width shadow-lg" />
+
+              {/* Double Underline Effect */}
+              <div className="absolute -bottom-3 left-0 w-0 h-0.5 bg-gradient-to-r from-transparent via-[#C59D5F]/60 to-transparent animate-expand-width delay-500" />
+            </h1>
+
+            {/* Subtitle with Staggered Animation */}
+            <p className="dancing-script text-xl lg:text-2xl text-[#FFF6F8] mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+              ⏰ Choose your perfect appointment slot
+            </p>
+
+            {/* Additional Tagline */}
+            <p className="font-lato text-sm text-[#FFF6F8]/80 mt-2 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase">
+              Available Times • Expert Staff • Easy Booking
+            </p>
+
+            {/* Time-themed Decorative Elements */}
+            <div className="absolute -top-4 -left-4 w-10 h-10 border-2 border-[#FFF6F8]/30 rounded-full animate-spin-slow flex items-center justify-center">
+              <div className="text-[#FFF6F8]/50 text-xs">⏱️</div>
+            </div>
+            <div className="absolute -bottom-4 -right-4 w-8 h-8 border-2 border-[#F28C8C]/40 rounded-full animate-spin-slow-reverse flex items-center justify-center">
+              <div className="text-[#F28C8C]/60 text-xs">🕐</div>
+            </div>
+
+            {/* Corner Accents with Time Theme */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-l-2 border-t-2 border-[#FFF6F8]/20 rounded-tl-2xl animate-pulse">
+              <div className="absolute top-2 left-2 text-[#FFF6F8]/30 text-xs">
+                ⌚
+              </div>
+            </div>
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-r-2 border-b-2 border-[#F28C8C]/30 rounded-br-2xl animate-pulse delay-1000">
+              <div className="absolute bottom-2 right-2 text-[#F28C8C]/40 text-xs">
+                📅
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Floating Particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+          <div className="absolute top-1/6 left-1/6 w-1 h-1 bg-[#FFF6F8]/70 rounded-full animate-float" />
+          <div className="absolute top-1/3 right-1/4 w-1.5 h-1.5 bg-[#F28C8C]/60 rounded-full animate-float-delay-1" />
+          <div className="absolute bottom-1/5 left-3/5 w-1 h-1 bg-[#C59D5F]/50 rounded-full animate-float-delay-2" />
+          <div className="absolute top-3/5 right-1/6 w-1 h-1 bg-white/60 rounded-full animate-float-delay-3" />
+          <div className="absolute bottom-2/5 left-1/5 w-0.5 h-0.5 bg-[#FFF6F8]/80 rounded-full animate-float delay-2000" />
+          <div className="absolute top-2/5 right-2/5 w-1 h-1 bg-[#F28C8C]/40 rounded-full animate-float-delay-1 delay-1000" />
+        </div>
+
+        {/* Time & Schedule Theme Magic Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+          <div className="absolute top-24 left-32 text-[#FFF6F8]/40 animate-pulse delay-1000">
+            ⏰
+          </div>
+          <div className="absolute top-40 right-40 text-[#F28C8C]/50 animate-bounce-slow delay-2000">
+            📅
+          </div>
+          <div className="absolute bottom-48 left-48 text-white/30 animate-pulse delay-1500">
+            ⌚
+          </div>
+          <div className="absolute bottom-32 right-32 text-[#C59D5F]/40 animate-bounce-slow delay-500">
+            🕐
+          </div>
+          <div className="absolute top-1/2 left-20 text-[#FFF6F8]/30 animate-pulse delay-2500">
+            ⏱️
+          </div>
+        </div>
+
+        {/* Subtle Moving Gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#FFF6F8]/5 to-transparent z-[1] animate-pulse-slow delay-2000" />
+
+        {/* Time Grid Pattern Overlay */}
+        <div
+          className="absolute inset-0 opacity-5 z-[1]"
+          style={{
+            backgroundImage: `
+      linear-gradient(rgba(255,246,248,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,246,248,0.1) 1px, transparent 1px)
+    `,
+            backgroundSize: "60px 60px",
+          }}
+        />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

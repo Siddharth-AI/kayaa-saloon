@@ -21,6 +21,7 @@ import {
 import { openModal } from "@/store/slices/modalSlice";
 import { toastError } from "@/components/common/toastService";
 import BookingBottomBar from "../BookingBottomBar";
+import Image from "next/image";
 
 const Page = () => {
   const { user, tempToken } = useAppSelector((state) => state.auth);
@@ -278,20 +279,171 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
-      <div
-        className="w-full py-24 lg:py-32 pl-11 relative"
-        style={{
-          backgroundImage: "url('/images/service/viewBooking.webp')",
-          backgroundSize: "cover",
-          backgroundPosition: "center bottom 10px",
-          backgroundAttachment: "fixed",
-          zIndex: 0,
-        }}>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#C59D5F]/20 via-[#C59D5F]/20 to-transparent" />
-        <div className="max-w-7xl mx-auto sm:px-4 relative z-10">
-          <h1 className="text-4xl pt-10 font-playfair font-bold tracking-wide text-shadow-sm text-[#2C1810] drop-shadow-lg">
-            APPOINMENT BOOKING
-          </h1>
+      <div className="w-full py-24 lg:py-32 pl-11 relative overflow-hidden group">
+        {/* Animated Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/images/service/viewBooking.webp"
+            alt="Appointment booking background"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover transition-transform duration-[8000ms] ease-out group-hover:scale-105"
+            style={{
+              objectPosition: "center bottom",
+              zIndex: 1,
+            }}
+          />
+        </div>
+
+        {/* Enhanced Animated Gradient Overlays */}
+        <div className="absolute inset-0 z-[2] animate-pulse-slow" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent z-[3]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent z-[4]" />
+
+        {/* Enhanced Floating Decoration Elements */}
+        <div className="absolute top-16 right-24 w-5 h-5 bg-[#F28C8C]/50 rounded-full animate-bounce-slow blur-sm" />
+        <div className="absolute top-36 right-16 w-3 h-3 bg-[#C59D5F]/60 rounded-full animate-pulse delay-1000 blur-sm" />
+        <div className="absolute bottom-28 right-36 w-4 h-4 bg-white/40 rounded-full animate-bounce-slow delay-2000 blur-sm" />
+        <div className="absolute top-1/2 right-8 w-2 h-2 bg-white/50 rounded-full animate-pulse delay-1500 blur-sm" />
+        <div className="absolute bottom-16 right-20 w-3 h-3 bg-[#F28C8C]/40 rounded-full animate-bounce-slow delay-500 blur-sm" />
+
+        {/* Animated Border Lines */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F28C8C]/80 to-transparent animate-shimmer" />
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#C59D5F]/80 to-transparent animate-shimmer delay-1000" />
+
+        {/* Side Accent Lines */}
+        <div className="absolute left-0 top-1/4 w-1 h-40 bg-gradient-to-b from-transparent via-white/30 to-transparent animate-shimmer delay-500" />
+        <div className="absolute right-0 bottom-1/3 w-1 h-32 bg-gradient-to-t from-transparent via-[#F28C8C]/50 to-transparent animate-shimmer delay-1500" />
+
+        {/* Booking/Calendar Theme Decorative Elements */}
+        <div className="absolute top-20 left-20 w-10 h-10 border-2 border-white/20 rounded-lg animate-pulse">
+          <div className="absolute top-1 left-1 w-1 h-1 bg-white/40 rounded-full" />
+          <div className="absolute top-1 right-1 w-1 h-1 bg-white/40 rounded-full" />
+          <div className="absolute bottom-2 left-2 w-4 h-0.5 bg-[#F28C8C]/60 rounded" />
+        </div>
+        <div className="absolute bottom-20 left-16 w-8 h-8 border border-[#F28C8C]/30 rounded-lg animate-spin-slow">
+          <div className="absolute inset-1 border border-white/20 rounded" />
+        </div>
+
+        {/* Content Container with Enhanced Animation */}
+        <div className="max-w-7xl mx-auto sm:px-4 relative z-10 transform transition-all duration-1000 ease-out">
+          <div className="relative">
+            {/* Enhanced Glowing Background for Title */}
+            <div className="absolute -inset-6 bg-gradient-to-r from-[#F28C8C]/25 via-white/15 to-[#C59D5F]/25 blur-2xl rounded-3xl animate-pulse-glow" />
+
+            {/* Main Title with Multiple Animations */}
+            <h1 className="text-4xl lg:text-5xl pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
+              {/* Enhanced Gradient Text Effect */}
+              <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-lg">
+                APPOINTMENT BOOKING
+              </span>
+
+              {/* Animated Underline with Enhanced Styling */}
+              <div className="absolute -bottom-1 left-0 w-0 h-1 bg-gradient-to-r from-white via-[white] to-white animate-expand-width shadow-lg" />
+
+              {/* Double Underline Effect */}
+              <div className="absolute -bottom-3 left-0 w-0 h-0.5 bg-gradient-to-r from-transparent via-[#C59D5F]/70 to-transparent animate-expand-width delay-500" />
+            </h1>
+
+            {/* Enhanced Subtitle with Staggered Animation */}
+            <p className="dancing-script text-xl lg:text-2xl text-white mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+              ✨ Schedule your perfect wellness moment
+            </p>
+
+            {/* Additional Booking-Focused Tagline */}
+            <p className="font-lato text-sm text-white/90 mt-2 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase">
+              Quick Booking • Instant Confirmation • Premium Experience
+            </p>
+
+            {/* Enhanced Booking-themed Decorative Elements */}
+            <div className="absolute -top-4 -left-4 w-10 h-10 border-2 border-[#F28C8C]/40 rounded-lg animate-spin-slow flex items-center justify-center">
+              <div className="text-white/50 text-xs">📋</div>
+            </div>
+            <div className="absolute -bottom-4 -right-4 w-8 h-8 border-2 border-[#C59D5F]/40 rounded-lg animate-spin-slow-reverse flex items-center justify-center">
+              <div className="text-[#F28C8C]/60 text-xs">📝</div>
+            </div>
+
+            {/* Corner Accents with Booking Theme */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-l-2 border-t-2 border-white/25 rounded-tl-2xl animate-pulse">
+              <div className="absolute top-2 left-2 text-white/40 text-xs">
+                📅
+              </div>
+            </div>
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-r-2 border-b-2 border-[#F28C8C]/40 rounded-br-2xl animate-pulse delay-1000">
+              <div className="absolute bottom-2 right-2 text-[#C59D5F]/50 text-xs">
+                ✅
+              </div>
+            </div>
+
+            {/* Floating Action Indicators */}
+            <div className="absolute top-4 right-4 flex space-x-1">
+              <div className="w-2 h-2 bg-white/30 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-[#F28C8C]/40 rounded-full animate-pulse delay-300" />
+              <div className="w-2 h-2 bg-[#C59D5F]/40 rounded-full animate-pulse delay-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Floating Particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+          <div className="absolute top-1/5 left-1/5 w-1.5 h-1.5 bg-white/70 rounded-full animate-float" />
+          <div className="absolute top-1/3 left-2/3 w-1 h-1 bg-[#F28C8C]/60 rounded-full animate-float-delay-1" />
+          <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-[#C59D5F]/50 rounded-full animate-float-delay-2" />
+          <div className="absolute top-2/3 right-1/4 w-1 h-1 bg-white/60 rounded-full animate-float-delay-3" />
+          <div className="absolute bottom-1/4 left-1/4 w-0.5 h-0.5 bg-white/80 rounded-full animate-float delay-2000" />
+          <div className="absolute top-1/2 right-1/2 w-1 h-1 bg-[#F28C8C]/40 rounded-full animate-float-delay-1 delay-1000" />
+          <div className="absolute bottom-2/5 right-1/5 w-1 h-1 bg-[#C59D5F]/60 rounded-full animate-float-delay-2 delay-1500" />
+        </div>
+
+        {/* Booking & Appointment Theme Magic Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+          <div className="absolute top-28 left-40 text-white/40 animate-pulse delay-1000">
+            📋
+          </div>
+          <div className="absolute top-44 right-44 text-[#F28C8C]/50 animate-bounce-slow delay-2000">
+            📅
+          </div>
+          <div className="absolute bottom-44 left-52 text-white/30 animate-pulse delay-1500">
+            📝
+          </div>
+          <div className="absolute bottom-28 right-28 text-[#C59D5F]/40 animate-bounce-slow delay-500">
+            ✅
+          </div>
+          <div className="absolute top-2/3 left-24 text-white/35 animate-pulse delay-2500">
+            📞
+          </div>
+          <div className="absolute top-1/3 right-16 text-[#F28C8C]/45 animate-bounce-slow delay-3000">
+            💼
+          </div>
+        </div>
+
+        {/* Subtle Moving Gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/3 to-transparent z-[1] animate-pulse-slow delay-2000" />
+
+        {/* Booking Form Grid Pattern Overlay */}
+        <div
+          className="absolute inset-0 opacity-5 z-[1]"
+          style={{
+            backgroundImage: `
+      linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+    `,
+            backgroundSize: "40px 40px",
+          }}
+        />
+
+        {/* Progress Indicator Animation */}
+        <div className="absolute top-4 left-4 flex flex-col space-y-1">
+          <div className="w-8 h-0.5 bg-white/20 rounded-full overflow-hidden">
+            <div className="w-full h-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] animate-pulse" />
+          </div>
+          <div className="w-6 h-0.5 bg-white/15 rounded-full overflow-hidden">
+            <div className="w-3/4 h-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] animate-pulse delay-500" />
+          </div>
+          <div className="w-4 h-0.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-1/2 h-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] animate-pulse delay-1000" />
+          </div>
         </div>
       </div>
 
