@@ -211,10 +211,6 @@ const Footer: React.FC = () => {
             <p className="font-lato text-[#444444] text-xs sm:text-sm text-center sm:text-left">
               &copy; {new Date().getFullYear()} Kaya Beauty Spa. All rights
               reserved.
-              <span className="font-cormorant italic text-[#C59D5F]">
-                {" "}
-                Crafted with love for natural beauty.
-              </span>
             </p>
             <div className="flex flex-wrap justify-center sm:justify-end space-x-4 sm:space-x-6 text-xs sm:text-sm">
               <a

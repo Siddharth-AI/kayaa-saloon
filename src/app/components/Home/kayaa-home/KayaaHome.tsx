@@ -41,6 +41,7 @@ import videoimage from "@/assets/kayaa-home/videoimage.jpg";
 import Aromatherapy from "@/assets/kayaa-home/Aromatherapy.webp";
 import Hydrotherapy from "@/assets/kayaa-home/Hydrotherapy.webp";
 import Facials from "@/assets/kayaa-home/Facials.webp";
+import { useRouter } from "next/navigation";
 
 // Safe Image Component to prevent errors
 type SafeImageProps = {
@@ -85,6 +86,10 @@ const SafeImage = ({ src, alt, ...props }: SafeImageProps) => {
 };
 
 export default function Page() {
+  const router = useRouter();
+  const servicePageRoute = () => {
+    router.push("/saloon-services");
+  };
   // Data Arrays
   const slides = [
     {
@@ -394,7 +399,8 @@ export default function Page() {
                               delay: 0.6,
                               duration: 0.6,
                               ease: "easeOut",
-                            }}>
+                            }}
+                            onClick={servicePageRoute}>
                             <motion.button
                               whileHover={{
                                 scale: 1.05,
@@ -402,7 +408,7 @@ export default function Page() {
                               }}
                               whileTap={{ scale: 0.98 }}
                               className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-4 px-8 rounded-full text-lg transition-all duration-300 shadow-lg">
-                              Book Your Experience
+                              Book Your Service
                             </motion.button>
                           </motion.div>
                         </motion.div>
@@ -429,20 +435,20 @@ export default function Page() {
           </Swiper>
 
           {/* Custom Navigation Buttons */}
-          <div className="swiper-button-prev-custom absolute left-4 top-1/2 transform -translate-y-1/2 z-20">
+          <div className="hidden sm:block swiper-button-prev-custom absolute left-4 top-1/2 transform -translate-y-1/2 z-20">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 group">
+              className=" backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 group">
               <ArrowLeft className="w-6 h-6 text-white group-hover:text-gray-200" />
             </motion.button>
           </div>
 
-          <div className="swiper-button-next-custom absolute right-4 top-1/2 transform -translate-y-1/2 z-20">
+          <div className="hidden sm:block swiper-button-next-custom absolute right-4 top-1/2 transform -translate-y-1/2 z-20">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 group">
+              className=" backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 group">
               <ArrowRight className="w-6 h-6 text-white group-hover:text-gray-200" />
             </motion.button>
           </div>
@@ -555,7 +561,9 @@ export default function Page() {
                     <p className="text-[#444] font-lato mb-4 leading-relaxed">
                       {service.desc}
                     </p>
-                    <button className="font-lato uppercase tracking-wide text-[#F28C8C] hover:text-[#C59D5F] hover:-translate-0.5 active:translate-0.5 px-6 py-3 shadow-md transition">
+                    <button
+                      className="font-lato uppercase tracking-wide text-[#F28C8C] hover:text-[#C59D5F] hover:-translate-0.5 active:translate-0.5 px-6 py-3 shadow-md transition"
+                      onClick={servicePageRoute}>
                       Book Now
                     </button>
                   </div>
@@ -692,7 +700,9 @@ export default function Page() {
                 the skin, restores skin hydration, tone and firmness.
               </p>
 
-              <button className="font-lato uppercase tracking-wide text-[#F28C8C] hover:text-[#C59D5F] hover:-translate-0.5 active:translate-0.5 md:px-6 md:py-3 px-3 py-2 shadow-md transition">
+              <button
+                className="font-lato uppercase tracking-wide text-[#F28C8C] hover:text-[#C59D5F] hover:-translate-0.5 active:translate-0.5 md:px-6 md:py-3 px-3 py-2 shadow-md transition"
+                onClick={servicePageRoute}>
                 Book Service
               </button>
             </div>

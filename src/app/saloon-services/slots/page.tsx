@@ -671,7 +671,7 @@ const Slots: React.FC = () => {
                   </div>
                 </div>
                 <button
-                  className={`group/btn relative w-full mt-4 py-3 rounded-2xl font-bold text-lg transition-all duration-300 font-lato shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] ${
+                  className={`group/btn relative w-full mt-4 py-3 rounded-2xl font-bold text-lg transition-all duration-300 font-lato shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden ${
                     cart.length > 0
                       ? "bg-[#F28C8C] text-white shadow-lg cursor-pointer"
                       : "bg-gray-200 text-gray-500 cursor-not-allowed"

@@ -552,7 +552,7 @@ const Page = () => {
 
               <button
                 className={`
-                group/btn relative shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] w-full py-4 rounded-2xl font-bold text-lg transition-all font-lato ${
+                group/btn relative overflow-hidden shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] w-full py-4 rounded-2xl font-bold text-lg transition-all font-lato ${
                   accepted && !bookingState.loading
                     ? "bg-[#F28C8C] text-white shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
                     : "bg-gray-200 text-gray-500 cursor-not-allowed opacity-70"
