@@ -59,7 +59,7 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:3000/api/dingg-partner/get-products')
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-products`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch products')
