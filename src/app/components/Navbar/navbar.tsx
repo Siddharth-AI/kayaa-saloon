@@ -14,7 +14,7 @@ import Logo from "@/assets/kayaa-home/hedarKayaBeauty.png";
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/saloon-services" },
-  { label: "Gift Card", href: "/gifts" },
+  { label: "Shop", href: "/shop" },
   { label: "About Us", href: "/about-us" },
   { label: "Contact Us", href: "/contact-us" },
 ];
@@ -70,6 +70,7 @@ export default function Header() {
                   alt="Kaya Beauty"
                   width={80}
                   height={80}
+                  priority={true}
                   className="w-32 h-24 object-contain -translate-y-2  filter transition-all duration-300 group-hover:scale-105"
                 />
               </Link>

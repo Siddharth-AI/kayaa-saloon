@@ -55,12 +55,18 @@ type SafeImageProps = {
   sizes?: string;
   priority?: boolean;
   onError?: () => void;
-  onLoadingComplete?: () => void;
+  onLoad?: () => void;
   placeholder?: "blur" | "empty";
   blurDataURL?: string;
+  style?: any;
 };
 
-const SafeImage = ({ src, alt, ...props }: SafeImageProps) => {
+const SafeImage = ({
+  src,
+  alt,
+  priority = false,
+  ...props
+}: SafeImageProps) => {
   const [imageError, setImageError] = useState(false);
 
   if (imageError) {
@@ -78,8 +84,9 @@ const SafeImage = ({ src, alt, ...props }: SafeImageProps) => {
       alt={alt}
       {...props}
       onError={() => setImageError(true)}
-      onLoadingComplete={() => setImageError(false)}
+      onLoad={() => setImageError(false)}
       placeholder="blur"
+      priority={priority}
       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bvtKa6to9VNKDDEfSwrzZz7KpTGRaV6Ql3wgLcXKl1O7rkr6"
     />
   );
@@ -497,6 +504,7 @@ export default function Page() {
             height={300}
             alt="Spa floral decoration"
             className="absolute right-0 top-1/2 -translate-y-1/2 w-64 pointer-events-none"
+            style={{ width: "auto", height: "auto" }}
           />
           <SafeImage
             src={Flawors}
@@ -581,6 +589,7 @@ export default function Page() {
                 height={250}
                 alt="flower left"
                 className="absolute bottom-0 left-0 opacity-40 pointer-events-none"
+                style={{ width: "auto", height: "auto" }} // Add this line
               />
               <SafeImage
                 src={Flawors}
@@ -928,6 +937,7 @@ export default function Page() {
                   height={400}
                   alt="Kaya Beauty Spa Treatment"
                   className="shadow-xl shadow-[#C59D5F]/30 hidden sm:block"
+                  style={{ width: "auto", height: "auto" }}
                 />
               </motion.div>
 

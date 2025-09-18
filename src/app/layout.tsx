@@ -10,22 +10,30 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"], // choose the weights you need
   variable: "--font-playfair", // custom CSS variable
+  display: "swap",
+  preload: false, // Only for fonts used immediately
 });
 
 const lato = Lato({
   subsets: ["latin"],
   weight: ["300", "400", "700"], // light, regular, bold
   variable: "--font-lato",
+  display: "swap",
+  preload: false, // Only for fonts used immediately
 });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: false, // Disable if not used immediately
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: false, // Disable if not used immediately
 });
 
 export const metadata: Metadata = {
