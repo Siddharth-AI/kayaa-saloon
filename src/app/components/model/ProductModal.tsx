@@ -103,7 +103,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
       />
 
       {/* Modal Content */}
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white rounded-3xl shadow-2xl max-w-6xl w-full mx-4 max-h-[90vh] overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -246,27 +246,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
                       {benefit}
                     </span>
                   </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Size Selection */}
-            <div className="mb-6">
-              <h4 className="font-playfair font-semibold text-lg text-[#B11C5F] mb-3">
-                Size Options
-              </h4>
-              <div className="flex gap-3 flex-wrap">
-                {sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded-lg font-lato font-medium transition-all duration-200 ${
-                      selectedSize === size
-                        ? "bg-[#F28C8C] text-white shadow-lg"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}>
-                    {size}
-                  </button>
                 ))}
               </div>
             </div>

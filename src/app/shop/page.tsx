@@ -453,7 +453,7 @@ export default function Products() {
                 />
               </div>
 
-              <ul className="bg-white p-3 rounded-b-2xl hidden md:block space-y-2 max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
+              <ul className="bg-white p-3 rounded-b-2xl hidden md:block space-y-2 h-[450px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="flex justify-center items-center py-12">
@@ -462,17 +462,19 @@ export default function Products() {
                   </div>
                 ) : (
                   categoryOptions.map((cat) => (
-                    <li key={cat.id}>
-                      <button
-                        className={`text-left w-full px-3 py-2 rounded-xl transition-all duration-300 font-lato font-medium ${
-                          currentFilters.selectedCategory === cat.id
-                            ? "bg-[#F28C8C] text-white shadow-md"
-                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20"
-                        }`}
-                        onClick={() => dispatch(setSelectedCategory(cat.id))}>
-                        {cat.name}
-                      </button>
-                    </li>
+                    <>
+                      <li key={cat.id}>
+                        <button
+                          className={`text-left w-full px-3 py-2 rounded-xl transition-all duration-300 font-lato font-medium ${
+                            currentFilters.selectedCategory === cat.id
+                              ? "bg-[#F28C8C] text-white shadow-md"
+                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20"
+                          }`}
+                          onClick={() => dispatch(setSelectedCategory(cat.id))}>
+                          {cat.name}
+                        </button>
+                      </li>
+                    </>
                   ))
                 )}
               </ul>
@@ -499,7 +501,7 @@ export default function Products() {
             <div className="mb-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
                 {/* Search Section */}
-                <div className="flex-1 sm:max-w-md">
+                <div className="flex-1">
                   <input
                     type="search"
                     className="border border-[#F28C8C]/30 rounded-lg overflow-hidden bg-white w-full px-4 py-3 outline-none text-[#444444] placeholder:text-[#C59D5F] font-lato focus:ring-2 focus:ring-[#F28C8C]/30 focus:border-[#F28C8C] transition-all duration-200"
@@ -585,9 +587,10 @@ export default function Products() {
                   {displayedProducts.map((product) => (
                     <div
                       key={product?.id || Math.random()}
-                      className={`bg-white rounded-sm shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group ${
+                      className={`bg-white rounded-sm shadow-lg overflow-hidden hover:shadow-2xl hover:cursor-pointer transition-all duration-300 group ${
                         viewMode === "list" ? "flex" : ""
-                      }`}>
+                      }`}
+                      onClick={() => handleViewProduct(product)}>
                       {/* Product Image */}
                       <div
                         className={`relative ${
@@ -664,17 +667,6 @@ export default function Products() {
                               <span>Add</span>
                               <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover/btn:rotate-12 transition-transform duration-300">
                                 <IoCart className="text-xs" />
-                              </div>
-                            </div>
-                          </button>
-                          <button
-                            className="group/btn relative px-3 py-2 bg-[#F28C8C] text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform  active:scale-95 transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden"
-                            onClick={() => handleViewProduct(product)}>
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-                            <div className="relative flex items-center space-x-2">
-                              <span>View</span>
-                              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover/btn:rotate-12 transition-transform duration-300">
-                                <View className="text-xs" />
                               </div>
                             </div>
                           </button>
