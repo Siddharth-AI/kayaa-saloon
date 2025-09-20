@@ -461,7 +461,16 @@ export default function Products() {
                     </div>
                   </div>
                 ) : (
-                  categoryOptions.map((cat) => (
+                  [
+                    ...categoryOptions,
+                    { id: 226, name: "Facial" },
+                    { id: 227, name: "Foundation" },
+                    { id: 228, name: "Serum" },
+                    { id: 229, name: "Perfumes" },
+                    { id: 230, name: "Nails" },
+                    { id: 231, name: "Face Wash" },
+                    { id: 232, name: "Night Cream" },
+                  ].map((cat) => (
                     <>
                       <li key={cat.id}>
                         <button
