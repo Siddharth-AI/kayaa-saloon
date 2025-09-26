@@ -20,7 +20,9 @@ import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { IoCart } from "react-icons/io5";
 import { Loader } from "@/components/provider/Providers";
 import ProductModal from "@/components/model/ProductModal";
-
+// Import the new action
+import { addProductToCart } from "@/store/slices/cartSlice";
+import { toastSuccess } from "@/components/common/toastService";
 interface Product {
   id: number;
   name: string;
@@ -185,6 +187,97 @@ export default function Products() {
   const handleViewProduct = (product: Product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
+  };
+
+  // ADD after your imports
+  function flyCardToCart({
+    cardElement,
+    onComplete,
+  }: {
+    cardElement: HTMLElement;
+    onComplete?: () => void;
+  }) {
+    const cartIcon = document.getElementById("cart-icon");
+    if (!cartIcon || !cardElement) return;
+
+    const startRect = cardElement.getBoundingClientRect();
+    const endRect = cartIcon.getBoundingClientRect();
+
+    const clonedCard = cardElement.cloneNode(true) as HTMLElement;
+    clonedCard.style.position = "fixed";
+    clonedCard.style.zIndex = "9999";
+    clonedCard.style.left = `${startRect.left}px`;
+    clonedCard.style.top = `${startRect.top}px`;
+    clonedCard.style.width = `${startRect.width}px`;
+    clonedCard.style.height = `${startRect.height}px`;
+    clonedCard.style.margin = "0";
+    clonedCard.style.pointerEvents = "none";
+    clonedCard.style.borderRadius = "12px";
+    clonedCard.style.boxShadow = "0 8px 32px 0 rgba(242, 140, 140, 0.8)";
+    clonedCard.style.transition = "all 0.8s cubic-bezier(.68,-0.55,.27,1.55)";
+    clonedCard.style.outline = "2px solid #F28C8C";
+    clonedCard.style.outlineOffset = "2px";
+
+    document.body.appendChild(clonedCard);
+
+    setTimeout(() => {
+      clonedCard.style.left = `${endRect.left + endRect.width / 2 - 25}px`;
+      clonedCard.style.top = `${endRect.top + endRect.height / 2 - 25}px`;
+      clonedCard.style.width = "50px";
+      clonedCard.style.height = "50px";
+      clonedCard.style.opacity = "0.3";
+      clonedCard.style.transform = "scale(0.3) rotate(5deg)";
+    }, 10);
+
+    setTimeout(() => {
+      if (document.body.contains(clonedCard)) {
+        document.body.removeChild(clonedCard);
+      }
+      if (onComplete) onComplete();
+    }, 850);
+  }
+
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation(); // Prevent modal from opening
+
+    // Get the product card element for animation
+    const card = (e.target as HTMLElement).closest(".group") as HTMLElement;
+
+    if (card) {
+      // Add shrink animation
+      card.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        card.style.transform = "";
+      }, 200);
+
+      // Fly to cart animation
+      flyCardToCart({
+        cardElement: card,
+        onComplete: () => {
+          console.log("Product flew to cart successfully!");
+        },
+      });
+    }
+
+    dispatch(
+      addProductToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        cost: product.cost,
+        brand: product.brand,
+        detail: product.detail,
+        image: product.image,
+        measurement: product.measurement,
+        unit: product.unit,
+        stock: product.stock,
+        item_code: product.item_code,
+        quantity: 1,
+      })
+    );
+    toastSuccess(`🛒 Added ${product.name} to cart!`);
+
+    console.log("Product added to cart:", product.name);
   };
 
   const closeModal = () => {
@@ -668,8 +761,7 @@ export default function Products() {
                         <div className="flex items-center justify-between">
                           <button
                             className="group/btn relative px-3 py-2 bg-[#F28C8C] text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform  active:scale-95 transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden"
-                            // onClick={(e) => handleAdd(service, e)}
-                          >
+                            onClick={(e) => handleAddToCart(e, product)}>
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
 
                             <div className="relative flex items-center space-x-2">

@@ -16,8 +16,14 @@ import {
 import { IoCart } from "react-icons/io5";
 import productImage from "@/assets/shop/product-image.png";
 
-// Product type definition
+// ADD THESE IMPORTS FOR REDUX AND TOAST
+import { useAppDispatch } from "@/store/hook";
+import { addProductToCart } from "@/store/slices/cartSlice";
+import { toastSuccess } from "../common/toastService";
+
+// UPDATE THE PRODUCT INTERFACE TO MATCH YOUR CART STRUCTURE
 interface Product {
+  id: number; // ADD ID FIELD
   name: string;
   price: number;
   cost?: number;
@@ -25,6 +31,10 @@ interface Product {
   stock?: number;
   brand?: string;
   images?: string[];
+  image?: string; // ADD THIS FOR SINGLE IMAGE
+  measurement?: number | null;
+  unit?: string;
+  item_code?: string;
 }
 
 // Product Modal Component
@@ -44,6 +54,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
   const [selectedSize, setSelectedSize] = useState("Regular");
   const [isWishlisted, setIsWishlisted] = useState(false);
 
+  // ADD REDUX DISPATCH
+  const dispatch = useAppDispatch();
+
   // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -56,6 +69,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  // RESET QUANTITY WHEN PRODUCT CHANGES
+  useEffect(() => {
+    if (product) {
+      setQuantity(1);
+    }
+  }, [product]);
 
   if (!isOpen || !product) return null;
 
@@ -92,6 +112,36 @@ const ProductModal: React.FC<ProductModalProps> = ({
     } else {
       setQuantity((prev) => Math.max(prev - 1, 1));
     }
+  };
+
+  // NEW: ADD TO CART HANDLER WITH TOAST
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    dispatch(
+      addProductToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        cost: product.cost || product.price,
+        brand: product.brand || "Kaya Beauty",
+        detail: product.detail || "",
+        image: product.image || product.images?.[0] || "",
+        measurement: product.measurement || null,
+        unit: product.unit || "piece",
+        stock: product.stock || 10,
+        item_code: product.item_code || `ITEM-${product.id}`,
+        quantity: quantity, // USE SELECTED QUANTITY
+      })
+    );
+
+    // SHOW SUCCESS TOAST WITH QUANTITY
+    toastSuccess(`🛒 Added ${quantity} ${product.name} to cart!`);
+
+    // OPTIONAL: CLOSE MODAL AFTER ADDING TO CART
+    // setTimeout(() => {
+    //   onClose();
+    // }, 1000);
   };
 
   return (
@@ -303,12 +353,18 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
             {/* Action Buttons */}
             <div className="flex gap-4 mb-6">
-              <button className="flex-1 group/btn relative px-8 py-4 bg-[#F28C8C] text-white font-lato font-bold rounded-2xl shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-300 overflow-hidden">
+              {/* UPDATED ADD TO CART BUTTON */}
+              <button
+                onClick={handleAddToCart}
+                disabled={!product.stock || product.stock <= 0}
+                className="flex-1 group/btn relative px-8 py-4 bg-[#F28C8C] text-white font-lato font-bold rounded-2xl shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-300 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
                 <div className="relative flex items-center justify-center space-x-3">
                   <ShoppingBag className="w-5 h-5" />
-                  <span className="hidden md:block">Add to Cart</span>
-                  <span className="md:hidden">Add</span>
+                  <span className="hidden md:block">
+                    Add {quantity} to Cart
+                  </span>
+                  <span className="md:hidden">Add ({quantity})</span>
                 </div>
               </button>
 

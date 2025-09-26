@@ -1,8 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
-import { removeFromCart } from "@/store/slices/cartSlice";
+import {
+  removeFromCart,
+  removeServiceFromCart,
+  removeProductFromCart,
+} from "@/store/slices/cartSlice";
 import { useRouter, usePathname } from "next/navigation";
 import { ChevronUp, ChevronDown, Trash2 } from "lucide-react";
 import ClientOnly from "@/components/common/ClientOnly";
@@ -26,10 +30,32 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
   const pathname = usePathname();
   const dispatch = useAppDispatch();
 
-  // Redux state
-  const cart = useAppSelector((state) => state.cart.items);
+  // NEW: Get both old and new cart data
+  const { services, products, items } = useAppSelector((state) => state.cart);
   const bookingState = useAppSelector((state) => state.booking);
   const { selectedDate, selectedSlot } = useAppSelector((state) => state.ui);
+
+  // Combine services and legacy items for booking display (products don't show in booking flow)
+  const cart = useMemo(() => {
+    return [
+      ...services.map((service: any) => ({
+        id: service.id,
+        name: service.name,
+        duration: service.duration,
+        price: service.price,
+        category: service.category,
+        tags: service.tags,
+        operator: service.operator,
+        selectedDate: service.selectedDate,
+        selectedDay: service.selectedDay,
+        timeSlot: service.timeSlot,
+        description: service.description,
+        vendor_location_uuid: service.vendor_location_uuid,
+        type: "service" as const,
+      })),
+      ...items.map((item: any) => ({ ...item, type: "legacy" as const })), // Legacy items
+    ];
+  }, [services, items]);
 
   // Local state for the dropdown view
   const [isExpanded, setIsExpanded] = useState(false);
@@ -41,10 +67,25 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
     ? "slots"
     : "saloon-services";
 
-  // Don't render the bar if the cart is empty, except on the final 'view' page
-  if (cart.length === 0 && pageType !== "view") {
+  // Don't render the bar if no booking items, except on the final 'view' page
+  if (services.length === 0 && items.length === 0 && pageType !== "view") {
     return null;
   }
+
+  // Handle remove functions
+  const handleRemoveItem = (item: any, index: number) => {
+    if (item.type === "service") {
+      // Find the service index in the services array
+      const serviceIndex = services.findIndex((s: any) => s.id === item.id);
+      if (serviceIndex >= 0) {
+        dispatch(removeServiceFromCart(serviceIndex));
+      }
+    } else {
+      // Legacy item - use original index in items array
+      const legacyIndex = index - services.length;
+      dispatch(removeFromCart(legacyIndex));
+    }
+  };
 
   // --- RENDER FUNCTIONS FOR EACH PAGE TYPE ---
 
@@ -75,7 +116,7 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
             }>
             {cart.map((item: any, index: number) => (
               <div
-                key={`${item.id}-${index}`}
+                key={`${item.type}-${item.id}-${index}`}
                 className="flex justify-between items-center p-3 rounded-2xl hover:bg-[#FFF6F8] transition-all duration-300 border border-transparent hover:border-[#F28C8C]/20">
                 <div>
                   <p className="text-[#444444] font-lato font-semibold">
@@ -83,6 +124,11 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
                   </p>
                   <p className="text-[#C59D5F] text-sm font-lato">
                     {item.duration} min
+                    {item.type === "service" && (
+                      <span className=" ml-2 px-2 py-0.5 bg-[#F28C8C]/20 text-[#B11C5F] rounded-full text-xs">
+                        New
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -90,7 +136,7 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
                     ₹{item.price?.toFixed(2)}
                   </p>
                   <button
-                    onClick={() => dispatch(removeFromCart(index))}
+                    onClick={() => handleRemoveItem(item, index)}
                     className="p-2 text-red-500 hover:bg-red-50 rounded-2xl hover:scale-110 transition-all duration-300">
                     <Trash2 size={16} />
                   </button>

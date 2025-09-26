@@ -104,7 +104,6 @@ export default function Header() {
             {/* Location Selector */}
 
             <LocationSelectorPanel />
-
             {/* Cart and Profile */}
             <div className="flex items-center space-x-2">
               <TabbedCart />
