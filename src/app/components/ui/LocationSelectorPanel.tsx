@@ -169,7 +169,15 @@ export default function LocationSelectorPanel({
   return (
     <>
       {/* Location Selector Button */}
-      {locationsState.loading ? null : (
+      {locationsState.loading ? (
+        <div className="relative flex items-center sm:space-x-2 px-2 sm:px-4 py-2 bg-gray-200 shadow-md rounded-full border border-gray-200 overflow-hidden">
+          {/* Shimmer overlay */}
+          <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+
+          <div className="w-4 h-4 bg-gray-300 rounded-full"></div>
+          <div className="hidden sm:block w-20 h-3 bg-gray-300 rounded"></div>
+        </div>
+      ) : (
         <button
           onClick={() => setShowLocationPanel(true)}
           className="flex items-center sm:space-x-2 px-2 sm:px-4 py-2 bg-white shadow-md hover:shadow-lg rounded-full hover:bg-[#FFF6F8] transition-all duration-300 hover:scale-105 group border border-[#F28C8C]/20"

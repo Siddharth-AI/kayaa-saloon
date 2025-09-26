@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LocationSelectorPanel from "../ui/LocationSelectorPanel";
-import CartPopup from "../ui/CartPopup";
 import ProfileDropdown from "../ui/ProfileDropdown";
 import MobileMenu from "../ui/MobileMenu";
 import Image from "next/image";
 import { FiMenu, FiX } from "react-icons/fi";
 import Logo from "@/assets/kayaa-home/hedarKayaBeauty.png";
+import TabbedCart from "../ui/TabbedCart";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -107,7 +107,7 @@ export default function Header() {
 
             {/* Cart and Profile */}
             <div className="flex items-center space-x-2">
-              <CartPopup />
+              <TabbedCart />
               <div className=" hidden md:block">
                 <ProfileDropdown />
               </div>

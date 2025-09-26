@@ -48,50 +48,67 @@ const persistedReducer = persistReducer(persistConfig, (state: any, action: any)
   }, {} as Record<keyof typeof rootReducer, any>)
 })
 
-// Custom middleware with correct typing
-
+// Updated middleware to handle both services and products
 const cartLocalStorageMiddleware: Middleware = storeAPI => next => (action: unknown) => {
   const result = next(action)
+
   if (
     typeof action === "object" &&
     action !== null &&
-    "type" in action &&
-    (
-      (action as { type: string }).type === "cart/addToCart" ||
-      (action as { type: string }).type === "cart/removeFromCart" ||
-      (action as { type: string }).type === "cart/clearCart"
-    )
+    "type" in action
   ) {
-    const { cart, auth } = storeAPI.getState()
-    const user = auth.user
+    const actionType = (action as { type: string }).type
 
-    if (typeof window !== "undefined") {
-      if (user && user.isLoggedIn) {
-        const userIdentifier = user.mobile || user.email || user.uuid
-        localStorage.setItem(`userCart_${userIdentifier}`, JSON.stringify(cart.items))
-        console.log("Saved to user cart after action:", (action as { type: string }).type, cart.items)
-      } else {
-        localStorage.setItem("guestCart", JSON.stringify(cart.items))
-        console.log("Saved to guest cart after action:", (action as { type: string }).type, cart.items)
+    // Handle all cart-related actions for both services and products
+    if (
+      actionType === "cart/addServiceToCart" ||
+      actionType === "cart/addProductToCart" ||
+      actionType === "cart/removeServiceFromCart" ||
+      actionType === "cart/removeProductFromCart" ||
+      actionType === "cart/updateProductQuantity" ||
+      actionType === "cart/clearServices" ||
+      actionType === "cart/clearProducts" ||
+      actionType === "cart/clearCart" ||
+      actionType === "cart/setCart" ||
+      actionType === "cart/addToCart" || // Keep for backward compatibility
+      actionType === "cart/removeFromCart" // Keep for backward compatibility
+    ) {
+      const { cart, auth } = storeAPI.getState()
+      const user = auth.user
+
+      if (typeof window !== "undefined") {
+        // Create cart data object with both services and products
+        const cartData = {
+          services: cart.services || [],
+          products: cart.products || [],
+          // Keep items for backward compatibility
+          items: cart.items || []
+        }
+
+        if (user && user.isLoggedIn) {
+          const userIdentifier = user.mobile || user.email || user.uuid
+          localStorage.setItem(`userCart_${userIdentifier}`, JSON.stringify(cartData))
+          console.log("Saved to user cart after action:", actionType, cartData)
+        } else {
+          localStorage.setItem("guestCart", JSON.stringify(cartData))
+          console.log("Saved to guest cart after action:", actionType, cartData)
+        }
       }
     }
-  }
 
-  if (
-    typeof action === "object" &&
-    action !== null &&
-    "type" in action &&
-    (action as { type: string }).type === "auth/logout"
-  ) {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("authToken")
-      localStorage.removeItem("userData")
-      console.log("Cleaned up auth data from localStorage")
+    // Handle logout cleanup (unchanged)
+    if (actionType === "auth/logout") {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("authToken")
+        localStorage.removeItem("userData")
+        console.log("Cleaned up auth data from localStorage")
+      }
     }
   }
 
   return result
 }
+
 
 export const store = configureStore({
   reducer: persistedReducer,

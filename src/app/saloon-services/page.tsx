@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { addToCart } from "@/store/slices/cartSlice";
+import { addServiceToCart, addToCart } from "@/store/slices/cartSlice";
 import Image, { StaticImageData } from "next/image";
 import LeftPanel from "@/components/leftPanel/LeftPanel";
 import BookingBottomBar from "@/saloon-services/BookingBottomBar";
@@ -12,6 +12,7 @@ import { IoCart } from "react-icons/io5";
 import { FaAnglesRight } from "react-icons/fa6";
 import { FaAnglesLeft } from "react-icons/fa6";
 import CategoryDropdown from "./CategoryDropdown";
+import { toastSuccess } from "@/components/common/toastService";
 
 // Category images mapping with multiple images per category
 type CategoryImagesType = {
@@ -309,15 +310,20 @@ export default function Services() {
     }
 
     dispatch(
-      addToCart({
+      addServiceToCart({
         id: service.id,
-        name: service.service,
-        duration: Number.parseInt(service.service_time),
+        name: service.service || service.name,
+        duration: Number.parseInt(
+          service.service_time || service.duration || "30"
+        ),
         price: service.price,
-        category: service.subcategory,
-        tags: [service.subcategory],
+        category: service.subcategory || service.category,
+        tags: [service.subcategory || service.category],
         vendor_location_uuid: selectedLocationUuid,
       })
+    );
+    toastSuccess(
+      `🛒 Added ${service.service || service.name} service to cart!`
     );
   };
 

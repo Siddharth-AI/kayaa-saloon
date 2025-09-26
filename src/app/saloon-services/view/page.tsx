@@ -1,6 +1,6 @@
 "use client";
 import type React from "react";
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useMemo } from "react";
 import LeftPanel from "@/components/leftPanel/LeftPanel";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { useState } from "react";
@@ -25,7 +25,8 @@ import Image from "next/image";
 
 const Page = () => {
   const { user, tempToken } = useAppSelector((state) => state.auth);
-  const cart = useAppSelector((state) => state.cart.items);
+  const { services, items } = useAppSelector((state) => state.cart);
+
   const { selectedDate, selectedSlot, bookingComment } = useAppSelector(
     (state) => state.ui
   );
@@ -39,28 +40,51 @@ const Page = () => {
 
   const hasHandledBookingSuccess = useRef(false);
 
+  const cart = useMemo(() => {
+    return [
+      ...services.map((service: any) => ({
+        id: service.id,
+        name: service.name,
+        duration: service.duration,
+        price: service.price,
+        category: service.category,
+        tags: service.tags,
+        operator: service.operator,
+        selectedDate: service.selectedDate,
+        selectedDay: service.selectedDay,
+        timeSlot: service.timeSlot,
+        description: service.description,
+        vendor_location_uuid: service.vendor_location_uuid,
+      })),
+      ...items, // Legacy items
+    ];
+  }, [services, items]);
+
+  // NEW: Check both services and legacy items
   useEffect(() => {
-    if (cart.length > 0) {
-      const firstItem = cart[0];
-      // If the UI has no selected slot, but the cart does, restore it.
-      if (!selectedSlot && firstItem?.timeSlot) {
-        console.log("Restoring selectedSlot from cart:", firstItem.timeSlot);
-        dispatch(setSelectedSlot(firstItem.timeSlot));
-      }
-      // Also ensure the date is synchronized
-      if (firstItem?.selectedDate) {
-        const dateInState = new Date(selectedDate).toDateString();
-        const dateInCart = new Date(firstItem.selectedDate).toDateString();
-        if (dateInState !== dateInCart) {
-          console.log(
-            "Restoring selectedDate from cart:",
-            firstItem.selectedDate
-          );
-          dispatch(setSelectedDate(firstItem.selectedDate));
-        }
+    if (cart.length === 0) return;
+
+    const firstItem = cart[0];
+
+    // If the UI has no selected slot, but the cart does, restore it.
+    if (!selectedSlot && firstItem?.timeSlot) {
+      console.log("Restoring selectedSlot from cart:", firstItem.timeSlot);
+      dispatch(setSelectedSlot(firstItem.timeSlot));
+    }
+
+    // Also ensure the date is synchronized
+    if (firstItem?.selectedDate) {
+      const dateInState = new Date(selectedDate).toDateString();
+      const dateInCart = new Date(firstItem.selectedDate).toDateString();
+      if (dateInState !== dateInCart) {
+        console.log(
+          "Restoring selectedDate from cart:",
+          firstItem.selectedDate
+        );
+        dispatch(setSelectedDate(firstItem.selectedDate));
       }
     }
-  }, [cart, selectedSlot, selectedDate, dispatch]);
+  }, [services, items, cart, selectedSlot, selectedDate, dispatch, router]);
 
   useEffect(() => {
     if (
@@ -70,26 +94,38 @@ const Page = () => {
     ) {
       hasHandledBookingSuccess.current = true;
 
-      // Save cart to localStorage before clearing
+      // Save booking data to localStorage before clearing
       try {
         if (bookingState.bookingId) {
-          localStorage.setItem(`booking-services`, JSON.stringify(cart));
+          const bookingData = {
+            services: services,
+            items: items,
+            bookingId: bookingState.bookingId,
+          };
+          localStorage.setItem("booking-services", JSON.stringify(bookingData));
         }
       } catch (error) {
         console.log("Error saving booking services:", error);
         toastError("Couldn't save your booking details");
       }
 
-      // Clear cart and comment after successful booking
+      // Clear only services and legacy items (keep products)
       dispatch(clearCartAfterSuccessfulBooking());
       dispatch(resetBookingComment());
 
-      // Navigate to confirmation page with a delay to ensure state updates complete
+      // Navigate to confirmation page
       router.push(
         `/saloon-services/thank-you?bookingId=${bookingState.bookingId}`
       );
     }
-  }, [bookingState.bookingId, bookingState.loading, cart, dispatch, router]);
+  }, [
+    bookingState.bookingId,
+    bookingState.loading,
+    services,
+    items,
+    dispatch,
+    router,
+  ]);
 
   // Add this useEffect to reset the ref when component unmounts or booking starts
   useEffect(() => {
@@ -160,6 +196,13 @@ const Page = () => {
 
     if (!selectedDate || !selectedSlot) {
       toastError("Please select a date and time slot.");
+      return;
+    }
+
+    if (services.length === 0 && items.length === 0) {
+      toastError(
+        "No services selected for booking. Please add services first."
+      );
       return;
     }
 

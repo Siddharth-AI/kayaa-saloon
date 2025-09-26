@@ -85,7 +85,7 @@ const formatTimeFromDate = (date: Date): string => {
 const Slots: React.FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const cart = useAppSelector((state) => state.cart.items);
+  const { services, products, items } = useAppSelector((state) => state.cart);
   const operatorsState = useAppSelector((state) => state.operators);
   const timeSlotsState = useAppSelector((state) => state.timeSlots);
   const servicesState = useAppSelector((state) => state.services);
@@ -95,7 +95,46 @@ const Slots: React.FC = () => {
   const now = new Date();
   const [currentMonthIndex, setCurrentMonthIndex] = useState(now.getMonth());
   const [currentYear, setCurrentYear] = useState(now.getFullYear());
+  const cart = useMemo(() => {
+    interface ServiceCartItem {
+      id: number | string;
+      name: string;
+      duration?: number;
+      price?: number;
+      category?: string;
+      tags?: string[];
+      operator?: string;
+      selectedDate?: string;
+      selectedDay?: string;
+      timeSlot?: string;
+      description?: string;
+      vendor_location_uuid?: string;
+    }
 
+    interface LegacyCartItem {
+      id: number | string;
+      [key: string]: any;
+    }
+
+    const cart: (ServiceCartItem | LegacyCartItem)[] = [
+      ...services.map((service: ServiceCartItem) => ({
+        id: service.id,
+        name: service.name,
+        duration: service.duration,
+        price: service.price,
+        category: service.category,
+        tags: service.tags,
+        operator: service.operator,
+        selectedDate: service.selectedDate,
+        selectedDay: service.selectedDay,
+        timeSlot: service.timeSlot,
+        description: service.description,
+        vendor_location_uuid: service.vendor_location_uuid,
+      })),
+      ...(items as LegacyCartItem[]), // Legacy items
+    ];
+    return cart;
+  }, [services, items]);
   const selectedDateObj = new Date(selectedDate);
 
   // Watch for errors when fetching operators
@@ -223,9 +262,9 @@ const Slots: React.FC = () => {
       displayOperators[selectedOperator]?.name || "No Preference";
     const currentStartTime = parseTimeStringToDate(slotTime, selectedDateObj);
 
+    // NEW: Update both services and legacy items
     const updatedCart = cart.map((item: any) => {
       const itemTimeSlot = formatTimeFromDate(currentStartTime);
-      // Assumes each 'item' in the cart has a 'time' property in minutes.
       const durationInMinutes = item.duration || 0;
 
       const updatedItem = {
@@ -249,8 +288,39 @@ const Slots: React.FC = () => {
       return updatedItem;
     });
 
-    // 3. Update the cart in the Redux store with the newly calculated times
-    dispatch(setCart(updatedCart));
+    // Update both new services and legacy items
+    const updatedServices = services.map((service: any, index: any) => {
+      const cartItem = updatedCart.find((item) => item.id === service.id);
+      if (cartItem) {
+        return {
+          ...service,
+          operator: cartItem.operator,
+          selectedDate: cartItem.selectedDate,
+          selectedDay: cartItem.selectedDay,
+          timeSlot: cartItem.timeSlot,
+        };
+      }
+      return service;
+    });
+
+    const updatedLegacyItems = items.map((item: any, index: any) => {
+      const cartItem = updatedCart[services.length + index];
+      if (cartItem) {
+        return {
+          ...cartItem,
+        };
+      }
+      return item;
+    });
+
+    // Dispatch updates for both
+    dispatch(
+      setCart({
+        services: updatedServices,
+        items: updatedLegacyItems,
+        products: products, // Keep products unchanged
+      })
+    );
   };
 
   function handleSlotBook() {
