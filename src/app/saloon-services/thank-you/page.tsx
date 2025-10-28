@@ -40,15 +40,38 @@ const AppointmentConfirmationContent = () => {
       console.log("User not found, cannot retrieve cart.");
       return;
     }
-    const storedCart = localStorage.getItem(`booking-services`);
-    if (storedCart) {
-      setCart(() => {
-        const parsedCart = JSON.parse(storedCart);
-        return Array.isArray(parsedCart) ? parsedCart : [];
-      });
-      dispatch(clearBookingData());
-      localStorage.removeItem("booking-services");
+
+    // Try sessionStorage first (more reliable for immediate navigation)
+    let storedCart = sessionStorage.getItem(`booking-services`);
+
+    // Fallback to localStorage if sessionStorage is empty
+    if (!storedCart) {
+      storedCart = localStorage.getItem(`booking-services`);
+      console.log("📦 Trying localStorage");
+    } else {
+      console.log("📦 Found in sessionStorage");
     }
+
+    if (storedCart) {
+      try {
+        const parsedData = JSON.parse(storedCart);
+        console.log("✅ Loaded booking data:", parsedData);
+
+        // Extract services from the saved data structure
+        const servicesArray = parsedData.services || parsedData || [];
+        setCart(Array.isArray(servicesArray) ? servicesArray : []);
+
+        // Clean up both storages
+        // sessionStorage.removeItem("booking-services");
+        localStorage.removeItem("booking-services");
+      } catch (error) {
+        console.error("❌ Error parsing stored cart:", error);
+      }
+    } else {
+      console.warn("⚠️ No booking data found in storage");
+    }
+
+    dispatch(clearBookingData());
   }, [bookingId, dispatch, user]);
 
   const dateInfo = selectedDate ? formatDisplayDate(selectedDate) : null;

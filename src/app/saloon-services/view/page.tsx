@@ -111,29 +111,44 @@ const Page = () => {
     ) {
       hasHandledBookingSuccess.current = true;
 
-      // Save booking data to localStorage before clearing
+      // Save booking data to localStorage
       try {
-        if (bookingState.bookingId) {
+        if (
+          bookingState.bookingId &&
+          (services.length > 0 || items.length > 0)
+        ) {
           const bookingData = {
             services: services,
             items: items,
             bookingId: bookingState.bookingId,
           };
+
+          // Save to localStorage as backup
           localStorage.setItem("booking-services", JSON.stringify(bookingData));
+
+          // Also save to sessionStorage (more reliable for immediate navigation)
+          sessionStorage.setItem(
+            "booking-services",
+            JSON.stringify(bookingData)
+          );
+
+          console.log("✅ Saved to both localStorage and sessionStorage");
         }
       } catch (error) {
-        console.log("Error saving booking services:", error);
+        console.error("❌ Error saving booking services:", error);
         toastError("Couldn't save your booking details");
       }
 
-      // Clear only services and legacy items (keep products)
-      dispatch(clearCartAfterSuccessfulBooking());
-      dispatch(resetBookingComment());
-
-      // Navigate to confirmation page
+      // Navigate FIRST
       router.push(
         `/saloon-services/thank-you?bookingId=${bookingState.bookingId}`
       );
+
+      // Clear cart AFTER (with delay)
+      setTimeout(() => {
+        dispatch(clearCartAfterSuccessfulBooking());
+        dispatch(resetBookingComment());
+      }, 1000); // Increased delay to ensure navigation completes
     }
   }, [
     bookingState.bookingId,

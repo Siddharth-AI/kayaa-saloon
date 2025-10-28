@@ -389,8 +389,6 @@ export default function MyAppointments() {
     (state) => state.appointments
   );
 
-  console.log("test=>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"); // Your console.log
-
   // FIXED: Single useEffect that handles everything properly
   useEffect(() => {
     const newActiveTab = getActiveTabFromPath();
