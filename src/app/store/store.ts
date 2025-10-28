@@ -16,6 +16,7 @@ import { Middleware } from "redux"
 import modalReducer from "./slices/modalSlice";
 import cancelBookingReducer from './slices/cancelBookingSlice'; // Adjust
 import productsReducer from './slices/productsSlice';
+import paymentReducer from './slices/paymentSlice';
 // Persist config for the root reducer
 const persistConfig = {
   key: "root",
@@ -37,7 +38,8 @@ const rootReducer = {
   changePassword: changePasswordReducer,
   modal: modalReducer,
   cancelBooking: cancelBookingReducer,
-  products: productsReducer
+  products: productsReducer,
+  payment: paymentReducer
 }
 
 const persistedReducer = persistReducer(persistConfig, (state: any, action: any) => {

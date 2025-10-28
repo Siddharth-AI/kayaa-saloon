@@ -183,6 +183,7 @@ export async function createBooking(params: CreateBookingRequest, userToken: str
 			booking_date: params.booking_date,
 			booking_comment: params.booking_comment || '',
 			booking_status: params.booking_status,
+			merchant_customer_id: params.merchant_customer_id,
 			merge_services_of_same_staff: params.merge_services_of_same_staff,
 			total: params.total,
 			services: params.services

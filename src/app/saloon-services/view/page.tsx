@@ -22,6 +22,9 @@ import { openModal } from "@/store/slices/modalSlice";
 import { toastError } from "@/components/common/toastService";
 import BookingBottomBar from "../BookingBottomBar";
 import Image from "next/image";
+import { getPaymentCards, setSelectedCard } from "@/store/slices/paymentSlice";
+import PaymentFormModal from "@/components/payment/PaymentFormModal";
+import { Check } from "lucide-react";
 
 const Page = () => {
   const { user, tempToken } = useAppSelector((state) => state.auth);
@@ -37,8 +40,22 @@ const Page = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [accepted, setAccepted] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  const {
+    paymentCards = [],
+    selectedCardId,
+    loading: paymentLoading,
+  } = useAppSelector((state) => state.payment);
 
   const hasHandledBookingSuccess = useRef(false);
+
+  // Handler to select a card
+  const handleSelectCard = (cardId: number) => {
+    dispatch(setSelectedCard(cardId));
+  };
+
+  // const selectedCard = paymentCards.find((card) => card.id === selectedCardId);
 
   const cart = useMemo(() => {
     return [
@@ -142,6 +159,15 @@ const Page = () => {
     };
   }, [dispatch]);
 
+  // Load payment cards when component mounts
+  useEffect(() => {
+    if (servicesState.selectedLocationUuid) {
+      dispatch(
+        getPaymentCards({ merchant_uuid: servicesState.selectedLocationUuid })
+      );
+    }
+  }, [dispatch, servicesState.selectedLocationUuid]);
+
   const handleOpenModal = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowModal(true);
@@ -189,6 +215,10 @@ const Page = () => {
   };
 
   const handleConfirmation = async () => {
+    if (!selectedCardId) {
+      toastError("Please select a payment card to proceed.");
+      return;
+    }
     if (!accepted) {
       toastError("Please accept the terms and conditions to proceed.");
       return;
@@ -273,6 +303,7 @@ const Page = () => {
         booking_date: formatDateForAPI(selectedDate),
         booking_comment: bookingComment || "", // Use comment from Redux state
         booking_status: "tentative",
+        merchant_customer_id: selectedCardId,
         merge_services_of_same_staff: true,
         total: Math.round(total * 100) / 100,
         services,
@@ -319,6 +350,30 @@ const Page = () => {
   );
   const tax = 19.07;
   const totalPayable = serviceTotal + tax;
+
+  // // Inside your component
+  // const handlePaymentSuccess = () => {
+  //   // Refresh payment cards list
+  //   if (servicesState.selectedLocationUuid) {
+  //     dispatch(
+  //       getPaymentCards({
+  //         merchant_uuid: servicesState.selectedLocationUuid,
+  //       })
+  //     );
+  //   }
+  // };
+  const handleClosePaymentModal = () => {
+    setIsPaymentModalOpen(false);
+
+    // Refresh payment cards list after modal closes
+    if (servicesState.selectedLocationUuid) {
+      dispatch(
+        getPaymentCards({
+          merchant_uuid: servicesState.selectedLocationUuid,
+        })
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
@@ -505,6 +560,35 @@ const Page = () => {
               </button>
             </div>
             <LeftPanel />
+            <div className="bg-white/80 backdrop-blur-sm p-6 shadow-lg relative rounded-2xl border-2 border-[#F28C8C]/20 hover:border-[#B11C5F] text-[#B11C5F] transition-all duration-300 group mb-4 py-2 hover:shadow-xl hover:shadow-[#F28C8C]/20">
+              <h4 className="text-xl font-playfair font-bold mb-4 text-[#B11C5F]">
+                Pricing Summary
+              </h4>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#444444] font-lato">
+                    Service Total
+                  </span>
+                  <span className="font-bold text-[#B11C5F] font-lato">
+                    ₹ {serviceTotal.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[#444444] font-lato">Tax</span>
+                  <span className="font-bold text-[#B11C5F] font-lato">
+                    ₹ {tax.toFixed(2)}
+                  </span>
+                </div>
+                <div className="border-t-2 border-[#F28C8C]/30 pt-3 mt-3 flex justify-between items-center">
+                  <span className="font-bold text-lg text-[#B11C5F] font-playfair">
+                    Total Payable
+                  </span>
+                  <span className="font-bold text-lg text-[#B11C5F] font-lato">
+                    ₹ {totalPayable.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right Panel */}
@@ -542,36 +626,145 @@ const Page = () => {
                   rows={4}
                 />
               </div>
-
-              <h4 className="text-xl font-playfair font-bold mb-4 text-[#B11C5F]">
-                Pricing Summary
-              </h4>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-[#444444] font-lato">
-                    Service Total
-                  </span>
-                  <span className="font-bold text-[#B11C5F] font-lato">
-                    ₹ {serviceTotal.toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[#444444] font-lato">Tax</span>
-                  <span className="font-bold text-[#B11C5F] font-lato">
-                    ₹ {tax.toFixed(2)}
-                  </span>
-                </div>
-                <div className="border-t-2 border-[#F28C8C]/30 pt-3 mt-3 flex justify-between items-center">
-                  <span className="font-bold text-lg text-[#B11C5F] font-playfair">
-                    Total Payable
-                  </span>
-                  <span className="font-bold text-lg text-[#B11C5F] font-lato">
-                    ₹ {totalPayable.toFixed(2)}
-                  </span>
-                </div>
-              </div>
             </div>
+            {/* Payment Method Section */}
+            <div className="bg-white/90 rounded-2xl p-6 border-2 shadow-lg border-[#F28C8C]/30 mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-xl font-playfair font-bold text-[#B11C5F]">
+                  Payment Method
+                </h4>
+                <button
+                  onClick={() => setIsPaymentModalOpen(true)}
+                  className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-lato font-semibold px-4 py-2 rounded-xl transition-all duration-300">
+                  Add New Card
+                </button>
+              </div>
 
+              {paymentLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#F28C8C] border-t-transparent mr-2"></div>
+                  <span className="font-lato text-gray-600">
+                    Loading payment methods...
+                  </span>
+                </div>
+              ) : paymentCards.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-2">
+                    <svg
+                      className="w-12 h-12 mx-auto mb-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="font-lato text-gray-600 mb-2">
+                    No payment method found
+                  </p>
+                  <p className="font-lato text-sm text-gray-500">
+                    Please add a new card to continue
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {paymentCards.map((card: any) => (
+                    <div
+                      key={card.id}
+                      onClick={() => handleSelectCard(card.id)}
+                      className={`relative p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                        selectedCardId === card.id
+                          ? "border-pink-600 bg-pink-50 shadow-md"
+                          : "border-gray-200 hover:border-pink-300 hover:shadow-sm"
+                      }`}>
+                      {/* Selected Checkmark */}
+                      {selectedCardId === card.id && (
+                        <div className="absolute top-3 right-3 w-6 h-6 bg-pink-600 rounded-full flex items-center justify-center">
+                          <Check className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-4">
+                        {/* Card Icon */}
+                        <div
+                          className={`p-3 rounded-lg ${
+                            card.card_type === "VISA"
+                              ? "bg-blue-100"
+                              : card.card_type === "AMEX"
+                              ? "bg-green-100"
+                              : "bg-purple-100"
+                          }`}>
+                          <svg
+                            className="w-8 h-8"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                            />
+                          </svg>
+                        </div>
+
+                        {/* Card Details */}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold text-gray-800">
+                              {card.card_type}
+                            </span>
+                            <span className="text-xs px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                              {card.card_holder_name}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 font-mono">
+                            {card.card_number}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Expires: {card.card_expiry}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Selection Indicator */}
+                      {selectedCardId === card.id && (
+                        <div className="mt-2 pt-2 border-t border-pink-200">
+                          <p className="text-xs text-pink-600 font-medium">
+                            ✓ This card will be used for payment
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* Display Selected Card Info */}
+                  {/* {selectedCardId && (
+                    <div className="mt-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
+                      <p className="text-sm font-medium text-gray-700">
+                        Selected Payment Method
+                      </p>
+                      <p className="text-xs text-gray-600 mt-1">
+                        Card ID:{" "}
+                        <span className="font-mono font-bold">
+                          {selectedCardId}
+                        </span>
+                      </p>
+                      {selectedCard && (
+                        <p className="text-xs text-gray-600">
+                          {selectedCard.card_type} ending in{" "}
+                          {selectedCard.card_number.slice(-4)}
+                        </p>
+                      )}
+                    </div>
+                  )} */}
+                </div>
+              )}
+            </div>
             {/* Policy and Button Card */}
             <div className="bg-white/90 rounded-2xl p-6 border-2 shadow-lg border-[#F28C8C]/30 hidden md:block">
               <div className="flex items-start space-x-3 mb-4">
@@ -684,6 +877,13 @@ const Page = () => {
         handleCheckboxChange={() => setAccepted(!accepted)}
         handleOpenPolicyModal={() => setShowModal(true)}
         handleBookAppointment={handleConfirmation}
+      />
+
+      {/* Payment Form Modal */}
+      <PaymentFormModal
+        isOpen={isPaymentModalOpen}
+        onClose={handleClosePaymentModal}
+        merchantUuid={servicesState.selectedLocationUuid || ""}
       />
     </div>
   );

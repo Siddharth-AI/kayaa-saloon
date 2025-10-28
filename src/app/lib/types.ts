@@ -251,6 +251,7 @@ export interface CreateBookingRequest {
   booking_date: string;
   booking_comment?: string;
   booking_status: string;
+  merchant_customer_id: number,
   merge_services_of_same_staff: boolean;
   total: number;
   services: Array<{
@@ -285,4 +286,14 @@ export interface CreateCustomerParams {
   sms_promo?: boolean;
   email_trans?: boolean;
   email_promo?: boolean;
+}
+
+export interface GetPaymentFormRequest {
+  merchant_uuid: string;
+}
+
+export interface GetPaymentFormResponse {
+  message: string;
+  code: number;
+  data: string;
 }

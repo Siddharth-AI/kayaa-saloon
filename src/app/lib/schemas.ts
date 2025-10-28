@@ -190,6 +190,8 @@ export const createBookingSchema = Joi.object({
     }),
   booking_comment: Joi.string().allow('').optional().label('Booking Comment'),
   booking_status: Joi.string().required().label('Booking Status'),
+
+  merchant_customer_id: Joi.number().integer().required().label('merchant_customer_id'),
   merge_services_of_same_staff: Joi.boolean().required().label('Merge Services of Same Staff'),
   total: Joi.number().positive().required().label('Total'),
   services: Joi.array().items(
