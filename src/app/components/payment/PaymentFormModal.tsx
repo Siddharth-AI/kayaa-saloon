@@ -26,10 +26,7 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
 
   useEffect(() => {
     if (paymentForm) {
-      console.log(
-        "✅ Payment form received:",
-        paymentForm.substring(0, 100) + "..."
-      );
+      console.log("✅ Payment form received");
     }
   }, [paymentForm]);
 
@@ -56,7 +53,7 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Create complete HTML document for iframe
+  // Create complete HTML document for iframe with AUTO-CLICK
   const iframeContent = paymentForm
     ? `
     <!DOCTYPE html>
@@ -123,7 +120,7 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
-        input[type="submit"], button[type="submit"] {
+        input[type="submit"], button[type="submit"], button, input[type="button"] {
           width: 100%;
           padding: 1rem;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -138,7 +135,7 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
         
-        input[type="submit"]:hover, button[type="submit"]:hover {
+        input[type="submit"]:hover, button[type="submit"]:hover, button:hover {
           transform: translateY(-2px);
           box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
@@ -152,6 +149,39 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           padding: 0.75rem;
         }
         
+        /* Loading overlay */
+        .loading-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(102, 126, 234, 0.95);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+        }
+        
+        .loading-text {
+          color: white;
+          font-size: 1.25rem;
+          font-weight: 600;
+          text-align: center;
+        }
+        
+        .spinner {
+          width: 50px;
+          height: 50px;
+          border: 4px solid rgba(255, 255, 255, 0.3);
+          border-top: 4px solid white;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
         @media (max-width: 640px) {
           body { padding: 0.5rem; }
           form { padding: 1.5rem; }
@@ -160,15 +190,102 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
       </style>
     </head>
     <body>
+      <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div>
+          <div class="spinner"></div>
+          <div class="loading-text">Loading registration form...</div>
+        </div>
+      </div>
+      
       ${paymentForm}
+      
       <script>
-        console.log('✅ Form loaded successfully');
-        const form = document.querySelector('form');
-        if (form) {
-          console.log('📋 Form found:', form.action);
-        } else {
-          console.error('❌ No form in HTML');
+        console.log('✅ Form loaded');
+        
+        // Function to auto-click the REGISTER button
+        function autoClickRegister() {
+          console.log('🔍 Looking for REGISTER button...');
+          
+          // Try multiple selectors to find the button
+          const selectors = [
+            'input[type="submit"][value*="REGISTER"]',
+            'input[type="submit"][value*="Register"]',
+            'button[type="submit"]',
+            'input[type="button"][value*="REGISTER"]',
+            'input[type="button"][value*="Register"]',
+            'button:contains("REGISTER")',
+            'input[type="submit"]',
+            'button'
+          ];
+          
+          let registerButton = null;
+          
+          // Try each selector
+          for (const selector of selectors) {
+            registerButton = document.querySelector(selector);
+            if (registerButton) {
+              const buttonText = registerButton.value || registerButton.textContent || '';
+              if (buttonText.toUpperCase().includes('REGISTER')) {
+                console.log('✅ Found REGISTER button:', buttonText);
+                break;
+              }
+            }
+          }
+          
+          // Also try to find by text content
+          if (!registerButton) {
+            const allButtons = document.querySelectorAll('button, input[type="submit"], input[type="button"]');
+            for (const btn of allButtons) {
+              const text = (btn.value || btn.textContent || '').toUpperCase();
+              if (text.includes('REGISTER')) {
+                registerButton = btn;
+                console.log('✅ Found REGISTER button by text:', text);
+                break;
+              }
+            }
+          }
+          
+          if (registerButton) {
+            console.log('🎯 Auto-clicking REGISTER button...');
+            
+            // Show loading overlay
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+              overlay.style.display = 'flex';
+            }
+            
+            // Small delay to ensure everything is ready
+            setTimeout(() => {
+              registerButton.click();
+              console.log('✅ REGISTER button clicked!');
+            }, 500);
+            
+            return true;
+          } else {
+            console.warn('⚠️ REGISTER button not found');
+            return false;
+          }
         }
+        
+        // Try to auto-click when DOM is ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(autoClickRegister, 300);
+          });
+        } else {
+          setTimeout(autoClickRegister, 300);
+        }
+        
+        // Backup: Try again after a bit if first attempt fails
+        setTimeout(function() {
+          const form = document.querySelector('form');
+          if (form && !form.hasAttribute('data-auto-clicked')) {
+            console.log('🔄 Retrying auto-click...');
+            if (autoClickRegister()) {
+              form.setAttribute('data-auto-clicked', 'true');
+            }
+          }
+        }, 1000);
       </script>
     </body>
     </html>
