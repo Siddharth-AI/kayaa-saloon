@@ -47,20 +47,34 @@ const CategoryDropdown = ({
   onCategorySelect,
   loading,
 }: {
-  categories: Array<{ id: string; name: string }>;
-  selectedCategory: string;
-  onCategorySelect: (categoryId: string) => void;
+  categories: Array<{ id: string | number; name: string }>;
+  selectedCategory: string | number;
+  onCategorySelect: (categoryId: string | number) => void;
   loading: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const activeCategory = categories.find((cat) => cat.id === selectedCategory);
+  // Create the full categories list including additional ones
+  const allCategories = [
+    ...categories,
+    { id: 226, name: "Facial" },
+    { id: 227, name: "Foundation" },
+    { id: 228, name: "Serum" },
+    { id: 229, name: "Perfumes" },
+    { id: 230, name: "Nails" },
+    { id: 231, name: "Face Wash" },
+    { id: 232, name: "Night Cream" },
+  ];
+
+  const activeCategory = allCategories.find(
+    (cat) => cat.id === selectedCategory
+  );
 
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full min-w-[200px] flex items-center justify-between px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-200">
+        className="w-full min-w-[200px] flex items-center justify-between px-4 py-4 bg-white border border-gray-200 hover:bg-gray-50 outline-none transition-all duration-200">
         <span className="text-gray-700 font-medium truncate">
           {activeCategory?.name || "All Categories"}
         </span>
@@ -80,7 +94,7 @@ const CategoryDropdown = ({
           />
 
           {/* Dropdown Menu */}
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-20 max-h-60 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 shadow-lg z-20 max-h-60 overflow-y-auto">
             {loading ? (
               <div className="text-center py-12">
                 <div className="flex justify-center items-center py-12">
@@ -88,16 +102,16 @@ const CategoryDropdown = ({
                 </div>
               </div>
             ) : (
-              categories.map((category) => (
+              allCategories.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => {
                     onCategorySelect(category.id);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors duration-200 ${
+                  className={`w-full text-left px-4 py-4 hover:bg-gray-50 transition-colors duration-200 ${
                     selectedCategory === category.id
-                      ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white hover:from-orange-500 hover:to-pink-500"
+                      ? "bg-[#F28C8C] text-white shadow-md"
                       : "text-gray-700"
                   }`}>
                   {category.name}
@@ -527,12 +541,12 @@ export default function Products() {
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex flex-col gap-6 md:flex-row md:gap-8">
+        <div className="flex flex-col gap-5 md:flex-row md:gap-6 md:justify-between">
           {/* Left Sidebar */}
           <aside className="w-full md:w-[350px]">
             {/* Categories Section */}
-            <div className="mb-4 bg-white rounded-xl shadow-lg overflow-hidden">
-              <h2 className=" font-playfair font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
+            <div className="mb-4 bg-white rounded-xl shadow-lg">
+              <h2 className=" font-playfair font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4 rounded-t-2xl">
                 CATEGORIES
               </h2>
 
@@ -587,262 +601,260 @@ export default function Products() {
           </aside>
 
           {/* Right Content Area */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1">
             {/* Products Section Title and Count */}
-            <div className="bg-white rounded-lg md:px-6 px-3 py-2  font-lato font-semibold text-lg mb-6 text-[#B11C5F]">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex justify-between items-center w-full">
-                  <h2 className="font-playfair font-bold  text-[#B11C5F] text-2xl">
-                    {currentFilters.selectedCategory === "all"
-                      ? "All Products"
-                      : categoryOptions.find(
-                          (c) => c.id === currentFilters.selectedCategory
-                        )?.name || "Products"}
-                  </h2>
-                </div>
-              </div>
-            </div>
-            {/* Top Controls - Sort and View Mode */}
-            <div className="mb-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-                {/* Search Section */}
-                <div className="flex-1">
-                  <input
-                    type="search"
-                    className="border border-[#F28C8C]/30 rounded-lg overflow-hidden bg-white w-full px-4 py-3 outline-none text-[#444444] placeholder:text-[#C59D5F] font-lato focus:ring-2 focus:ring-[#F28C8C]/30 focus:border-[#F28C8C] transition-all duration-200"
-                    placeholder="Search products..."
-                    value={currentFilters.searchQuery}
-                    onChange={handleSearchChange}
-                  />
-                </div>
-
-                {/* Controls Container */}
-                <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-2">
-                  {/* Sort Dropdown */}
-                  <div className="flex-1 sm:flex-initial">
-                    <SortDropdown
-                      sortBy={sortBy}
-                      onSortChange={(sortValue) => setSortBy(sortValue)}
+            <h2 className=" font-playfair font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4 rounded-t-2xl">
+              {currentFilters.selectedCategory === "all"
+                ? "All Products"
+                : categoryOptions.find(
+                    (c) => c.id === currentFilters.selectedCategory
+                  )?.name || "Products"}
+            </h2>
+            <div className="flex-1 flex flex-col bg-white p-5">
+              {/* Top Controls - Sort and View Mode */}
+              <div className="mb-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+                  {/* Search Section */}
+                  <div className="flex-1">
+                    <input
+                      type="search"
+                      className="border border-[#F28C8C]/30 rounded-lg overflow-hidden bg-white w-full px-4 py-3 outline-none text-[#444444] placeholder:text-[#C59D5F] font-lato focus:ring-2 focus:ring-[#F28C8C]/30 focus:border-[#F28C8C] transition-all duration-200"
+                      placeholder="Search products..."
+                      value={currentFilters.searchQuery}
+                      onChange={handleSearchChange}
                     />
                   </div>
 
-                  {/* View Mode Toggle */}
-                  <div className="flex bg-gray-100 border border-gray-200 rounded-lg overflow-hidden">
-                    <button
-                      onClick={() => setViewMode("grid")}
-                      className={`p-3 sm:p-2.5 transition-all duration-200 ${
-                        viewMode === "grid"
-                          ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
-                          : "text-gray-600 hover:bg-gray-200"
-                      }`}>
-                      <Grid className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => setViewMode("list")}
-                      className={`p-3 sm:p-2.5 transition-all duration-200 ${
-                        viewMode === "list"
-                          ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
-                          : "text-gray-600 hover:bg-gray-200"
-                      }`}>
-                      <List className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  {/* Controls Container */}
+                  <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-2">
+                    {/* Sort Dropdown */}
+                    <div className="flex-1 sm:flex-initial">
+                      <SortDropdown
+                        sortBy={sortBy}
+                        onSortChange={(sortValue) => setSortBy(sortValue)}
+                      />
+                    </div>
 
-            {/* Products Content */}
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="flex justify-center items-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C]"></div>
-                </div>
-              </div>
-            ) : sortedProducts.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
-                <div className="max-w-md mx-auto">
-                  <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Search className="w-10 h-10 text-gray-400" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                    No products found
-                  </h3>
-                  <p className="text-gray-500 mb-6">
-                    No products match your current search and filter criteria.
-                  </p>
-                  <button
-                    onClick={() => {
-                      dispatch(setSearchQuery(""));
-                      dispatch(setSelectedCategory("all"));
-                    }}
-                    className="px-6 py-3 bg-gradient-to-r from-orange-400 to-pink-400 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
-                    Clear All Filters
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* Products Grid */}
-                <div
-                  className={`grid gap-6 mb-8 ${
-                    viewMode === "grid"
-                      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-                      : "grid-cols-1"
-                  }`}>
-                  {displayedProducts.map((product) => (
-                    <div
-                      key={product?.id || Math.random()}
-                      className={`bg-white rounded-sm shadow-lg overflow-hidden hover:shadow-2xl hover:cursor-pointer transition-all duration-300 group ${
-                        viewMode === "list" ? "flex" : ""
-                      }`}
-                      onClick={() => handleViewProduct(product)}>
-                      {/* Product Image */}
-                      <div
-                        className={`relative ${
-                          viewMode === "list" ? "w-56 h-56" : "aspect-square"
-                        } overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200`}>
-                        <Image
-                          src={getProductImage(product)}
-                          alt={product?.name || "Product"}
-                          fill
-                          className=" object-center group-hover:scale-110 transition-transform duration-500"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
-
-                        {/* Stock Badge */}
-                        {product?.stock && product.stock < 10 && (
-                          <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
-                            {product.stock} left
-                          </div>
-                        )}
-
-                        {/* Price Badge */}
-                        <div className="absolute top-3 right-3 bg-[#C59D5F] text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">
-                          ₹{product?.price || 0}
-                        </div>
-
-                        {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
-                      </div>
-
-                      {/* Product Info */}
-                      <div
-                        className={`p-5 ${
-                          viewMode === "list"
-                            ? "flex-1 flex flex-col justify-between"
-                            : ""
+                    {/* View Mode Toggle */}
+                    <div className="flex bg-gray-100 border border-gray-200 rounded-lg overflow-hidden">
+                      <button
+                        onClick={() => setViewMode("grid")}
+                        className={`p-3 sm:p-2.5 transition-all duration-200 ${
+                          viewMode === "grid"
+                            ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
+                            : "text-gray-600 hover:bg-gray-200"
                         }`}>
-                        <div>
-                          <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-2 leading-tight group-hover:text-[#F28C8C] transition-colors duration-300">
-                            {product?.name.length > 20
-                              ? `${product?.name.slice(0, 20)}...`
-                              : product?.name}
-                          </h3>
+                        <Grid className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => setViewMode("list")}
+                        className={`p-3 sm:p-2.5 transition-all duration-200 ${
+                          viewMode === "list"
+                            ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
+                            : "text-gray-600 hover:bg-gray-200"
+                        }`}>
+                        <List className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                          <div
-                            className={`${
-                              viewMode === "list"
-                                ? "flex flex-col justify-between"
-                                : "flex items-center justify-between mb-4"
-                            }`}>
-                            <div className="flex items-center space-x-2">
-                              <div className="w-1 h-4 bg-gradient-to-b from-[#F28C8C] to-[#C59D5F] rounded-full"></div>
-                              <span className="font-cormorant text-[#C59D5F] italic text-base">
-                                {product?.brand ? product.brand : "shehnaz"}
-                              </span>
+              {/* Products Content */}
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="flex justify-center items-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C]"></div>
+                  </div>
+                </div>
+              ) : sortedProducts.length === 0 ? (
+                <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
+                  <div className="max-w-md mx-auto">
+                    <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                      <Search className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                      No products found
+                    </h3>
+                    <p className="text-gray-500 mb-6">
+                      No products match your current search and filter criteria.
+                    </p>
+                    <button
+                      onClick={() => {
+                        dispatch(setSearchQuery(""));
+                        dispatch(setSelectedCategory("all"));
+                      }}
+                      className="px-6 py-3 bg-gradient-to-r from-orange-400 to-pink-400 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
+                      Clear All Filters
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* Products Grid */}
+                  <div
+                    className={`grid gap-6 mb-8 ${
+                      viewMode === "grid"
+                        ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                        : "grid-cols-1"
+                    }`}>
+                    {displayedProducts.map((product) => (
+                      <div
+                        key={product?.id || Math.random()}
+                        className={`bg-white rounded-sm shadow-lg overflow-hidden hover:shadow-2xl hover:cursor-pointer transition-all duration-300 group ${
+                          viewMode === "list" ? "flex" : ""
+                        }`}
+                        onClick={() => handleViewProduct(product)}>
+                        {/* Product Image */}
+                        <div
+                          className={`relative ${
+                            viewMode === "list" ? "w-56 h-56" : "aspect-square"
+                          } overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200`}>
+                          <Image
+                            src={getProductImage(product)}
+                            alt={product?.name || "Product"}
+                            fill
+                            className=" object-center group-hover:scale-110 transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
+
+                          {/* Stock Badge */}
+                          {product?.stock && product.stock < 10 && (
+                            <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg">
+                              {product.stock} left
                             </div>
-                            <div className="flex items-center gap-2">
-                              {product?.measurement && (
-                                <span className="font-cormorant text-sm text-[#C59D5F] px-2 py-1">
-                                  {product.measurement} {product?.unit || ""}
-                                </span>
-                              )}
-                            </div>
+                          )}
+
+                          {/* Price Badge */}
+                          <div className="absolute top-3 right-3 bg-[#C59D5F] text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">
+                            ₹{product?.price || 0}
                           </div>
+
+                          {/* Hover Overlay */}
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300" />
                         </div>
 
-                        <div className="flex items-center justify-between">
-                          <button
-                            className="group/btn relative px-3 py-2 bg-[#F28C8C] text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform  active:scale-95 transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden"
-                            onClick={(e) => handleAddToCart(e, product)}>
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                        {/* Product Info */}
+                        <div
+                          className={`p-5 ${
+                            viewMode === "list"
+                              ? "flex-1 flex flex-col justify-between"
+                              : ""
+                          }`}>
+                          <div>
+                            <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-2 leading-tight group-hover:text-[#F28C8C] transition-colors duration-300">
+                              {product?.name.length > 20
+                                ? `${product?.name.slice(0, 20)}...`
+                                : product?.name}
+                            </h3>
 
-                            <div className="relative flex items-center space-x-2">
-                              <span>Add</span>
-                              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover/btn:rotate-12 transition-transform duration-300">
-                                <IoCart className="text-xs" />
+                            <div
+                              className={`${
+                                viewMode === "list"
+                                  ? "flex flex-col justify-between"
+                                  : "flex items-center justify-between mb-4"
+                              }`}>
+                              <div className="flex items-center space-x-2">
+                                <div className="w-1 h-4 bg-gradient-to-b from-[#F28C8C] to-[#C59D5F] rounded-full"></div>
+                                <span className="font-cormorant text-[#C59D5F] italic text-base">
+                                  {product?.brand ? product.brand : "shehnaz"}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {product?.measurement && (
+                                  <span className="font-cormorant text-sm text-[#C59D5F] px-2 py-1">
+                                    {product.measurement} {product?.unit || ""}
+                                  </span>
+                                )}
                               </div>
                             </div>
-                          </button>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <button
+                              className="group/btn relative px-3 py-2 bg-[#F28C8C] text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform  active:scale-95 transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden"
+                              onClick={(e) => handleAddToCart(e, product)}>
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+
+                              <div className="relative flex items-center space-x-2">
+                                <span>Add</span>
+                                <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover/btn:rotate-12 transition-transform duration-300">
+                                  <IoCart className="text-xs" />
+                                </div>
+                              </div>
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="flex justify-center">
-                    <div className="flex items-center gap-2 bg-white rounded-2xl shadow-lg p-2">
-                      <button
-                        onClick={() =>
-                          setCurrentPage(Math.max(1, currentPage - 1))
-                        }
-                        disabled={currentPage === 1}
-                        className={`md:px-4 px-2 py-2 rounded-full font-lato font-medium transition-all duration-300 ${
-                          currentPage === 1
-                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg"
-                        }`}>
-                        <FaAnglesLeft />
-                      </button>
-
-                      {Array.from(
-                        { length: Math.min(totalPages, 7) },
-                        (_, i) => {
-                          let pageNum;
-                          if (totalPages <= 7) {
-                            pageNum = i + 1;
-                          } else if (currentPage <= 4) {
-                            pageNum = i + 1;
-                          } else if (currentPage >= totalPages - 3) {
-                            pageNum = totalPages - 6 + i;
-                          } else {
-                            pageNum = currentPage - 3 + i;
-                          }
-
-                          return (
-                            <button
-                              key={pageNum}
-                              onClick={() => setCurrentPage(pageNum)}
-                              className={`md:px-4 px-2 py-1 rounded-full font-lato font-medium transition-all duration-300 ${
-                                currentPage === pageNum
-                                  ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-md"
-                                  : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20"
-                              }`}>
-                              {pageNum}
-                            </button>
-                          );
-                        }
-                      )}
-
-                      <button
-                        onClick={() =>
-                          setCurrentPage(Math.min(totalPages, currentPage + 1))
-                        }
-                        disabled={currentPage === totalPages}
-                        className={`md:px-4 px-2 py-2 rounded-full font-lato font-medium transition-all duration-300 ${
-                          currentPage === totalPages
-                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg"
-                        }`}>
-                        <FaAnglesRight />
-                      </button>
-                    </div>
+                    ))}
                   </div>
-                )}
-              </>
-            )}
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex justify-center">
+                      <div className="flex items-center gap-2 bg-white rounded-2xl shadow-lg p-2">
+                        <button
+                          onClick={() =>
+                            setCurrentPage(Math.max(1, currentPage - 1))
+                          }
+                          disabled={currentPage === 1}
+                          className={`md:px-4 px-2 py-2 rounded-full font-lato font-medium transition-all duration-300 ${
+                            currentPage === 1
+                              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                              : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg"
+                          }`}>
+                          <FaAnglesLeft />
+                        </button>
+
+                        {Array.from(
+                          { length: Math.min(totalPages, 7) },
+                          (_, i) => {
+                            let pageNum;
+                            if (totalPages <= 7) {
+                              pageNum = i + 1;
+                            } else if (currentPage <= 4) {
+                              pageNum = i + 1;
+                            } else if (currentPage >= totalPages - 3) {
+                              pageNum = totalPages - 6 + i;
+                            } else {
+                              pageNum = currentPage - 3 + i;
+                            }
+
+                            return (
+                              <button
+                                key={pageNum}
+                                onClick={() => setCurrentPage(pageNum)}
+                                className={`md:px-4 px-2 py-1 rounded-full font-lato font-medium transition-all duration-300 ${
+                                  currentPage === pageNum
+                                    ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-md"
+                                    : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20"
+                                }`}>
+                                {pageNum}
+                              </button>
+                            );
+                          }
+                        )}
+
+                        <button
+                          onClick={() =>
+                            setCurrentPage(
+                              Math.min(totalPages, currentPage + 1)
+                            )
+                          }
+                          disabled={currentPage === totalPages}
+                          className={`md:px-4 px-2 py-2 rounded-full font-lato font-medium transition-all duration-300 ${
+                            currentPage === totalPages
+                              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                              : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg"
+                          }`}>
+                          <FaAnglesRight />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -43,7 +43,7 @@ export default function CategoryDropdown({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl shadow-2xl hover:bg-[#FFF6F8] transition-all duration-300 font-lato"
+        className="w-full flex items-center justify-between p-4 bg-white/95 backdrop-blur-xl  shadow-2xl hover:bg-[#FFF6F8] transition-all duration-300 font-lato"
         aria-haspopup="listbox"
         aria-expanded={isOpen}>
         <div className="flex items-center gap-3">
@@ -62,7 +62,7 @@ export default function CategoryDropdown({
       {/* Dropdown Menu */}
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 z-50">
-          <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 rounded-2xl shadow-2xl overflow-hidden">
+          <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 shadow-2xl overflow-hidden">
             <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100">
               {categories.map((category) => {
                 const isActive = selectedCategory === category.slug;

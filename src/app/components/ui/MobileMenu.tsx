@@ -20,15 +20,24 @@ export default function MobileMenu() {
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
+      document.body.style.height = "100%";
       document.documentElement.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset";
-      document.documentElement.style.overflow = "unset";
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.height = "";
+      document.documentElement.style.overflow = "";
     }
 
     return () => {
-      document.body.style.overflow = "unset";
-      document.documentElement.style.overflow = "unset";
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+      document.body.style.height = "";
+      document.documentElement.style.overflow = "";
     };
   }, [mobileMenuOpen]);
 
@@ -62,26 +71,30 @@ export default function MobileMenu() {
         <FiMenu className="w-5 h-5 text-[#B11C5F] group-hover:text-[#F28C8C] transition-colors duration-300" />
       </button>
 
-      {/* FIXED: Full Screen Mobile Menu */}
+      {/* Enhanced Full Screen Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 h-screen z-50 lg:hidden">
+        <div
+          className="fixed inset-0 z-50 lg:hidden"
+          style={{ height: "100vh" }}>
           <div className="absolute inset-0 bg-gradient-to-br from-[#FFF6F8] via-[#FFEEF2] to-[#FFF6F8]">
-            {/* Decorative Elements */}
-            <div className="absolute top-10 left-10 w-20 h-20 bg-gradient-to-br from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-full animate-pulse"></div>
-            <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-tl from-[#B11C5F]/20 to-[#F28C8C]/20 rounded-full animate-bounce"></div>
+            {/* Decorative Elements - Responsive */}
+            <div className="absolute top-4 sm:top-10 left-4 sm:left-10 w-12 h-12 sm:w-20 sm:h-20 bg-gradient-to-br from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-16 sm:bottom-20 right-4 sm:right-10 w-10 h-10 sm:w-16 sm:h-16 bg-gradient-to-tl from-[#B11C5F]/20 to-[#F28C8C]/20 rounded-full animate-bounce"></div>
+            <div className="absolute top-1/3 right-8 w-6 h-6 bg-[#C59D5F]/30 rounded-full animate-pulse delay-1000"></div>
+            <div className="absolute bottom-1/3 left-8 w-8 h-8 bg-[#F28C8C]/20 rounded-full animate-bounce delay-500"></div>
 
-            <div className="relative h-full flex flex-col">
-              {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-[#F28C8C]/20 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center">
-                    <FiHeart className="w-5 h-5 text-white animate-pulse" />
+            <div className="relative h-full flex flex-col min-h-0">
+              {/* Header - Compact */}
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#F28C8C]/20 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 flex-shrink-0">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center">
+                    <FiHeart className="w-4 h-4 sm:w-5 sm:h-5 text-white animate-pulse" />
                   </div>
                   <div>
-                    <h2 className="font-playfair text-xl font-bold text-[#B11C5F]">
+                    <h2 className="font-playfair text-lg sm:text-xl font-bold text-[#B11C5F]">
                       Kaya Beauty
                     </h2>
-                    <p className="font-cormorant text-sm text-[#C59D5F] italic">
+                    <p className="font-cormorant text-xs sm:text-sm text-[#C59D5F] italic">
                       Wellness & Serenity
                     </p>
                   </div>
@@ -89,12 +102,12 @@ export default function MobileMenu() {
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-2 rounded-full hover:bg-white/50 transition-all duration-300 group">
-                  <FiX className="w-6 h-6 text-[#B11C5F] group-hover:text-[#F28C8C] transition-colors duration-300" />
+                  <FiX className="w-5 h-5 sm:w-6 sm:h-6 text-[#B11C5F] group-hover:text-[#F28C8C] transition-colors duration-300" />
                 </button>
               </div>
 
-              {/* Navigation Links */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-2">
+              {/* Navigation Links - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-1 sm:space-y-2 min-h-0">
                 {NAV_LINKS.map((link, index) => {
                   const isActive = pathname === link.href;
                   return (
@@ -102,7 +115,7 @@ export default function MobileMenu() {
                       key={link.href}
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`group flex items-center justify-between p-4 rounded-2xl transition-all duration-300 ${
+                      className={`group flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-300 ${
                         isActive
                           ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-lg"
                           : "text-[#444444] hover:bg-white/50 hover:text-[#B11C5F] border border-transparent hover:border-[#F28C8C]/20"
@@ -113,45 +126,45 @@ export default function MobileMenu() {
                           ? "slideInLeft 0.5s ease-out forwards"
                           : "none",
                       }}>
-                      <span className="font-lato font-medium text-lg">
+                      <span className="font-lato font-medium text-base sm:text-lg">
                         {link.label}
                       </span>
                       <div className="flex items-center space-x-2">
                         {isActive && (
-                          <FiHeart className="w-4 h-4 animate-pulse" />
+                          <FiHeart className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse" />
                         )}
-                        <FiChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                        <FiChevronRight className="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform duration-300" />
                       </div>
                     </Link>
                   );
                 })}
               </div>
 
-              {/* User Section */}
-              <div className="border-t border-[#F28C8C]/20 p-6 bg-gradient-to-r from-[#FFF6F8] to-white">
+              {/* User Section - Fixed at bottom */}
+              <div className="border-t border-[#F28C8C]/20 p-3 sm:p-6 bg-gradient-to-r from-[#FFF6F8] to-white flex-shrink-0">
                 {user?.isLoggedIn ? (
-                  <div className="space-y-4 pb-10">
+                  <div className="space-y-3 sm:space-y-4">
                     <div className="text-center">
-                      <h3 className="font-playfair text-lg font-bold text-[#B11C5F]">
+                      <h3 className="font-playfair text-base sm:text-lg font-bold text-[#B11C5F]">
                         Welcome Back!
                       </h3>
-                      <p className="font-cormorant text-[#C59D5F] italic">
+                      <p className="font-cormorant text-sm sm:text-base text-[#C59D5F] italic truncate">
                         {user.display_name || user.email}
                       </p>
                     </div>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-lato font-medium py-3 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                      <span>Logout</span>
+                      className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-lato font-medium py-2.5 sm:py-3 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                      <span className="text-sm sm:text-base">Logout</span>
                     </button>
                   </div>
                 ) : (
-                  <div className="space-y-4 pb-10">
+                  <div className="space-y-3 sm:space-y-4">
                     <div className="text-center">
-                      <h3 className="font-playfair text-lg font-bold text-[#B11C5F]">
+                      <h3 className="font-playfair text-base sm:text-lg font-bold text-[#B11C5F]">
                         Join Kaya Beauty
                       </h3>
-                      <p className="font-cormorant text-[#C59D5F] italic">
+                      <p className="font-cormorant text-sm sm:text-base text-[#C59D5F] italic">
                         Your wellness journey starts here
                       </p>
                     </div>
@@ -160,9 +173,9 @@ export default function MobileMenu() {
                         dispatch(openModal("login"));
                         setMobileMenuOpen(false);
                       }}
-                      className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-lato font-medium py-3 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                      <FiHeart className="w-4 h-4" />
-                      <span>Sign In</span>
+                      className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-lato font-medium py-2.5 sm:py-3 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                      <FiHeart className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="text-sm sm:text-base">Sign In</span>
                     </button>
                   </div>
                 )}

@@ -454,8 +454,8 @@ export default function Services() {
                 </form>
               </div>
 
-              <div className="my-6 bg-white rounded-xl shadow-lg overflow-hidden">
-                <h2 className="font-playfair font-bold mb-1 text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
+              <div className="my-6 bg-white rounded-xl shadow-lg">
+                <h2 className="font-playfair font-bold mb-1 text-xl rounded-t-2xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
                   CATEGORIES
                 </h2>
 
