@@ -191,10 +191,10 @@ export default function LocationSelectorPanel({
 
       {/* Location Selection Panel */}
       {showLocationPanel && (
-        <div className="fixed inset-0 h-screen w-screen z-50 flex justify-end">
+        <div className="fixed inset-0 h-dvh w-screen z-50 flex justify-end">
           <div
             ref={locationPanelRef}
-            className="bg-gradient-to-br from-[#FFF6F8] to-white backdrop-blur-md rounded-2xl shadow-2xl max-w-sm w-full h-screen flex flex-col border border-[#F28C8C]/20">
+            className="bg-gradient-to-br from-[#FFF6F8] to-white backdrop-blur-md shadow-2xl max-w-sm w-full h-dvh flex flex-col border border-[#F28C8C]/20">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-[#F28C8C]/20 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 rounded-t-2xl">
               <h3 className="font-playfair text-xl font-bold text-[#B11C5F]">
@@ -251,21 +251,39 @@ export default function LocationSelectorPanel({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {filteredLocations.map((location: any, index: any) => (
-                    <button
-                      key={index}
-                      onClick={() => handleLocationSelect(location)}
-                      className="w-full text-left p-3 rounded-xl hover:bg-white/50 transition-all duration-300 group border border-transparent hover:border-[#F28C8C]/20">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center">
-                          <FiMapPin className="w-4 h-4 text-white" />
+                  {filteredLocations.map((location: any, index: any) => {
+                    const isSelected =
+                      selectedLocationName === location.locality;
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleLocationSelect(location)}
+                        className={`w-full text-left p-3 rounded-xl transition-all duration-300 group border-2 ${
+                          isSelected
+                            ? "bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 border-[#B11C5F] shadow-md"
+                            : "border-transparent hover:border-[#F28C8C]/20 hover:bg-white/50"
+                        }`}>
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                              isSelected
+                                ? "bg-[#B11C5F]"
+                                : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F]"
+                            }`}>
+                            <FiMapPin className="w-4 h-4 text-white" />
+                          </div>
+                          <span
+                            className={`font-lato transition-colors duration-300 ${
+                              isSelected
+                                ? "text-[#B11C5F] font-semibold"
+                                : "text-[#444444] group-hover:text-[#B11C5F]"
+                            }`}>
+                            {location.locality}
+                          </span>
                         </div>
-                        <span className="font-lato text-[#444444] group-hover:text-[#B11C5F] transition-colors duration-300">
-                          {location.locality}
-                        </span>
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
