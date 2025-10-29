@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X, CreditCard, Shield, Lock } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { getPaymentForm } from "@/store/slices/paymentSlice";
@@ -16,15 +16,22 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
 }) => {
   const dispatch = useAppDispatch();
   const { paymentForm, loading } = useAppSelector((state) => state.payment);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   useEffect(() => {
     if (isOpen && merchantUuid) {
+      console.log("🔄 Fetching payment form for:", merchantUuid);
       dispatch(getPaymentForm({ merchant_uuid: merchantUuid }));
-      setIframeLoaded(false);
     }
   }, [isOpen, merchantUuid, dispatch]);
+
+  useEffect(() => {
+    if (paymentForm) {
+      console.log(
+        "✅ Payment form received:",
+        paymentForm.substring(0, 100) + "..."
+      );
+    }
+  }, [paymentForm]);
 
   useEffect(() => {
     if (isOpen) {
@@ -32,13 +39,11 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
       document.body.style.position = "fixed";
       document.body.style.width = "100%";
       document.body.style.height = "100%";
-      document.documentElement.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
       document.body.style.position = "";
       document.body.style.width = "";
       document.body.style.height = "";
-      document.documentElement.style.overflow = "";
     }
 
     return () => {
@@ -46,251 +51,138 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
       document.body.style.position = "";
       document.body.style.width = "";
       document.body.style.height = "";
-      document.documentElement.style.overflow = "";
     };
   }, [isOpen]);
 
-  // Auto-submit the form inside iframe with enhanced styling
-  useEffect(() => {
-    if (paymentForm && iframeRef.current && iframeLoaded) {
-      const iframeDoc =
-        iframeRef.current.contentDocument ||
-        iframeRef.current.contentWindow?.document;
-
-      if (iframeDoc) {
-        iframeDoc.open();
-        iframeDoc.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-            <meta name="mobile-web-app-capable" content="yes">
-            <meta name="apple-mobile-web-app-capable" content="yes">
-            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-            <style>
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                -webkit-tap-highlight-color: transparent;
-              }
-              
-              *::-webkit-scrollbar {
-                display: none;
-              }
-              
-              * {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-              }
-              
-              html {
-                height: 100%;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-              }
-              
-              body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                padding: 0.5rem;
-                min-height: 100vh;
-                display: flex;
-                align-items: flex-start;
-                justify-content: center;
-                padding-top: 1rem;
-                padding-bottom: 2rem;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-              }
-              
-              form {
-                background: white;
-                border-radius: 12px;
-                padding: 1.5rem;
-                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-                max-width: 500px;
-                width: 100%;
-                margin: 0 auto;
-              }
-              
-              h1, h2, h3 {
-                color: #1a202c;
-                margin-bottom: 1rem;
-                font-weight: 700;
-                text-align: center;
-                font-size: 1.25rem;
-              }
-              
-              label {
-                display: block;
-                font-weight: 600;
-                color: #2d3748;
-                margin-bottom: 0.4rem;
-                font-size: 0.8rem;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-              }
-              
-              input[type="text"],
-              input[type="email"],
-              input[type="tel"],
-              input[type="number"],
-              select {
-                width: 100%;
-                padding: 0.75rem;
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                font-size: 16px;
-                transition: all 0.2s ease;
-                background: #f7fafc;
-                color: #2d3748;
-                font-family: inherit;
-                -webkit-appearance: none;
-                appearance: none;
-              }
-              
-              input[type="text"]:focus,
-              input[type="email"]:focus,
-              input[type="tel"]:focus,
-              input[type="number"]:focus,
-              select:focus {
-                outline: none;
-                border-color: #667eea;
-                background: white;
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-              }
-              
-              select {
-                cursor: pointer;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232d3748' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-                background-repeat: no-repeat;
-                background-position: right 0.75rem center;
-                padding-right: 2rem;
-              }
-              
-              input[type="submit"],
-              button[type="submit"] {
-                width: 100%;
-                padding: 0.875rem;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                margin-top: 1rem;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-                -webkit-appearance: none;
-                appearance: none;
-              }
-              
-              input[type="submit"]:active,
-              button[type="submit"]:active {
-                transform: scale(0.98);
-              }
-              
-              .form-group {
-                margin-bottom: 1rem;
-              }
-              
-              .form-row {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 0.75rem;
-              }
-              
-              table {
-                width: 100%;
-                margin: 0.5rem 0;
-              }
-              
-              td {
-                padding: 0.5rem;
-              }
-              
-              @media (max-height: 667px) {
-                body {
-                  padding: 0.25rem;
-                  padding-top: 0.5rem;
-                  padding-bottom: 1rem;
-                }
-                
-                form {
-                  padding: 1rem;
-                  border-radius: 8px;
-                }
-                
-                h1, h2, h3 {
-                  font-size: 1.1rem;
-                  margin-bottom: 0.75rem;
-                }
-                
-                .form-group {
-                  margin-bottom: 0.75rem;
-                }
-                
-                label {
-                  font-size: 0.75rem;
-                  margin-bottom: 0.3rem;
-                }
-                
-                input[type="text"],
-                input[type="email"],
-                input[type="tel"],
-                input[type="number"],
-                select {
-                  padding: 0.625rem;
-                }
-                
-                input[type="submit"],
-                button[type="submit"] {
-                  padding: 0.75rem;
-                  font-size: 0.9rem;
-                }
-              }
-            </style>
-          </head>
-          <body>
-            ${paymentForm}
-            <script>
-              document.addEventListener('DOMContentLoaded', function() {
-                const form = document.querySelector('form');
-                if (form) {
-                  form.target = '_self';
-                  form.submit();
-                }
-              });
-            </script>
-          </body>
-          </html>
-        `);
-        iframeDoc.close();
-      }
-    }
-  }, [paymentForm, iframeLoaded]);
-
   if (!isOpen) return null;
+
+  // Create complete HTML document for iframe
+  const iframeContent = paymentForm
+    ? `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      <title>Payment Form</title>
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+        
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          padding: 1.5rem;
+          min-height: 100vh;
+          display: flex;
+          align-items: flex-start;
+          justify-content: center;
+        }
+        
+        form {
+          background: white;
+          border-radius: 16px;
+          padding: 2rem;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          max-width: 550px;
+          width: 100%;
+        }
+        
+        h1, h2, h3 {
+          color: #1a202c;
+          margin-bottom: 1.5rem;
+          font-weight: 700;
+          text-align: center;
+        }
+        
+        label {
+          display: block;
+          font-weight: 600;
+          color: #2d3748;
+          margin-bottom: 0.5rem;
+          font-size: 0.875rem;
+        }
+        
+        input, select {
+          width: 100%;
+          padding: 0.875rem;
+          border: 2px solid #e2e8f0;
+          border-radius: 8px;
+          font-size: 16px;
+          background: #f7fafc;
+          color: #2d3748;
+        }
+        
+        input:focus, select:focus {
+          outline: none;
+          border-color: #667eea;
+          background: white;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        input[type="submit"], button[type="submit"] {
+          width: 100%;
+          padding: 1rem;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          margin-top: 1.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        input[type="submit"]:hover, button[type="submit"]:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        table {
+          width: 100%;
+          margin: 1rem 0;
+        }
+        
+        td {
+          padding: 0.75rem;
+        }
+        
+        @media (max-width: 640px) {
+          body { padding: 0.5rem; }
+          form { padding: 1.5rem; }
+          input, select { font-size: 16px; }
+        }
+      </style>
+    </head>
+    <body>
+      ${paymentForm}
+      <script>
+        console.log('✅ Form loaded successfully');
+        const form = document.querySelector('form');
+        if (form) {
+          console.log('📋 Form found:', form.action);
+        } else {
+          console.error('❌ No form in HTML');
+        }
+      </script>
+    </body>
+    </html>
+  `
+    : "";
 
   return (
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-0 sm:p-4"
-      style={{
-        height: "100dvh", // Dynamic viewport height for mobile browsers
-      }}>
+      style={{ height: "100vh" }}>
       <div
-        className="sm:rounded-3xl sm:max-w-xl sm:mx-4 sm:shadow-2xl relative w-full bg-white flex flex-col overflow-hidden"
-        style={{
-          height: "100%",
-
-          borderRadius: 0,
-        }}>
-        {/* Compact Header for Small Screens */}
+        className="relative w-full bg-white flex flex-col overflow-hidden sm:rounded-3xl sm:max-w-5xl sm:mx-4 sm:shadow-2xl"
+        style={{ height: "100%", maxHeight: "100%" }}>
+        {/* Header */}
         <div className="relative bg-gradient-to-r from-pink-600 to-purple-600 p-3 sm:p-6 flex-shrink-0">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
@@ -317,12 +209,10 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           </div>
         </div>
 
-        {/* Content with Dynamic Height */}
+        {/* Content */}
         <div
           className="flex-1 overflow-hidden bg-gradient-to-br from-gray-50 to-white relative"
-          style={{
-            minHeight: 0, // Important for flex child
-          }}>
+          style={{ minHeight: 0 }}>
           {loading ? (
             <div className="flex items-center justify-center h-full p-4">
               <div className="text-center">
@@ -336,19 +226,17 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
               </div>
             </div>
           ) : paymentForm ? (
-            <div
-              className="h-full overflow-auto"
-              style={{ WebkitOverflowScrolling: "touch" }}>
+            <div className="h-full">
               <iframe
-                ref={iframeRef}
-                onLoad={() => setIframeLoaded(true)}
+                srcDoc={iframeContent}
                 title="Secure Payment Form"
                 className="w-full h-full border-0"
+                sandbox="allow-forms allow-scripts allow-same-origin allow-top-navigation"
                 style={{
-                  minHeight: "100%",
+                  width: "100%",
+                  height: "100%",
+                  border: "none",
                 }}
-                sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin allow-top-navigation allow-top-navigation-by-user-activation"
-                allow="payment"
               />
             </div>
           ) : (
@@ -368,7 +256,7 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           )}
         </div>
 
-        {/* Compact Footer */}
+        {/* Footer */}
         <div className="bg-gray-50 border-t border-gray-200 px-3 sm:px-6 py-2 sm:py-4 flex-shrink-0">
           <div className="flex items-center justify-center gap-3 sm:gap-6 text-xs text-gray-600">
             <div className="flex items-center gap-1 sm:gap-2">
