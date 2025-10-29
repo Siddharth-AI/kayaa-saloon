@@ -172,7 +172,7 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ content }) => {
 
             {/* Services Tab Content */}
             {activeTab === "services" && (
-              <div className="flex gap-3 md:flex-col md:gap-0 space-y-0 md:space-y-3 categories_scroll">
+              <div className="flex gap-3 md:flex-col md:gap-0 space-y-0 md:space-y-3">
                 {services.length === 0 && items.length === 0 ? (
                   <div className="text-center py-8">
                     <Calendar className="w-12 h-12 mx-auto mb-3 text-[#B11C5F] opacity-50" />
@@ -269,7 +269,7 @@ const LeftPanel: React.FC<LeftPanelProps> = ({ content }) => {
 
             {/* Products Tab Content */}
             {activeTab === "products" && (
-              <div className="flex categories_scroll gap-3 md:flex-col md:gap-0 space-y-0 md:space-y-3">
+              <div className="flex gap-3 md:flex-col md:gap-0 space-y-0 md:space-y-3">
                 {products.length === 0 ? (
                   <div className="text-center py-8">
                     <ShoppingBag className="w-12 h-12 mx-auto mb-3 text-[#B11C5F] opacity-50" />

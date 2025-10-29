@@ -359,6 +359,16 @@ const Page = () => {
     }
   };
 
+  const handlePayment = () => {
+    console.log("button click");
+    if (!tempToken && !user) {
+      toastError("You must be logged in to book an appointment.");
+      dispatch(openModal("login"));
+      return;
+    }
+    setIsPaymentModalOpen(true);
+  };
+
   const serviceTotal = cart.reduce(
     (acc: number, cur: any) => acc + (cur.price || 0),
     0
@@ -392,7 +402,7 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
-      <div className="w-full py-24 lg:py-32 pl-11 relative overflow-hidden group">
+      <div className="w-full py-24 lg:py-32 pl-11 relative group">
         {/* Animated Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -499,7 +509,7 @@ const Page = () => {
         </div>
 
         {/* Enhanced Floating Particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+        <div className="absolute inset-0 pointer-events-none z-[1]">
           <div className="absolute top-1/5 left-1/5 w-1.5 h-1.5 bg-white/70 rounded-full animate-float" />
           <div className="absolute top-1/3 left-2/3 w-1 h-1 bg-[#F28C8C]/60 rounded-full animate-float-delay-1" />
           <div className="absolute bottom-1/3 left-1/2 w-1.5 h-1.5 bg-[#C59D5F]/50 rounded-full animate-float-delay-2" />
@@ -510,7 +520,7 @@ const Page = () => {
         </div>
 
         {/* Booking & Appointment Theme Magic Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+        <div className="absolute inset-0 pointer-events-none z-[5]">
           <div className="absolute top-28 left-40 text-white/40 animate-pulse delay-1000">
             📋
           </div>
@@ -649,7 +659,7 @@ const Page = () => {
                   Payment Method
                 </h4>
                 <button
-                  onClick={() => setIsPaymentModalOpen(true)}
+                  onClick={handlePayment}
                   className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-lato font-semibold px-4 py-2 rounded-xl transition-all duration-300">
                   Add New Card
                 </button>
