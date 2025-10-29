@@ -23,6 +23,7 @@ import ProductModal from "@/components/model/ProductModal";
 // Import the new action
 import { addProductToCart } from "@/store/slices/cartSlice";
 import { toastSuccess } from "@/components/common/toastService";
+import ProductsCart from "@/components/leftPanel/ProductsCart";
 interface Product {
   id: number;
   name: string;
@@ -530,8 +531,8 @@ export default function Products() {
           {/* Left Sidebar */}
           <aside className="w-full md:w-[350px]">
             {/* Categories Section */}
-            <div className="  ">
-              <h2 className="bg-white p-3 rounded-lg md:px-3 md:pt-3 md:pb-1 mb-3 md:mb-0 md:rounded-t-2xl font-playfair font-bold text-[#B11C5F] text-xl">
+            <div className="mb-4 bg-white rounded-xl shadow-lg overflow-hidden">
+              <h2 className=" font-playfair font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
                 CATEGORIES
               </h2>
 
@@ -546,7 +547,7 @@ export default function Products() {
                 />
               </div>
 
-              <ul className="bg-white p-3 rounded-b-2xl hidden md:block space-y-2 h-[450px] overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
+              <ul className=" my-1 hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
                 {loading ? (
                   <div className="text-center py-12">
                     <div className="flex justify-center items-center py-12">
@@ -567,10 +568,10 @@ export default function Products() {
                     <>
                       <li key={cat.id}>
                         <button
-                          className={`text-left w-full px-3 py-2 rounded-xl transition-all duration-300 font-lato font-medium ${
+                          className={`text-left w-full px-5 py-2 transition-all duration-300 font-lato font-medium ${
                             currentFilters.selectedCategory === cat.id
                               ? "bg-[#F28C8C] text-white shadow-md"
-                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20"
+                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
                           }`}
                           onClick={() => dispatch(setSelectedCategory(cat.id))}>
                           {cat.name}
@@ -581,6 +582,8 @@ export default function Products() {
                 )}
               </ul>
             </div>
+
+            <ProductsCart />
           </aside>
 
           {/* Right Content Area */}

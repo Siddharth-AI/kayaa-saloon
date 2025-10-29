@@ -41,6 +41,9 @@ const Page = () => {
   const [showModal, setShowModal] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
 
   const {
     paymentCards = [],
@@ -374,7 +377,8 @@ const Page = () => {
     0
   );
   const tax = 19.07;
-  const totalPayable = serviceTotal + tax;
+  const discountAmount = (serviceTotal * couponDiscount) / 100;
+  const totalPayable = serviceTotal + tax - discountAmount;
 
   // // Inside your component
   // const handlePaymentSuccess = () => {
@@ -400,9 +404,30 @@ const Page = () => {
     }
   };
 
+  const handleApplyCoupon = () => {
+    const validCoupons: { [key: string]: number } = {
+      SAVE10: 10,
+      SAVE20: 20,
+      WELCOME15: 15,
+    };
+
+    if (validCoupons[couponCode.toUpperCase()]) {
+      setCouponDiscount(validCoupons[couponCode.toUpperCase()]);
+      setCouponApplied(true);
+    } else {
+      toastError("Invalid coupon code");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponCode("");
+    setCouponDiscount(0);
+    setCouponApplied(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
-      <div className="w-full py-24 lg:py-32 pl-11 relative group">
+      <div className="w-full py-24 lg:py-32 pl-11 relative group overflow-hidden">
         {/* Animated Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -585,11 +610,51 @@ const Page = () => {
               </button>
             </div>
             <LeftPanel />
-            <div className="bg-white/80 backdrop-blur-sm p-6 shadow-lg relative rounded-2xl border-2 border-[#F28C8C]/20 hover:border-[#B11C5F] text-[#B11C5F] transition-all duration-300 group mb-4 py-2 hover:shadow-xl hover:shadow-[#F28C8C]/20">
-              <h4 className="text-xl font-playfair font-bold mb-4 text-[#B11C5F]">
+
+            {/* Coupon Code Section */}
+            <div className="mt-3 bg-white/80 backdrop-blur-sm overflow-hidden relative rounded-2xl border-2 border-[#F28C8C]/20 text-[#B11C5F] transition-all duration-300 group mb-4 pb-4 shadow-xl shadow-[#F28C8C]/20">
+              <h4 className="text-xl font-playfair font-bold mb-4 bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
+                Coupon Code
+              </h4>
+              <div className="flex gap-2 px-3">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  placeholder="Enter coupon code"
+                  className="flex-1 p-3 border-2 border-[#F28C8C]/30 rounded-xl focus:outline-none focus:border-[#B11C5F] transition-all duration-300 text-[#444444] placeholder-[#C59D5F] font-lato"
+                  disabled={couponApplied}
+                />
+                {!couponApplied ? (
+                  <button
+                    onClick={handleApplyCoupon}
+                    disabled={!couponCode.trim()}
+                    className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-lato font-semibold px-4 py-2 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Apply
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleRemoveCoupon}
+                    className="bg-red-500 hover:bg-red-600 text-white font-lato font-semibold px-4 py-2 rounded-xl transition-all duration-300">
+                    Remove
+                  </button>
+                )}
+              </div>
+              {couponApplied && (
+                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl">
+                  <p className="text-green-600 font-lato text-sm">
+                    ✓ Coupon "{couponCode}" applied! You saved {couponDiscount}%
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Pricing Summary */}
+            <div className="mt-4 bg-white/80 backdrop-blur-sm relative overflow-hidden rounded-2xl border-2 border-[#F28C8C]/20 text-[#B11C5F] transition-all duration-300 group mb-4 shadow-lg ">
+              <h4 className="text-xl font-playfair font-bold mb-4 bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
                 Pricing Summary
               </h4>
-              <div className="space-y-3">
+              <div className="space-y-3 px-4 pb-4">
                 <div className="flex justify-between items-center">
                   <span className="text-[#444444] font-lato">
                     Service Total
@@ -604,6 +669,16 @@ const Page = () => {
                     ₹ {tax.toFixed(2)}
                   </span>
                 </div>
+                {couponApplied && (
+                  <div className="flex justify-between items-center text-green-600">
+                    <span className="font-lato">
+                      Discount ({couponDiscount}%)
+                    </span>
+                    <span className="font-bold font-lato">
+                      -₹ {discountAmount.toFixed(2)}
+                    </span>
+                  </div>
+                )}
                 <div className="border-t-2 border-[#F28C8C]/30 pt-3 mt-3 flex justify-between items-center">
                   <span className="font-bold text-lg text-[#B11C5F] font-playfair">
                     Total Payable
@@ -617,7 +692,7 @@ const Page = () => {
           </div>
 
           {/* Right Panel */}
-          <div className="w-full bg-white/80 backdrop-blur-sm p-6 shadow-lg relative rounded-2xl border-2 border-[#F28C8C]/20">
+          <div className="w-full relative rounded-2xl">
             {/* Error Display */}
             {/* {bookingState.error && (
             <div className="mb-4 p-4 bg-red-50 border-2 border-red-200 rounded-2xl text-red-600 flex justify-between items-center animate-fadeIn">

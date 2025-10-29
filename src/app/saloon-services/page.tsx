@@ -454,8 +454,8 @@ export default function Services() {
                 </form>
               </div>
 
-              <div className="my-6">
-                <h2 className="font-playfair font-bold mb-4 text-[#B11C5F] text-xl">
+              <div className="my-6 bg-white rounded-xl shadow-lg overflow-hidden">
+                <h2 className="font-playfair font-bold mb-1 text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
                   CATEGORIES
                 </h2>
 
@@ -467,7 +467,7 @@ export default function Services() {
                   />
                 </div>
 
-                <ul className="hidden md:block space-y-2 max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 pr-2 categories_scroll">
+                <ul className="hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
                   {categories.map((cat) => (
                     <li
                       key={
@@ -476,10 +476,10 @@ export default function Services() {
                           : "all"
                       }>
                       <button
-                        className={`text-left w-full px-3 py-2 rounded-xl transition-all duration-300 font-lato font-medium ${
+                        className={`text-left w-full px-5 py-2 transition-all duration-300 font-lato font-medium ${
                           selectedCategory === cat.slug
                             ? "bg-[#F28C8C] text-white shadow-md"
-                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20"
+                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] "
                         }`}
                         onClick={() =>
                           setSelectedCategory(cat.slug as string | null)
