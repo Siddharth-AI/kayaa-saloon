@@ -53,7 +53,7 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Create complete HTML document for iframe with AUTO-CLICK
+  // Create complete HTML document for iframe with HIDDEN button + Loading
   const iframeContent = paymentForm
     ? `
     <!DOCTYPE html>
@@ -77,6 +77,12 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           display: flex;
           align-items: flex-start;
           justify-content: center;
+        }
+        
+        /* HIDE the entire body initially */
+        body.loading {
+          opacity: 0 !important;
+          pointer-events: none !important;
         }
         
         form {
@@ -149,37 +155,61 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           padding: 0.75rem;
         }
         
-        /* Loading overlay */
+        /* Beautiful loading overlay */
         .loading-overlay {
           position: fixed;
           inset: 0;
-          background: rgba(102, 126, 234, 0.95);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           display: flex;
           align-items: center;
           justify-content: center;
           z-index: 9999;
+          animation: fadeIn 0.3s ease-in;
         }
         
-        .loading-text {
-          color: white;
-          font-size: 1.25rem;
-          font-weight: 600;
+        .loading-overlay.hidden {
+          animation: fadeOut 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+          from { opacity: 1; }
+          to { opacity: 0; }
+        }
+        
+        .loading-content {
           text-align: center;
+          color: white;
         }
         
         .spinner {
-          width: 50px;
-          height: 50px;
-          border: 4px solid rgba(255, 255, 255, 0.3);
-          border-top: 4px solid white;
+          width: 60px;
+          height: 60px;
+          border: 5px solid rgba(255, 255, 255, 0.3);
+          border-top: 5px solid white;
           border-radius: 50%;
           animation: spin 1s linear infinite;
-          margin: 0 auto 1rem;
+          margin: 0 auto 1.5rem;
         }
         
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+        }
+        
+        .loading-subtext {
+          font-size: 0.875rem;
+          opacity: 0.9;
         }
         
         @media (max-width: 640px) {
@@ -189,18 +219,35 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
         }
       </style>
     </head>
-    <body>
-      <div id="loading-overlay" class="loading-overlay" style="display: none;">
-        <div>
+    <body class="loading">
+      <!-- Loading Overlay - Shows while button is hidden -->
+      <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
           <div class="spinner"></div>
-          <div class="loading-text">Loading registration form...</div>
+          <div class="loading-text">Preparing your secure form</div>
+          <div class="loading-subtext">Please wait a moment...</div>
         </div>
       </div>
       
       ${paymentForm}
       
       <script>
-        console.log('✅ Form loaded');
+        console.log('✅ Form loaded in iframe');
+        
+        // Function to hide loading and show form
+        function hideLoadingShowForm() {
+          const overlay = document.getElementById('loading-overlay');
+          const body = document.body;
+          
+          if (overlay) {
+            overlay.classList.add('hidden');
+            setTimeout(() => {
+              overlay.style.display = 'none';
+              body.classList.remove('loading');
+              console.log('✅ Form is now visible');
+            }, 500); // Wait for fade-out animation
+          }
+        }
         
         // Function to auto-click the REGISTER button
         function autoClickRegister() {
@@ -213,7 +260,6 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
             'button[type="submit"]',
             'input[type="button"][value*="REGISTER"]',
             'input[type="button"][value*="Register"]',
-            'button:contains("REGISTER")',
             'input[type="submit"]',
             'button'
           ];
@@ -222,70 +268,73 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
           
           // Try each selector
           for (const selector of selectors) {
-            registerButton = document.querySelector(selector);
-            if (registerButton) {
-              const buttonText = registerButton.value || registerButton.textContent || '';
-              if (buttonText.toUpperCase().includes('REGISTER')) {
+            const buttons = document.querySelectorAll(selector);
+            for (const btn of buttons) {
+              const buttonText = (btn.value || btn.textContent || '').toUpperCase();
+              if (buttonText.includes('REGISTER')) {
+                registerButton = btn;
                 console.log('✅ Found REGISTER button:', buttonText);
                 break;
               }
             }
-          }
-          
-          // Also try to find by text content
-          if (!registerButton) {
-            const allButtons = document.querySelectorAll('button, input[type="submit"], input[type="button"]');
-            for (const btn of allButtons) {
-              const text = (btn.value || btn.textContent || '').toUpperCase();
-              if (text.includes('REGISTER')) {
-                registerButton = btn;
-                console.log('✅ Found REGISTER button by text:', text);
-                break;
-              }
-            }
+            if (registerButton) break;
           }
           
           if (registerButton) {
             console.log('🎯 Auto-clicking REGISTER button...');
             
-            // Show loading overlay
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) {
-              overlay.style.display = 'flex';
-            }
+            // Click the button
+            registerButton.click();
+            console.log('✅ REGISTER button clicked!');
             
-            // Small delay to ensure everything is ready
+            // Wait a bit, then check if form changed
             setTimeout(() => {
-              registerButton.click();
-              console.log('✅ REGISTER button clicked!');
-            }, 500);
+              // Check if we're on a different page/form now
+              const newForm = document.querySelector('form');
+              if (newForm) {
+                const hasRegisterButton = Array.from(
+                  document.querySelectorAll('input, button')
+                ).some(el => {
+                  const text = (el.value || el.textContent || '').toUpperCase();
+                  return text.includes('REGISTER');
+                });
+                
+                // If no REGISTER button found, we're on the actual form
+                if (!hasRegisterButton) {
+                  console.log('✅ Registration form loaded!');
+                  hideLoadingShowForm();
+                } else {
+                  // Still on intermediate page, hide loading anyway
+                  setTimeout(hideLoadingShowForm, 1000);
+                }
+              }
+            }, 1500);
             
             return true;
           } else {
-            console.warn('⚠️ REGISTER button not found');
+            console.warn('⚠️ REGISTER button not found, showing form anyway');
+            hideLoadingShowForm();
             return false;
           }
         }
         
-        // Try to auto-click when DOM is ready
+        // Start auto-click process when ready
         if (document.readyState === 'loading') {
           document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(autoClickRegister, 300);
+            setTimeout(autoClickRegister, 200);
           });
         } else {
-          setTimeout(autoClickRegister, 300);
+          setTimeout(autoClickRegister, 200);
         }
         
-        // Backup: Try again after a bit if first attempt fails
+        // Backup: Show form after 3 seconds no matter what
         setTimeout(function() {
-          const form = document.querySelector('form');
-          if (form && !form.hasAttribute('data-auto-clicked')) {
-            console.log('🔄 Retrying auto-click...');
-            if (autoClickRegister()) {
-              form.setAttribute('data-auto-clicked', 'true');
-            }
+          const overlay = document.getElementById('loading-overlay');
+          if (overlay && overlay.style.display !== 'none') {
+            console.log('⏰ Timeout reached, showing form');
+            hideLoadingShowForm();
           }
-        }, 1000);
+        }, 3000);
       </script>
     </body>
     </html>
