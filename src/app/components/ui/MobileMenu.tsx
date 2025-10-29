@@ -75,7 +75,7 @@ export default function MobileMenu() {
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 z-[60] lg:hidden"
-          style={{ height: "100vh" }}>
+          style={{ height: "100dvh" }}>
           <div className="absolute inset-0 bg-gradient-to-br from-[#FFF6F8] via-[#FFEEF2] to-[#FFF6F8]">
             {/* Decorative Elements - Responsive */}
             <div className="absolute top-4 sm:top-10 left-4 sm:left-10 w-12 h-12 sm:w-20 sm:h-20 bg-gradient-to-br from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-full animate-pulse"></div>
@@ -107,7 +107,7 @@ export default function MobileMenu() {
               </div>
 
               {/* Navigation Links - Scrollable */}
-              <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-1 sm:space-y-2 min-h-0">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-1 sm:space-y-2 min-h-0 pb-4">
                 {NAV_LINKS.map((link, index) => {
                   const isActive = pathname === link.href;
                   return (
