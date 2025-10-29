@@ -756,7 +756,7 @@ const Slots: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="lg:hidden sticky bottom-0">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
         <BookingBottomBar />
       </div>
     </div>

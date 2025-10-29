@@ -649,11 +649,16 @@ export default function Services() {
                   </button>
                 </div>
               ) : null}
+
+              {/* Mobile spacing for fixed bottom bar */}
+              <div className="lg:hidden pb-24"></div>
             </div>
           </div>
         )}
       </div>
-      <BookingBottomBar />
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
+        <BookingBottomBar />
+      </div>
     </div>
   );
 }

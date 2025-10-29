@@ -9,7 +9,7 @@ import React from "react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gradient-to-br from-[#FFF6F8] via-[#FFEEF2] to-[#FFF6F8] relative overflow-hidden">
+    <footer className="bg-gradient-to-br from-[#FFF6F8] via-[#FFEEF2] to-[#FFF6F8] relative overflow-hidden pb-20 lg:pb-0">
       {/* Decorative Elements - Responsive */}
       <div className="absolute top-0 left-0 w-16 h-16 sm:w-24 sm:h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-[#F28C8C] to-[#C59D5F] opacity-10 rounded-full -translate-x-8 sm:-translate-x-12 lg:-translate-x-16 -translate-y-8 sm:-translate-y-12 lg:-translate-y-16 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-12 h-12 sm:w-18 sm:h-18 lg:w-24 lg:h-24 bg-gradient-to-tl from-[#B11C5F] to-[#F28C8C] opacity-10 rounded-full translate-x-6 sm:translate-x-9 lg:translate-x-12 translate-y-6 sm:translate-y-9 lg:translate-y-12 animate-bounce"></div>
@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
         <div className="absolute bottom-20 sm:bottom-40 left-16 sm:left-32 w-0.5 h-0.5 sm:w-1 sm:h-1 bg-[#C59D5F] opacity-50 rounded-full animate-float-fast"></div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16 z-10">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-12 lg:py-16 z-10">
         {/* Main Footer Content - Responsive Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
           {/* Brand Section - Responsive */}

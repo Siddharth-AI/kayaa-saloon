@@ -74,7 +74,7 @@ export default function MobileMenu() {
       {/* Enhanced Full Screen Mobile Menu */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-50 lg:hidden"
+          className="fixed inset-0 z-[60] lg:hidden"
           style={{ height: "100vh" }}>
           <div className="absolute inset-0 bg-gradient-to-br from-[#FFF6F8] via-[#FFEEF2] to-[#FFF6F8]">
             {/* Decorative Elements - Responsive */}
@@ -141,7 +141,7 @@ export default function MobileMenu() {
               </div>
 
               {/* User Section - Fixed at bottom */}
-              <div className="border-t border-[#F28C8C]/20 p-3 sm:p-6 bg-gradient-to-r from-[#FFF6F8] to-white flex-shrink-0">
+              <div className="border-t border-[#F28C8C]/20 p-3 sm:p-6 bg-gradient-to-r from-[#FFF6F8] to-white flex-shrink-0 sm:pb-6">
                 {user?.isLoggedIn ? (
                   <div className="space-y-3 sm:space-y-4">
                     <div className="text-center">

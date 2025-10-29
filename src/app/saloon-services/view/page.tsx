@@ -906,6 +906,9 @@ const Page = () => {
                 )}
               </button>
             </div>
+
+            {/* Mobile spacing for fixed bottom bar */}
+            <div className="lg:hidden pb-24"></div>
           </div>
         </div>
 
@@ -972,12 +975,14 @@ const Page = () => {
           </>
         )}
       </div>
-      <BookingBottomBar
-        accepted={accepted}
-        handleCheckboxChange={() => setAccepted(!accepted)}
-        handleOpenPolicyModal={() => setShowModal(true)}
-        handleBookAppointment={handleConfirmation}
-      />
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
+        <BookingBottomBar
+          accepted={accepted}
+          handleCheckboxChange={() => setAccepted(!accepted)}
+          handleOpenPolicyModal={() => setShowModal(true)}
+          handleBookAppointment={handleConfirmation}
+        />
+      </div>
 
       {/* Payment Form Modal */}
       <PaymentFormModal
