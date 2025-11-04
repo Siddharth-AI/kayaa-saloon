@@ -11,7 +11,7 @@ const tokenData: TokenData = {
 };
 
 export async function generateToken(): Promise<string> {
-  console.log("#########Generating new token...");
+  // console.log("#########Generating new token...");
 
   try {
     const response = await axios.post(
@@ -32,7 +32,7 @@ export async function generateToken(): Promise<string> {
     tokenData.token = token;
     tokenData.expiry = Date.now() + (expires_in - bufferSeconds) * 1000;
 
-    console.log("Token generated and stored:", tokenData);
+    // console.log("Token generated and stored:", tokenData);
     return token;
   } catch (err: any) {
     console.error("Error in generateToken:", err.response?.data || err.message);
@@ -41,7 +41,7 @@ export async function generateToken(): Promise<string> {
 }
 
 export async function getValidToken(): Promise<string> {
-  console.log("Checking token:", tokenData);
+  // console.log("Checking token:", tokenData);
 
   if (!tokenData.token || !tokenData.expiry || Date.now() >= tokenData.expiry) {
     await generateToken();

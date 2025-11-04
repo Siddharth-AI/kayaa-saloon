@@ -292,7 +292,7 @@ export default function Products() {
     );
     toastSuccess(`🛒 Added ${product.name} to cart!`);
 
-    console.log("Product added to cart:", product.name);
+    // console.log("Product added to cart:", product.name);
   };
 
   const closeModal = () => {

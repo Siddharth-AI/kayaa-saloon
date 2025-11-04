@@ -304,7 +304,7 @@ const ServicesCart: React.FC<ServicesCartProps> = ({ content }) => {
             onClick={() => router.push("/saloon-services")}
             className="w-full py-3 bg-white border-2 border-[#F28C8C] text-[#B11C5F] rounded-lg hover:bg-[#FFF6F8] transition-all duration-300 font-semibold font-lato flex items-center justify-center gap-2">
             <Calendar className="w-5 h-5" />
-            Add Service
+            {totalServiceCount > 0 ? "Add More Services" : "Add Service"}
           </button>
         )}
 

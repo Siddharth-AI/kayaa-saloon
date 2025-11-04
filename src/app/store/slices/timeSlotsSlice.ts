@@ -74,13 +74,13 @@ export const fetchTimeSlots = createAsyncThunk<
       serviceIds,
     }
 
-    console.log("🔄 API Call:", `POST ${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-slots/${locationUuid}`)
-    console.log("📦 Payload:", payload)
+    // console.log("🔄 API Call:", `POST ${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-slots/${locationUuid}`)
+    // console.log("📦 Payload:", payload)
 
     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-slots/${locationUuid}`, payload)
 
-    console.log("📡 Response status:", response.status)
-    console.log("📡 Response data:", response.data)
+    // console.log("📡 Response status:", response.status)
+    // console.log("📡 Response data:", response.data)
 
     if (!response.data.status) {
       throw new Error(response.data.message || "Failed to fetch time slots")
@@ -142,7 +142,7 @@ const timeSlotsSlice = createSlice({
         })
 
         state.slots = processedSlots
-        console.log("✅ Processed", processedSlots.length, "slots")
+        // console.log("✅ Processed", processedSlots.length, "slots")
       })
       .addCase(fetchTimeSlots.rejected, (state, action) => {
         state.loading = false

@@ -11,7 +11,7 @@ import {
 } from "@/store/slices/servicesSlice";
 import { fetchOperatorsByLocation } from "@/store/slices/operatorsSlice";
 import { fetchBusinessHours } from "@/store/slices/businessHoursSlice";
-import { clearCart } from "@/store/slices/cartSlice";
+import { clearCart, initializeCartWithAuth } from "@/store/slices/cartSlice";
 
 interface LocationSelectorPanelProps {
   onLocationChange?: (locationUuid: string, locationName: string) => void;
@@ -56,6 +56,7 @@ export default function LocationSelectorPanel({
       dispatch(setSelectedLocationByName(locationName));
       dispatch(fetchServicesByLocation(locationUuid));
       dispatch(fetchOperatorsByLocation(locationUuid));
+      dispatch(initializeCartWithAuth(locationUuid)); // Initialize cart for this location
 
       onLocationChange?.(locationUuid, locationName);
 
@@ -159,7 +160,7 @@ export default function LocationSelectorPanel({
     setLocationContext(location);
     setShowLocationPanel(false);
     setSearchTerm("");
-    dispatch(clearCart());
+    // dispatch(clearCart()); // Commented out - now using location-based cart storage
   };
 
   const filteredLocations = locationsState.locations.filter((location: any) =>

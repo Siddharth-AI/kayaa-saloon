@@ -46,7 +46,7 @@ export const fetchOperatorsByLocation = createAsyncThunk<Operator[], string, { r
   "operators/fetchOperatorsByLocation",
   async (locationUuid: string, { rejectWithValue }) => {
     try {
-      console.log("🔄 Fetching operators for location:", locationUuid)
+      // console.log("🔄 Fetching operators for location:", locationUuid)
 
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-operators/${locationUuid}`)
 
@@ -55,7 +55,7 @@ export const fetchOperatorsByLocation = createAsyncThunk<Operator[], string, { r
       }
       // Return the original API response structure
       const operators: Operator[] = response.data.data.data.rows
-      console.log("✅ Original operators data=======================>:", operators)
+      // console.log("✅ Original operators data=======================>:", operators)
       return operators
     } catch (error: any) {
       console.log("❌ Error fetching operators:", error)
@@ -70,12 +70,12 @@ const operatorsSlice = createSlice({
   reducers: {
     filterOperatorsByServices: (state, action: PayloadAction<number[]>) => {
       const cartServiceIds = action.payload
-      console.log("🔍 Filtering operators by service IDs:", cartServiceIds)
+      // console.log("🔍 Filtering operators by service IDs:", cartServiceIds)
 
       if (cartServiceIds.length === 0) {
         // If no services in cart, show all operators
         state.filteredOperators = state.operators
-        console.log("📝 No services in cart, showing all operators")
+        // console.log("📝 No services in cart, showing all operators")
         return
       }
       // Filter operators who provide ALL services in the cart
@@ -86,19 +86,19 @@ const operatorsSlice = createSlice({
         // Check if operator provides all required services
         const hasAllServices = cartServiceIds.every((serviceId) => operatorServiceIds.includes(serviceId))
 
-        console.log(`Operator ${operator.name}:`, {
-          operatorServiceIds: operatorServiceIds,
-          requiredServices: cartServiceIds,
-          hasAllServices,
-        })
+        // console.log(`Operator ${operator.name}:`, {
+        //   operatorServiceIds: operatorServiceIds,
+        //   requiredServices: cartServiceIds,
+        //   hasAllServices,
+        // })
 
         return hasAllServices
       })
 
-      console.log(
-        "✅ Filtered operators:",
-        filtered.map((op) => op.name),
-      )
+      // console.log(
+      //   "✅ Filtered operators:",
+      //   filtered.map((op) => op.name),
+      // )
       state.filteredOperators = filtered
     },
     clearOperators: (state) => {

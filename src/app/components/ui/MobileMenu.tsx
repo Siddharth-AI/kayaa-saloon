@@ -45,10 +45,10 @@ export default function MobileMenu() {
     setMobileMenuOpen(false);
     try {
       await dispatch(logoutUser()).unwrap();
-      dispatch(clearCart());
+      // dispatch(clearCart());
       Router.push("/");
     } catch (error) {
-      console.log("âŒ Logout error:", error);
+      console.log("Logout error:", error);
     }
   };
 

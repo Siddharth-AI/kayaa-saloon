@@ -50,7 +50,7 @@ const persistedReducer = persistReducer(persistConfig, (state: any, action: any)
   }, {} as Record<keyof typeof rootReducer, any>)
 })
 
-// Updated middleware to handle both services and products
+// Updated middleware to handle location-based cart storage
 const cartLocalStorageMiddleware: Middleware = storeAPI => next => (action: unknown) => {
   const result = next(action)
 
@@ -75,26 +75,40 @@ const cartLocalStorageMiddleware: Middleware = storeAPI => next => (action: unkn
       actionType === "cart/addToCart" || // Keep for backward compatibility
       actionType === "cart/removeFromCart" // Keep for backward compatibility
     ) {
-      const { cart, auth } = storeAPI.getState()
+      const { cart, auth, services } = storeAPI.getState()
       const user = auth.user
+      const locationId = services.selectedLocationUuid
 
-      if (typeof window !== "undefined") {
+      if (typeof window !== "undefined" && locationId) {
         // Create cart data object with both services and products
         const cartData = {
           services: cart.services || [],
           products: cart.products || [],
-          // Keep items for backward compatibility
           items: cart.items || []
         }
 
-        if (user && user.isLoggedIn) {
-          const userIdentifier = user.mobile || user.email || user.uuid
-          localStorage.setItem(`userCart_${userIdentifier}`, JSON.stringify(cartData))
-          console.log("Saved to user cart after action:", actionType, cartData)
-        } else {
-          localStorage.setItem("guestCart", JSON.stringify(cartData))
-          console.log("Saved to guest cart after action:", actionType, cartData)
+        const storageKey = user && user.isLoggedIn ? `userCart_${user.mobile || user.email || user.uuid}` : "guestCart"
+        const existingData = localStorage.getItem(storageKey)
+        let parsedData = {}
+
+        if (existingData) {
+          try {
+            parsedData = JSON.parse(existingData)
+          } catch (e) {
+            parsedData = {}
+          }
         }
+
+        // Update the specific location data
+        parsedData = {
+          ...parsedData,
+          [locationId]: cartData
+        }
+
+        localStorage.setItem(storageKey, JSON.stringify(parsedData))
+        // console.log("💾 Saved to cart after action:", actionType, "Location:", locationId)
+        // console.log("💾 Storage key:", storageKey)
+        // console.log("💾 Saved data:", parsedData)
       }
     }
 
@@ -103,7 +117,7 @@ const cartLocalStorageMiddleware: Middleware = storeAPI => next => (action: unkn
       if (typeof window !== "undefined") {
         localStorage.removeItem("authToken")
         localStorage.removeItem("userData")
-        console.log("Cleaned up auth data from localStorage")
+        // console.log("Cleaned up auth data from localStorage")
       }
     }
   }

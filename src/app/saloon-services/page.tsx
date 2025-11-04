@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { addServiceToCart, addToCart } from "@/store/slices/cartSlice";
+import { addServiceToCart, addToCart, initializeCartWithAuth } from "@/store/slices/cartSlice";
 import Image, { StaticImageData } from "next/image";
 import LeftPanel from "@/components/leftPanel/LeftPanel";
 import BookingBottomBar from "@/saloon-services/BookingBottomBar";
@@ -134,6 +134,13 @@ export default function Services() {
   const { allServices, loading, error, selectedLocationUuid } = useAppSelector(
     (state) => state.services
   );
+
+  // Initialize cart with location when location changes
+  useEffect(() => {
+    if (selectedLocationUuid) {
+      dispatch(initializeCartWithAuth(selectedLocationUuid));
+    }
+  }, [selectedLocationUuid, dispatch]);
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { logoutUser } from "@/store/slices/authSlice";
-import { clearCart } from "@/store/slices/cartSlice";
+import { initializeCartWithAuth } from "@/store/slices/cartSlice";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { openModal } from "@/store/slices/modalSlice";
@@ -30,6 +30,7 @@ export default function ProfileDropdown() {
   const dispatch = useAppDispatch();
   const { user, tempToken, isLoadingProfile, isInitialized, isLoggingOut } =
     useAppSelector((state) => state.auth);
+  const { selectedLocationUuid } = useAppSelector((state) => state.services);
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -85,16 +86,21 @@ export default function ProfileDropdown() {
   };
 
   const handleLogout = async () => {
-    console.log("ðŸšª Logout button clicked");
+    // console.log("Logout button clicked");
     setIsOpen(false);
     try {
       // Call the logout API
       await dispatch(logoutUser()).unwrap();
-      console.log("âœ… Logout completed successfully");
-      dispatch(clearCart()); // This triggers cart clearing too
+      // console.log("✅ Logout completed successfully");
+
+      // Initialize guest cart after logout
+      if (selectedLocationUuid) {
+        dispatch(initializeCartWithAuth(selectedLocationUuid));
+      }
+
       Router.push("/"); // Redirect to home page after logout
     } catch (error) {
-      console.log("âŒ Logout error:", error);
+      console.log("Logout error:", error);
       // Even if API fails, the user will be logged out locally
     }
   };

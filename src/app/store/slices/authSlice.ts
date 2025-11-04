@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit"
+import { syncCartOnLogin } from "./cartSlice"
 
 // Types
 export interface User {
@@ -335,7 +336,7 @@ export const sendForgotPasswordOTP = createAsyncThunk<
   { rejectValue: string }
 >("auth/sendForgotPasswordOTP", async (payload, { rejectWithValue }) => {
   try {
-    console.log("🔑 Sending forgot password OTP...")
+    // console.log("🔑 Sending forgot password OTP...")
 
     const requestBody =
       payload.type === "mobile"
@@ -350,7 +351,7 @@ export const sendForgotPasswordOTP = createAsyncThunk<
           vendor_location_uuid: payload.vendorLocationUuid,
         }
 
-    console.log("📤 Forgot password request:", requestBody)
+    // console.log("📤 Forgot password request:", requestBody)
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgot-password`, {
       method: "POST",
@@ -365,7 +366,7 @@ export const sendForgotPasswordOTP = createAsyncThunk<
     }
 
     const data: ForgotPasswordResponse = await response.json()
-    console.log("✅ Forgot password OTP response:", data)
+    // console.log("✅ Forgot password OTP response:", data)
 
     if (!data.status) {
       throw new Error(data.message || "Failed to send forgot password OTP")
@@ -383,7 +384,7 @@ export const resetPassword = createAsyncThunk<ResetPasswordResponse, ResetPasswo
   "auth/resetPassword",
   async (payload, { rejectWithValue }) => {
     try {
-      console.log("🔄 Resetting password...")
+      // console.log("🔄 Resetting password...")
 
       const requestBody =
         payload.type === "mobile"
@@ -402,7 +403,7 @@ export const resetPassword = createAsyncThunk<ResetPasswordResponse, ResetPasswo
             verification_code: payload.verificationCode,
           }
 
-      console.log("📤 Reset password request:", { ...requestBody, password: "***", verification_code: "***" })
+      // console.log("📤 Reset password request:", { ...requestBody, password: "***", verification_code: "***" })
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/reset-password`, {
         method: "POST",
@@ -417,7 +418,7 @@ export const resetPassword = createAsyncThunk<ResetPasswordResponse, ResetPasswo
       }
 
       const data: ResetPasswordResponse = await response.json()
-      console.log("✅ Reset password response:", data)
+      // console.log("✅ Reset password response:", data)
 
       if (!data.status) {
         throw new Error(data.message || "Failed to reset password")
@@ -439,10 +440,10 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
       const state = getState() as { auth: AuthState }
       const authToken = state.auth.tempToken || getAuthToken()
 
-      console.log("🚪 Starting logout process...")
+      // console.log("🚪 Starting logout process...")
 
       if (authToken && isValidTokenFormat(authToken)) {
-        console.log("📤 Calling logout API...")
+        // console.log("📤 Calling logout API...")
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/user-logout`, {
           method: "GET",
@@ -457,7 +458,7 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
           // Don't throw error here - we still want to logout locally even if API fails
         } else {
           const data: LogoutResponse = await response.json()
-          console.log("✅ Logout API response:", data)
+          // console.log("✅ Logout API response:", data)
 
           if (!data.status) {
             console.log("⚠️ Logout API returned false status, but continuing with local logout")
@@ -468,15 +469,15 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
       }
 
       // Always clear local storage and state, regardless of API response
-      console.log("🧹 Clearing local auth data...")
+      // console.log("🧹 Clearing local auth data...")
       removeAuthToken()
 
-      console.log("✅ Logout completed successfully")
+      // console.log("✅ Logout completed successfully")
     } catch (error) {
       console.log("❌ Logout API error:", error)
       // Even if API fails, we should still logout locally
       removeAuthToken()
-      console.log("✅ Local logout completed despite API error")
+      // console.log("✅ Local logout completed despite API error")
 
       // Don't reject - we want logout to always succeed locally
       // return rejectWithValue(error instanceof Error ? error.message : "Logout failed")
@@ -492,14 +493,14 @@ export const getUserProfile = createAsyncThunk<User, void, { rejectValue: string
       const state = getState() as { auth: AuthState }
       const authToken = state.auth.tempToken || getAuthToken()
 
-      console.log("🚀 getUserProfile called explicitly with token:", authToken ? "exists" : "missing")
+      // console.log("🚀 getUserProfile called explicitly with token:", authToken ? "exists" : "missing")
 
       if (!authToken || !isValidTokenFormat(authToken)) {
-        console.log("❌ getUserProfile: No valid token")
+        // console.log("❌ getUserProfile: No valid token")
         throw new Error("No valid authentication token found")
       }
 
-      console.log("✅ Making API call to get profile")
+      // console.log("✅ Making API call to get profile")
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/get-profile`, {
         method: "GET",
         headers: {
@@ -855,32 +856,32 @@ const authSlice = createSlice({
       state.isResettingPassword = false
     },
     initializeAuth: (state) => {
-      console.log("🔧 Initializing auth...")
+      // console.log("🔧 Initializing auth...")
 
       // Just check if token exists, but don't do anything with it
       const authToken = getAuthToken()
-      console.log("🔧 Token found during init:", !!authToken)
+      // console.log("🔧 Token found during init:", !!authToken)
 
       if (authToken && isValidTokenFormat(authToken)) {
         state.tempToken = authToken
-        console.log("✅ Valid token found and stored")
+        // console.log("✅ Valid token found and stored")
       } else {
         state.tempToken = null
         console.log("❌ No valid token found")
         // Clean up invalid token
         if (authToken) {
-          console.log("🧹 Cleaning up invalid token")
+          // console.log("🧹 Cleaning up invalid token")
           removeAuthToken()
         }
       }
 
       // Mark as initialized
       state.isInitialized = true
-      console.log("✅ Auth initialization complete")
+      // console.log("✅ Auth initialization complete")
     },
     // Keep the old logout as a fallback for immediate local logout
     logout: (state) => {
-      console.log("🚪 Immediate local logout")
+      // console.log("🚪 Immediate local logout")
       state.user = null
       state.otpSent = false
       state.otpSentTo = null
@@ -1202,11 +1203,11 @@ export const updateUserProfile = createAsyncThunk<User, UpdateProfilePayload, { 
       const state = getState() as { auth: AuthState }
       const authToken = getAuthToken()
 
-      console.log("🚀 Updating user profile with token:", authToken ? "exists" : "missing");
-      console.log("📤 Update payload:", { ...payload, profile_pic: payload.profile_pic ? "[File]" : null });
+      // console.log("🚀 Updating user profile with token:", authToken ? "exists" : "missing");
+      // console.log("📤 Update payload:", { ...payload, profile_pic: payload.profile_pic ? "[File]" : null });
 
       if (!authToken || !isValidTokenFormat(authToken)) {
-        console.log("❌ updateUserProfile: No valid token")
+        // console.log("❌ updateUserProfile: No valid token")
         throw new Error("No valid authentication token found")
       }
 
@@ -1232,7 +1233,7 @@ export const updateUserProfile = createAsyncThunk<User, UpdateProfilePayload, { 
         formData.append("profile_pic", payload.profile_pic)
       }
 
-      console.log("📤 Making profile update API call")
+      // console.log("📤 Making profile update API call")
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/update-profile`, {
         method: "POST",
         headers: {
@@ -1260,7 +1261,7 @@ export const updateUserProfile = createAsyncThunk<User, UpdateProfilePayload, { 
       }
 
       const data: UpdateProfileResponse = await response.json()
-      console.log("✅ Profile update API response:", data)
+      // console.log("✅ Profile update API response:", data)
 
       if (!data.status) {
         throw new Error(data.data?.message || "Failed to update profile")
@@ -1271,7 +1272,7 @@ export const updateUserProfile = createAsyncThunk<User, UpdateProfilePayload, { 
 
       // Update stored token if a new one is provided
       if (newToken) {
-        console.log("✅ Updating stored token")
+        // console.log("✅ Updating stored token")
         storeAuthToken(newToken)
       }
 
@@ -1302,7 +1303,7 @@ export const updateUserProfile = createAsyncThunk<User, UpdateProfilePayload, { 
         country: state.auth.user?.country, // Keep existing country data
       }
 
-      console.log("✅ Profile updated successfully - returning user:", updatedUser)
+      // console.log("✅ Profile updated successfully - returning user:", updatedUser)
       return updatedUser
     } catch (error) {
       console.log("❌ Error updating user profile:", error)

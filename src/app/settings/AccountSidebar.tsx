@@ -63,7 +63,7 @@ export default function AccountSidebar() {
     setIsOpen(false);
     try {
       await dispatch(logoutUser()).unwrap();
-      dispatch(clearCart());
+      // dispatch(clearCart());
       Router.push("/");
     } catch (error) {
       console.log("❌ Logout error:", error);

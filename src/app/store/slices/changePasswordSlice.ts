@@ -46,7 +46,7 @@ export const changePassword = createAsyncThunk<
       // IMPORTANT: Adjust 'state.auth.token' to the actual path where you store your token
       const state = getState() as { auth: { token: string | null; tempToken: string | null } }
       const token = getAuthToken() || state.auth.token
-      console.log(token, "password token")
+      // console.log(token, "password token")
       if (!token) {
         return rejectWithValue('Authentication token not found.');
       }
@@ -61,7 +61,7 @@ export const changePassword = createAsyncThunk<
           },
         }
       );
-      console.log(response, "paswword response")
+      // console.log(response, "paswword response")
 
       // Check if the API response indicates success
       if (response.data && response.data.status) {

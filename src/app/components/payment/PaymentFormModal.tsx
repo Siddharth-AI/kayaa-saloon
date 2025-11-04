@@ -19,16 +19,16 @@ const PaymentFormModal: React.FC<PaymentFormModalProps> = ({
 
   useEffect(() => {
     if (isOpen && merchantUuid) {
-      console.log("🔄 Fetching payment form for:", merchantUuid);
+      // console.log("🔄 Fetching payment form for:", merchantUuid);
       dispatch(getPaymentForm({ merchant_uuid: merchantUuid }));
     }
   }, [isOpen, merchantUuid, dispatch]);
 
-  useEffect(() => {
-    if (paymentForm) {
-      console.log("✅ Payment form received");
-    }
-  }, [paymentForm]);
+  // useEffect(() => {
+  //   if (paymentForm) {
+  //     console.log("✅ Payment form received");
+  //   }
+  // }, [paymentForm]);
 
   useEffect(() => {
     if (isOpen) {

@@ -44,7 +44,7 @@ export default function ProfileSettings() {
 
   // Initialize form data from user profile - THIS IS CRUCIAL
   useEffect(() => {
-    console.log("🔄 User data changed, updating form:", user);
+    // console.log("🔄 User data changed, updating form:", user);
     if (user) {
       const newFormData = {
         name: `${user?.fname} ${user?.lname}` || "",
@@ -56,7 +56,7 @@ export default function ProfileSettings() {
         locality: user.locality || "",
         gender: user.gender || "",
       };
-      console.log("📝 Setting new form data:", newFormData);
+      // console.log("📝 Setting new form data:", newFormData);
       setFormData(newFormData);
     }
   }, [user]); // This will trigger whenever user changes
@@ -104,9 +104,9 @@ export default function ProfileSettings() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("🚀 Starting profile update...");
-    console.log("Current user before update:", user);
-    console.log("Form data being submitted:", formData);
+    // console.log("🚀 Starting profile update...");
+    // console.log("Current user before update:", user);
+    // console.log("Form data being submitted:", formData);
 
     try {
       // Prepare form data for API
@@ -123,18 +123,18 @@ export default function ProfileSettings() {
         vendor_location_uuid: selectedLocationUuid,
         profile_pic: selectedImage || user.profile_pic,
       };
-      console.log("📤 Dispatching updateUserProfile with:", {
-        ...updateData,
-        profile_pic: selectedImage ? "[File]" : null,
-      });
+      // console.log("📤 Dispatching updateUserProfile with:", {
+      //   ...updateData,
+      //   profile_pic: selectedImage ? "[File]" : null,
+      // });
       // Dispatch the update profile action
       const result = await dispatch(updateUserProfile(updateData));
 
-      console.log("📥 Update result:", result);
+      // console.log("📥 Update result:", result);
 
       if (updateUserProfile.fulfilled.match(result)) {
-        console.log("✅ Profile update successful!");
-        console.log("Updated user data:", result.payload);
+        // console.log("✅ Profile update successful!");
+        // console.log("Updated user data:", result.payload);
 
         setIsEditing(false);
         setShowSuccess(true);

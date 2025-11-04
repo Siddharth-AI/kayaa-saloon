@@ -148,7 +148,7 @@ export async function getSlots(businessId: string, params: GetSlotsRequest) {
 		url += `?${queryParams.join('&')}`;
 	}
 
-	console.log('getSlots URL:', url);
+	// console.log('getSlots URL:', url);
 
 	try {
 		const response = await axios.get(url, {
@@ -199,7 +199,7 @@ export async function createBooking(params: CreateBookingRequest, userToken: str
 
 		const response = await axios.post(url, payload, { headers });
 
-		console.log("Booking created successfully:", response.data);
+		// console.log("Booking created successfully:", response.data);
 		return response.data;
 	} catch (error: any) {
 		console.error("createBooking error:", error.response?.data || error.message);
@@ -282,7 +282,7 @@ export async function getProducts() {
 	const url = "https://sdr7sb1b7g.execute-api.ap-south-1.amazonaws.com/dev/client/business/35b3b7dc-4087-446d-a18e-7a67cbc78b16/products?structure=hierarchical"
 	try {
 		const response = await axios.get(url);
-		console.log("Products found:", response.data);
+		// console.log("Products found:", response.data);
 		return response.data;
 	} catch (error: any) {
 		console.error("no products found Error:", error?.response?.data || error.message);

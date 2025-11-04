@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
   try {
     // Validate request body with Joi schema (supports both mobile and email)
     const body = await validateJSON<ResetPasswordRequest>(req, resetPasswordSchema);
-    console.log(body, "=======>")
+    // console.log(body, "=======>")
     // Call the service function
     const result = await resetPassword(body);
 

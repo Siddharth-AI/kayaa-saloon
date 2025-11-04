@@ -47,7 +47,7 @@ const AppointmentConfirmationContent = () => {
     // Fallback to localStorage if sessionStorage is empty
     if (!storedCart) {
       storedCart = localStorage.getItem(`booking-services`);
-      console.log("📦 Trying localStorage");
+      // console.log("📦 Trying localStorage");
     } else {
       console.log("📦 Found in sessionStorage");
     }
@@ -55,7 +55,7 @@ const AppointmentConfirmationContent = () => {
     if (storedCart) {
       try {
         const parsedData = JSON.parse(storedCart);
-        console.log("✅ Loaded booking data:", parsedData);
+        // console.log("✅ Loaded booking data:", parsedData);
 
         // Extract services from the saved data structure
         const servicesArray = parsedData.services || parsedData || [];

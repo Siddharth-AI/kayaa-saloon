@@ -2,12 +2,13 @@
 
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { syncCartOnLogin, loadUserCart } from "@/store/slices/cartSlice";
 import { getUserProfile, initializeAuth } from "@/store/slices/authSlice";
+import { loadUserCart, syncCartOnLogin } from "@/store/slices/cartSlice";
 
 export default function LoginHandler() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
+  const { selectedLocationUuid } = useAppSelector((state) => state.services);
   const {
     tempToken,
     alreadyRegistered,
@@ -18,24 +19,24 @@ export default function LoginHandler() {
 
   // Initialize auth on mount - ONLY ONCE
   useEffect(() => {
-    console.log("🔧 LoginHandler: Initializing auth");
+    // console.log("🔧 LoginHandler: Initializing auth");
     dispatch(initializeAuth());
   }, [dispatch]);
 
   // Auto-fetch user profile if we have a token but no user (page refresh scenario)
   useEffect(() => {
-    console.log("🔍 LoginHandler: Checking auto-login conditions", {
-      isInitialized,
-      tempToken: !!tempToken,
-      user: !!user,
-      isLoadingProfile,
-    });
+    // console.log("🔍 LoginHandler: Checking auto-login conditions", {
+    //   isInitialized,
+    //   tempToken: !!tempToken,
+    //   user: !!user,
+    //   isLoadingProfile,
+    // });
 
     // If we're initialized, have a token, but no user - fetch the profile (page refresh scenario)
     if (isInitialized && tempToken && !user && !isLoadingProfile) {
-      console.log(
-        "✅ LoginHandler: Auto-fetching user profile after page refresh"
-      );
+      // console.log(
+      //   "✅ LoginHandler: Auto-fetching user profile after page refresh"
+      // );
       dispatch(getUserProfile()).catch((err) => {
         console.log("Failed to auto-fetch profile on page refresh:", err);
       });
@@ -44,13 +45,13 @@ export default function LoginHandler() {
 
   // Fetch user profile ONLY after OTP verification for existing users
   useEffect(() => {
-    console.log("🔍 LoginHandler: Checking OTP verification result", {
-      tempToken: !!tempToken,
-      alreadyRegistered,
-      skipProfile,
-      user: !!user,
-      isLoadingProfile,
-    });
+    // console.log("🔍 LoginHandler: Checking OTP verification result", {
+    //   tempToken: !!tempToken,
+    //   alreadyRegistered,
+    //   skipProfile,
+    //   user: !!user,
+    //   isLoadingProfile,
+    // });
 
     // ONLY fetch if user verified OTP and is already registered
     if (
@@ -60,9 +61,9 @@ export default function LoginHandler() {
       !user &&
       !isLoadingProfile
     ) {
-      console.log(
-        "✅ LoginHandler: User verified OTP and is existing user - fetching profile"
-      );
+      // console.log(
+      //   "✅ LoginHandler: User verified OTP and is existing user - fetching profile"
+      // );
       dispatch(getUserProfile()).catch((err) => {
         console.log("Failed to fetch profile after OTP verification:", err);
       });
@@ -78,20 +79,21 @@ export default function LoginHandler() {
 
   // Sync cart when user logs in
   useEffect(() => {
-    if (user) {
-      console.log("🛒 LoginHandler: User logged in, syncing cart");
+    if (user && selectedLocationUuid) {
+      // console.log("🛒 LoginHandler: User logged in, syncing cart");
+
       const guestCart =
         typeof window !== "undefined"
           ? localStorage.getItem("guestCart")
           : null;
 
       if (guestCart && JSON.parse(guestCart).length > 0) {
-        dispatch(syncCartOnLogin(user));
+        dispatch(syncCartOnLogin(user, selectedLocationUuid));
       } else {
-        dispatch(loadUserCart(user));
+        dispatch(loadUserCart(user, selectedLocationUuid));
       }
     }
-  }, [user, dispatch]);
+  }, [user, selectedLocationUuid, dispatch]);
 
   return null;
 }

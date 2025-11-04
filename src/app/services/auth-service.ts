@@ -251,7 +251,7 @@ export async function forgotPassword(data: ForgotPasswordRequest): Promise<Forgo
 export async function resetPassword(data: ResetPasswordRequest): Promise<ResetPasswordResponse> {
   try {
     const url = `${process.env.DINGG_API_URL}/client/auth/reset-password`;
-    console.log(data, "check data=>>>>>")
+    // console.log(data, "check data=>>>>>")
     // Base payload: always required fields
     const payload: Partial<ResetPasswordRequest> = {
       vendor_location_uuid: data.vendor_location_uuid,
@@ -270,13 +270,13 @@ export async function resetPassword(data: ResetPasswordRequest): Promise<ResetPa
       throw new Error('Invalid input: Provide either email OR mobile, dial_code, country_id');
     }
 
-    console.log(payload, "check payload===>")
+    // console.log(payload, "check payload===>")
     const response = await axios.patch(url, payload, {
       headers: { 'Content-Type': 'application/json' }
     });
 
 
-    console.log(response, "check response===>")
+    // console.log(response, "check response===>")
 
     if (response.status === 200 || response.status === 201) {
       return response.data;
@@ -436,7 +436,7 @@ export async function user_logout(token: string): Promise<any> {
       }
     );
 
-    console.log("Logout response:", response.data);
+    // console.log("Logout response:", response.data);
 
     if (response.status === 200 || response.status === 204) {
       return response.data;

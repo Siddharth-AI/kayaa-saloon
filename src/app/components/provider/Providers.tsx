@@ -18,7 +18,7 @@ function HydrateAuth({ children }: { children: any }) {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    console.log("Providers: Starting initialization");
+    // console.log("Providers: Starting initialization");
 
     // Initialize auth + cart
     store.dispatch(initializeAuth());
@@ -27,7 +27,7 @@ function HydrateAuth({ children }: { children: any }) {
     // ⏳ Force at least 2 sec loader
     const timer = setTimeout(() => {
       setIsHydrated(true);
-      console.log("Providers: Initialization complete (after delay)");
+      // console.log("Providers: Initialization complete (after delay)");
     }, 2000);
 
     return () => clearTimeout(timer);

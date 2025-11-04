@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
   setCart,
-  saveCartToStorage,
+  saveCartToStorageWithLocation,
   clearBookingDetailsFromCart,
 } from "@/store/slices/cartSlice";
 import {
@@ -326,7 +326,9 @@ const Slots: React.FC = () => {
   function handleSlotBook() {
     // This function is now simpler. The cart is already updated.
     // It just needs to save and navigate.
-    dispatch(saveCartToStorage());
+    if (servicesState.selectedLocationUuid) {
+      dispatch(saveCartToStorageWithLocation(servicesState.selectedLocationUuid));
+    }
     router.push("/saloon-services/view");
   }
 

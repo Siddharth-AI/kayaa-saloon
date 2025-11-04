@@ -88,7 +88,7 @@ const Page = () => {
 
     // If the UI has no selected slot, but the cart does, restore it.
     if (!selectedSlot && firstItem?.timeSlot) {
-      console.log("Restoring selectedSlot from cart:", firstItem.timeSlot);
+      // console.log("Restoring selectedSlot from cart:", firstItem.timeSlot);
       dispatch(setSelectedSlot(firstItem.timeSlot));
     }
 
@@ -97,10 +97,10 @@ const Page = () => {
       const dateInState = new Date(selectedDate).toDateString();
       const dateInCart = new Date(firstItem.selectedDate).toDateString();
       if (dateInState !== dateInCart) {
-        console.log(
-          "Restoring selectedDate from cart:",
-          firstItem.selectedDate
-        );
+        // console.log(
+        //   "Restoring selectedDate from cart:",
+        //   firstItem.selectedDate
+        // );
         dispatch(setSelectedDate(firstItem.selectedDate));
       }
     }
@@ -149,7 +149,11 @@ const Page = () => {
 
       // Clear cart AFTER (with delay)
       setTimeout(() => {
-        dispatch(clearCartAfterSuccessfulBooking());
+        if (servicesState.selectedLocationUuid) {
+          dispatch(
+            clearCartAfterSuccessfulBooking(servicesState.selectedLocationUuid)
+          );
+        }
         dispatch(resetBookingComment());
       }, 1000); // Increased delay to ensure navigation completes
     }
@@ -327,11 +331,11 @@ const Page = () => {
         services,
       };
 
-      console.log("Creating booking with payload:", bookingPayload);
+      // console.log("Creating booking with payload:", bookingPayload);
 
       // Dispatch the booking creation
       const result = await dispatch(createBooking(bookingPayload));
-      console.log(result, "result from create booking");
+      // console.log(result, "result from create booking");
 
       if (createBooking.rejected.match(result)) {
         // The error message is in result.payload
@@ -363,7 +367,7 @@ const Page = () => {
   };
 
   const handlePayment = () => {
-    console.log("button click");
+    // console.log("button click");
     if (!tempToken && !user) {
       toastError("You must be logged in to book an appointment.");
       dispatch(openModal("login"));

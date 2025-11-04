@@ -94,11 +94,19 @@ const safeLocalStorage = {
   },
 }
 
-// UPDATED: Helper function to handle both new and old cart formats
-const getCartFromStorage = (): { services: ServiceCartItem[], products: ProductCartItem[], items: CartItem[] } => {
+// Helper function to get cart data for specific location
+const getCartFromStorage = (locationId?: string): { services: ServiceCartItem[], products: ProductCartItem[], items: CartItem[] } => {
   const guestCart = safeLocalStorage.getItem("guestCart")
   if (guestCart) {
     const parsed = JSON.parse(guestCart)
+    if (locationId && parsed[locationId]) {
+      return {
+        services: parsed[locationId].services || [],
+        products: parsed[locationId].products || [],
+        items: parsed[locationId].items || []
+      }
+    }
+    // Fallback for old structure
     return {
       services: parsed.services || [],
       products: parsed.products || [],
@@ -108,12 +116,25 @@ const getCartFromStorage = (): { services: ServiceCartItem[], products: ProductC
   return { services: [], products: [], items: [] }
 }
 
-// UPDATED: Helper function for user-specific cart
-const getUserCartFromStorage = (userId?: string | null): { services: ServiceCartItem[], products: ProductCartItem[], items: CartItem[] } => {
+// Helper function for user-specific cart with location support
+const getUserCartFromStorage = (userId?: string | null, locationId?: string): { services: ServiceCartItem[], products: ProductCartItem[], items: CartItem[] } => {
+  // console.log("🔍 getUserCartFromStorage called with:", { userId, locationId })
   if (userId) {
     const userCart = safeLocalStorage.getItem(`userCart_${userId}`)
+    // console.log("📦 Raw userCart from localStorage:", userCart)
     if (userCart) {
       const parsed = JSON.parse(userCart)
+      // console.log("📦 Parsed userCart:", parsed)
+      if (locationId && parsed[locationId]) {
+        // console.log("✅ Found location-based data:", parsed[locationId])
+        return {
+          services: parsed[locationId].services || [],
+          products: parsed[locationId].products || [],
+          items: parsed[locationId].items || []
+        }
+      }
+      // Fallback for old structure
+      // console.log("⚠️ Using fallback structure:", { services: parsed.services, products: parsed.products, items: parsed.items })
       return {
         services: parsed.services || [],
         products: parsed.products || [],
@@ -121,7 +142,46 @@ const getUserCartFromStorage = (userId?: string | null): { services: ServiceCart
       }
     }
   }
+  // console.log("❌ Returning empty cart")
   return { services: [], products: [], items: [] }
+}
+
+// Helper to merge services (combine same services)
+const mergeServices = (existingServices: ServiceCartItem[], newServices: ServiceCartItem[]): ServiceCartItem[] => {
+  const merged = [...existingServices]
+
+  newServices.forEach(newService => {
+    const existingIndex = merged.findIndex(existing => existing.id === newService.id)
+    if (existingIndex === -1) {
+      merged.push(newService)
+    }
+    // If service already exists, we keep the existing one (no duplicates)
+  })
+
+  return merged
+}
+
+// Helper to save cart data with location structure
+const saveCartToStorage = (cartData: any, locationId: string, isUser: boolean, userId?: string) => {
+  const storageKey = isUser ? `userCart_${userId}` : "guestCart"
+  const existingData = safeLocalStorage.getItem(storageKey)
+  let parsedData = {}
+
+  if (existingData) {
+    try {
+      parsedData = JSON.parse(existingData)
+    } catch (e) {
+      parsedData = {}
+    }
+  }
+
+  // Update the specific location data
+  parsedData = {
+    ...parsedData,
+    [locationId]: cartData
+  }
+
+  safeLocalStorage.setItem(storageKey, JSON.stringify(parsedData))
 }
 
 const initialState: CartState = {
@@ -137,9 +197,11 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    initializeCart(state) {
+    initializeCart(state, action: PayloadAction<string | undefined>) {
       try {
-        const cartData = getCartFromStorage()
+        const locationId = action.payload
+        // We can't access auth state here, so we'll create a thunk for this
+        const cartData = getCartFromStorage(locationId)
         state.services = cartData.services
         state.products = cartData.products
         state.items = cartData.items
@@ -147,7 +209,7 @@ const cartSlice = createSlice({
         state.error = null
       } catch (error) {
         state.error = "Failed to initialize cart"
-        console.log("Cart initialization error:", error)
+        // console.log("Cart initialization error:", error)
       }
     },
     setCart(state, action: PayloadAction<{ services?: ServiceCartItem[], products?: ProductCartItem[], items?: CartItem[] }>) {
@@ -257,7 +319,7 @@ const cartSlice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(logout, (state) => {
-      safeLocalStorage.removeItem("guestCart")
+      // Clear cart state on logout so user can start fresh as guest
       state.services = []
       state.products = []
       state.items = []
@@ -286,83 +348,137 @@ export const {
 } = cartSlice.actions
 
 // Simple thunk to clear cart after successful booking
-export const clearCartAfterSuccessfulBooking = (): AppThunk => (dispatch, getState) => {
+export const clearCartAfterSuccessfulBooking = (locationId: string): AppThunk => (dispatch, getState) => {
   try {
     const { auth } = getState()
     const user = auth.user
-    console.log("Clearing services from cart after successful booking...")
+    // console.log("Clearing services from cart after successful booking...")
 
     dispatch(clearCartAfterBooking())
 
     setTimeout(() => {
       if (user && user.isLoggedIn) {
         const userIdentifier = user.mobile || user.email || user.uuid
-        const userKey = `userCart_${userIdentifier}`
-        const cartData = getUserCartFromStorage(userIdentifier)
+        const cartData = getUserCartFromStorage(userIdentifier, locationId)
         const updatedCartData = {
           services: [],
           products: cartData.products, // Keep products
           items: []
         }
-        safeLocalStorage.setItem(userKey, JSON.stringify(updatedCartData))
-        console.log("Cleared services from user cart, kept products")
+        saveCartToStorage(updatedCartData, locationId, true, userIdentifier)
+        // console.log("Cleared services from user cart, kept products")
       } else {
-        const cartData = getCartFromStorage()
+        const cartData = getCartFromStorage(locationId)
         const updatedCartData = {
           services: [],
           products: cartData.products, // Keep products
           items: []
         }
-        safeLocalStorage.setItem("guestCart", JSON.stringify(updatedCartData))
-        console.log("Cleared services from guest cart, kept products")
+        saveCartToStorage(updatedCartData, locationId, false)
+        // console.log("Cleared services from guest cart, kept products")
       }
     }, 100)
   } catch (error) {
-    console.log("Error clearing cart:", error)
+    // console.log("Error clearing cart:", error)
     dispatch(setError("Failed to clear cart"))
   }
 }
 
 
 // Thunk to handle cart synchronization when user logs in
-export const syncCartOnLogin = (user: User): AppThunk => async (dispatch, getState) => {
+export const syncCartOnLogin = (user: User, locationId: string): AppThunk => async (dispatch, getState) => {
   try {
     dispatch(setLoading(true))
-    const guestCartData = getCartFromStorage()
-    const userIdentifier = user.mobile || user.email || user.uuid
-    const userCartData = getUserCartFromStorage(userIdentifier)
 
+    const userIdentifier = user.mobile || user.email || user.uuid
+
+    // Get guest cart from localStorage (not current state)
+    const guestCartData = getCartFromStorage(locationId)
+
+    // Get user cart from localStorage
+    const userCartData = getUserCartFromStorage(userIdentifier, locationId)
+
+    // console.log("🔄 Syncing cart on login:", {
+    //   locationId,
+    //   userIdentifier,
+    //   guestCartData,
+    //   userCartData
+    // })
+    // console.log("📦 User cart services before merge:", userCartData.services)
+    // console.log("📦 Guest cart services before merge:", guestCartData.services)
+
+    // Merge user cart + guest cart
     const mergedCartData = {
       services: [...userCartData.services, ...guestCartData.services],
       products: [...userCartData.products, ...guestCartData.products],
       items: [...userCartData.items, ...guestCartData.items]
     }
 
+    // console.log("✅ Merged cart data:", mergedCartData)
+
     dispatch(setCart(mergedCartData))
 
-    const userKey = `userCart_${userIdentifier}`
-    safeLocalStorage.setItem(userKey, JSON.stringify(mergedCartData))
-    safeLocalStorage.removeItem("guestCart")
+    // Save merged data to user cart
+    saveCartToStorage(mergedCartData, locationId, true, userIdentifier)
+
+    // Clear guest cart for this location after merging
+    if (guestCartData.services.length > 0 || guestCartData.products.length > 0 || guestCartData.items.length > 0) {
+      const guestCart = safeLocalStorage.getItem("guestCart")
+      if (guestCart) {
+        const parsed = JSON.parse(guestCart)
+        delete parsed[locationId]
+        if (Object.keys(parsed).length === 0) {
+          safeLocalStorage.removeItem("guestCart")
+        } else {
+          safeLocalStorage.setItem("guestCart", JSON.stringify(parsed))
+        }
+      }
+    }
+
     dispatch(setLoading(false))
   } catch (error) {
+    console.log("❌ Cart sync error:", error)
     dispatch(setError(error instanceof Error ? error.message : "Failed to sync cart"))
     dispatch(setLoading(false))
   }
 }
 
 // Thunk to load user cart when user is already logged in (on app start)
-export const loadUserCart = (user: User): AppThunk => async (dispatch) => {
+export const loadUserCart = (user: User, locationId: string): AppThunk => async (dispatch) => {
   try {
     const userIdentifier = user.mobile || user.email || user.uuid
-    const userCartData = getUserCartFromStorage(userIdentifier)
+    const userCartData = getUserCartFromStorage(userIdentifier, locationId)
     dispatch(setCart(userCartData))
   } catch (error) {
     dispatch(setError(error instanceof Error ? error.message : "Failed to load cart"))
   }
 }
 
-// Middleware to save cart to localStorage
-export const saveCartToStorage = (): AppThunk => (dispatch, getState) => {
+// Thunk to initialize cart with auth state awareness
+export const initializeCartWithAuth = (locationId: string): AppThunk => (dispatch, getState) => {
+  try {
+    const { auth } = getState()
+    const user = auth.user
+
+    let cartData
+    if (user && user.isLoggedIn) {
+      const userIdentifier = user.mobile || user.email || user.uuid
+      cartData = getUserCartFromStorage(userIdentifier, locationId)
+      // console.log("Loading user cart for location:", locationId, cartData)
+    } else {
+      cartData = getCartFromStorage(locationId)
+      // console.log("Loading guest cart for location:", locationId, cartData)
+    }
+
+    dispatch(setCart(cartData))
+  } catch (error) {
+    console.log("Error initializing cart:", error)
+    dispatch(setError("Failed to initialize cart"))
+  }
+}
+
+// Middleware to save cart to localStorage with location support
+export const saveCartToStorageWithLocation = (locationId: string): AppThunk => (dispatch, getState) => {
   try {
     const { cart, auth } = getState()
     const user = auth.user
@@ -375,10 +491,9 @@ export const saveCartToStorage = (): AppThunk => (dispatch, getState) => {
 
     if (user && user.isLoggedIn) {
       const userIdentifier = user.mobile || user.email || user.uuid
-      const userKey = `userCart_${userIdentifier}`
-      safeLocalStorage.setItem(userKey, JSON.stringify(cartData))
+      saveCartToStorage(cartData, locationId, true, userIdentifier)
     } else {
-      safeLocalStorage.setItem("guestCart", JSON.stringify(cartData))
+      saveCartToStorage(cartData, locationId, false)
     }
   } catch (error) {
     console.log("Error saving cart to storage:", error)

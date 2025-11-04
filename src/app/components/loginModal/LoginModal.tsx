@@ -31,6 +31,7 @@ import {
   resetPassword,
 } from "@/store/slices/authSlice";
 import { toastError } from "../common/toastService";
+import { syncCartOnLogin } from "@/store/slices/cartSlice";
 type ScreenType =
   | "login"
   | "password"
@@ -187,7 +188,7 @@ export default function LoginModal({
     ) {
       // Fetch user profile after successful OTP verification
       dispatch(getUserProfile()).then((result) => {
-        console.log(result, "==========getUserProfile result");
+        // console.log(result, "==========getUserProfile result");
         if (result.type === "auth/getUserProfile/fulfilled") {
           setFetchedUserAfterOTP(true);
           setScreen("success");
@@ -212,8 +213,19 @@ export default function LoginModal({
               mobile: payloadObj.mobile || "",
               isLoggedIn: true,
             };
+            // Sync cart after successful login - BEFORE any other cart operations
+            if (
+              selectedLocationUuid &&
+              result.payload &&
+              typeof result.payload === "object"
+            ) {
+              // console.log("🔄 About to sync cart on login");
+              dispatch(
+                syncCartOnLogin(result.payload as any, selectedLocationUuid)
+              );
+            }
             // Log user data to console for debugging
-            console.log(userData, "success user data");
+            // console.log(userData, "success user data");
             // Call the onUserLogin callback with user data if provided
             // This allows parent components to handle the login state
             onUserLogin?.(userData);
@@ -254,6 +266,11 @@ export default function LoginModal({
           mobile: user.mobile || "",
           isLoggedIn: true,
         };
+        // Sync cart after successful login - BEFORE any other cart operations
+        if (selectedLocationUuid && user) {
+          // console.log("🔄 About to sync cart on login (user data available)");
+          dispatch(syncCartOnLogin(user, selectedLocationUuid));
+        }
         onUserLogin?.(userData);
         onClose();
       }, 2000); // 3 seconds
@@ -337,7 +354,7 @@ export default function LoginModal({
         : { email: email }),
     };
 
-    console.log(payload, "verfiy otp eroor======================");
+    // console.log(payload, "verfiy otp eroor======================");
 
     const result = await dispatch(verifyOTP(payload));
     if (
@@ -348,11 +365,11 @@ export default function LoginModal({
       result.payload.data.data
     ) {
       const { already_registered, skip_profile } = result.payload.data.data;
-      console.log(already_registered, "already_registered=>>>>>>>>>>>>>>>>>>");
-      console.log(skip_profile, "skip_profile=>>>>>>>>>>>>>>>>>>>>>");
+      // console.log(already_registered, "already_registered=>>>>>>>>>>>>>>>>>>");
+      // console.log(skip_profile, "skip_profile=>>>>>>>>>>>>>>>>>>>>>");
       if (!already_registered || !skip_profile) {
         // New user needs to complete profile
-        console.log("set signup screen");
+        // console.log("set signup screen");
         setScreen("signup");
       }
       // For existing users, the useEffect above will handle fetching profile and success screen
@@ -460,10 +477,10 @@ export default function LoginModal({
       requestBody.mobile = `91${phoneNumber}`;
     }
 
-    console.log("📤 Registration request body:", {
-      ...requestBody,
-      password: "***",
-    });
+    // console.log("📤 Registration request body:", {
+    //   ...requestBody,
+    //   password: "***",
+    // });
 
     const result = await dispatch(
       completeRegistration({
@@ -498,6 +515,11 @@ export default function LoginModal({
             mobile: result.payload.mobile || "",
             isLoggedIn: true,
           };
+          // Sync cart after successful registration - BEFORE any other cart operations
+          if (selectedLocationUuid) {
+            // console.log("🔄 About to sync cart after registration");
+            dispatch(syncCartOnLogin(result.payload, selectedLocationUuid));
+          }
         }
         onUserLogin?.(userData);
         onClose();
@@ -541,6 +563,11 @@ export default function LoginModal({
             mobile: result.payload.mobile || "",
             isLoggedIn: true,
           };
+          // Sync cart after successful password login - BEFORE any other cart operations
+          if (selectedLocationUuid) {
+            // console.log("🔄 About to sync cart after password login");
+            dispatch(syncCartOnLogin(result.payload, selectedLocationUuid));
+          }
         }
         onUserLogin?.(userData);
         onClose();
