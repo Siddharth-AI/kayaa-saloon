@@ -108,7 +108,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const handleQuantityChange = (increment: boolean) => {
     if (increment) {
-      setQuantity((prev) => Math.min(prev + 1, product?.stock || 10));
+      const maxStock = product?.stock || 0;
+      setQuantity((prev) => Math.min(prev + 1, maxStock));
     } else {
       setQuantity((prev) => Math.max(prev - 1, 1));
     }
@@ -319,7 +320,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   <button
                     onClick={() => handleQuantityChange(true)}
                     className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
-                    disabled={quantity >= (product.stock || 10)}>
+                    disabled={quantity >= (product.stock || 0)}>
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>

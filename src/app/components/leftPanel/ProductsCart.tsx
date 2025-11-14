@@ -114,7 +114,8 @@ const ProductsCart: React.FC<ProductsCartProps> = ({ content }) => {
                                 product.quantity + 1
                               )
                             }
-                            className="p-1 rounded-full hover:bg-[#F28C8C]/10 transition-colors"
+                            className="p-1 rounded-full hover:bg-[#F28C8C]/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={product.quantity >= (product.stock || 0)}
                             aria-label="Increase quantity">
                             <Plus className="w-3 h-3 text-[#B11C5F]" />
                           </button>
@@ -194,13 +195,14 @@ const ProductsCart: React.FC<ProductsCartProps> = ({ content }) => {
                                 product.quantity + 1
                               )
                             }
-                            className="p-1 rounded-full hover:bg-[#F28C8C]/10 transition-colors"
+                            className="p-1 rounded-full hover:bg-[#F28C8C]/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={product.quantity >= (product.stock || 0)}
                             aria-label="Increase quantity">
                             <Plus className="w-3 h-3 text-[#B11C5F]" />
                           </button>
                         </div>
                         <span className="text-xs text-gray-500">
-                          Qty: {product.quantity}
+                          Qty: {product.quantity}/{product.stock || 0}
                         </span>
                       </div>
                     </div>

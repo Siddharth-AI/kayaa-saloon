@@ -55,16 +55,7 @@ const CategoryDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
 
   // Create the full categories list including additional ones
-  const allCategories = [
-    ...categories,
-    { id: 226, name: "Facial" },
-    { id: 227, name: "Foundation" },
-    { id: 228, name: "Serum" },
-    { id: 229, name: "Perfumes" },
-    { id: 230, name: "Nails" },
-    { id: 231, name: "Face Wash" },
-    { id: 232, name: "Night Cream" },
-  ];
+  const allCategories = [...categories];
 
   const activeCategory = allCategories.find(
     (cat) => cat.id === selectedCategory
@@ -323,22 +314,11 @@ export default function Products() {
     setCurrentPage(1);
   }, [currentFilters.selectedCategory, currentFilters.searchQuery]);
 
-  // Shuffle products for variety (as requested)
-  const shuffleArray = (array: Product[]) => {
-    if (!Array.isArray(array)) return [];
-    const shuffled = [...array];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-  };
-
   // Sort and paginate products with memoization
   const sortedProducts = useMemo(() => {
     if (!Array.isArray(filteredProducts)) return [];
 
-    let sorted = [...filteredProducts];
+    const sorted = [...filteredProducts];
 
     // Sort products
     switch (sortBy) {
@@ -352,7 +332,8 @@ export default function Products() {
         sorted.sort((a, b) => (a?.name || "").localeCompare(b?.name || ""));
         break;
       default:
-        sorted = shuffleArray(sorted); // Shuffle for variety
+        // Keep original order instead of shuffling
+        break;
     }
 
     return sorted;
@@ -569,29 +550,18 @@ export default function Products() {
                     </div>
                   </div>
                 ) : (
-                  [
-                    ...categoryOptions,
-                    { id: 226, name: "Facial" },
-                    { id: 227, name: "Foundation" },
-                    { id: 228, name: "Serum" },
-                    { id: 229, name: "Perfumes" },
-                    { id: 230, name: "Nails" },
-                    { id: 231, name: "Face Wash" },
-                    { id: 232, name: "Night Cream" },
-                  ].map((cat) => (
-                    <>
-                      <li key={cat.id}>
-                        <button
-                          className={`text-left w-full px-5 py-2 transition-all duration-300 font-lato font-medium ${
-                            currentFilters.selectedCategory === cat.id
-                              ? "bg-[#F28C8C] text-white shadow-md"
-                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
-                          }`}
-                          onClick={() => dispatch(setSelectedCategory(cat.id))}>
-                          {cat.name}
-                        </button>
-                      </li>
-                    </>
+                  [...categoryOptions].map((cat) => (
+                    <li key={cat.id}>
+                      <button
+                        className={`text-left w-full px-5 py-2 transition-all duration-300 font-lato font-medium ${
+                          currentFilters.selectedCategory === cat.id
+                            ? "bg-[#F28C8C] text-white shadow-md"
+                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
+                        }`}
+                        onClick={() => dispatch(setSelectedCategory(cat.id))}>
+                        {cat.name}
+                      </button>
+                    </li>
                   ))
                 )}
               </ul>

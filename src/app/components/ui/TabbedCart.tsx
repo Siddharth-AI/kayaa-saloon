@@ -285,7 +285,8 @@ export default function TabbedCart() {
                                 product.quantity + 1
                               )
                             }
-                            className="p-1 rounded-full hover:bg-[#F28C8C]/10">
+                            className="p-1 rounded-full hover:bg-[#F28C8C]/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={product.quantity >= (product.stock || 0)}>
                             <Plus className="w-3 h-3" />
                           </button>
                         </div>
