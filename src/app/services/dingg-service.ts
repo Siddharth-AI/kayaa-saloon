@@ -1,16 +1,7 @@
 import axios from 'axios';
 import { getValidToken, generateToken } from './token-service';
-import { CancelBookingRequest, CreateBookingRequest, DinggHeaders, GetSlotsRequest, GetUserBookingsRequest, ProfileResponse } from '../lib/types';
-import { getProfile } from './auth-service';
-
-function getHeaders(token: string): DinggHeaders {
-	return {
-		'access_code': process.env.DINGG_ACCESS_CODE!,
-		'api_key': process.env.DINGG_API_KEY!,
-		'Content-Type': 'application/json',
-		'Authorization': token
-	};
-}
+import { CancelBookingRequest, CreateBookingRequest, GetSlotsRequest, GetUserBookingsRequest } from '../lib/types';
+import { getCustomerUuid, getHeaders } from '@/lib/user-helper';
 
 export async function getLocations() {
 	const url = `${process.env.DINGG_API_URL}/tech-partner/locations`;
@@ -166,15 +157,9 @@ export async function getSlots(businessId: string, params: GetSlotsRequest) {
 
 export async function createBooking(params: CreateBookingRequest, userToken: string): Promise<any> {
 	try {
-		// Get user profile first to extract UUID
-		const userData: ProfileResponse = await getProfile(userToken);
 
-		if (!userData?.data?.user.uuid) {
-			console.error("User UUID not found in createBooking");
-			throw new Error("User authentication required");
-		}
+		const customerUuid = await getCustomerUuid(userToken);
 
-		const customerUuid = userData.data.user.uuid;
 		const url = `${process.env.DINGG_API_URL}/user/booking`;
 
 		// Build payload
@@ -209,14 +194,7 @@ export async function createBooking(params: CreateBookingRequest, userToken: str
 
 export async function getUserBookings(params: GetUserBookingsRequest, userToken: string): Promise<any> {
 	try {
-		// Get user profile first to extract UUID
-		const userData = await getProfile(userToken) as any;
-		const customerUuid = userData?.data?.user?.uuid;
-
-		if (!customerUuid) {
-			console.error("User UUID not found in getUserBookings");
-			throw new Error("User authentication required");
-		}
+		const customerUuid = await getCustomerUuid(userToken);
 
 		// Map booking type numbers to strings
 		const typeMap: Record<number, string> = {
@@ -250,14 +228,8 @@ export async function getUserBookings(params: GetUserBookingsRequest, userToken:
 
 export async function cancelBooking(params: CancelBookingRequest, userToken: string): Promise<any> {
 	try {
-		// Get user profile first to extract UUID
-		const userData = await getProfile(userToken) as any;
-		const customerUuid = userData?.data?.user?.uuid;
 
-		if (!customerUuid) {
-			console.error("User UUID not found in cancelBooking");
-			throw new Error("User authentication required");
-		}
+		const customerUuid = await getCustomerUuid(userToken);
 
 		const url = `${process.env.DINGG_API_URL}/user/bookings/${params.id}`;
 
@@ -278,8 +250,8 @@ export async function cancelBooking(params: CancelBookingRequest, userToken: str
 	}
 }
 
-export async function getProducts() {
-	const url = "https://sdr7sb1b7g.execute-api.ap-south-1.amazonaws.com/dev/client/business/35b3b7dc-4087-446d-a18e-7a67cbc78b16/products?structure=hierarchical"
+export async function getProducts(businessId: string) {
+	const url = `https://qf9u42zvrh.execute-api.ap-south-1.amazonaws.com/stage/client/business/${businessId}/products?structure=hierarchical`
 	try {
 		const response = await axios.get(url);
 		// console.log("Products found:", response.data);

@@ -221,3 +221,32 @@ export const cancelBookingSchema = Joi.object({
   vendor_location_uuid: Joi.string().required().label('Vendor Location UUID'),
   id: Joi.string().required().label('Booking ID')
 });
+
+// ---------------------- address-schemas ----------------------
+
+export const createAddressSchema = Joi.object({
+  address_type: Joi.string().valid('billing', 'shipping').required().label('Address Type'),
+  street_address: Joi.string().required().label('Street Address'),
+  city: Joi.string().required().label('City'),
+  state: Joi.string().required().label('State'),
+  pincode: Joi.number().integer().required().label('Pincode'),
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
+});
+
+export const updateAddressSchema = Joi.object({
+  address_type: Joi.string().valid('billing', 'shipping').required().label('Address Type'),
+  street_address: Joi.string().required().label('Street Address'),
+  city: Joi.string().optional().label('City'),
+  state: Joi.string().optional().label('State'),
+  pincode: Joi.number().integer().optional().label('Pincode'),
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
+});
+
+export const getAddressesSchema = Joi.object({
+  address_type: Joi.string().valid('billing', 'shipping').required().label('Address Type'),
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
+});
+
+export const deleteAddressSchema = Joi.object({
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
+});

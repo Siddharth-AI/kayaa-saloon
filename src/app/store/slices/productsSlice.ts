@@ -57,9 +57,9 @@ const initialState: ProductsState = {
 // Async thunk for fetching products
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async (_, { rejectWithValue }) => {
+  async (locationUuid: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-products`)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-products/${locationUuid}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch products')
@@ -69,6 +69,9 @@ export const fetchProducts = createAsyncThunk(
 
       if (data.status && data.data?.data) {
         return data.data.data
+      } else if (data.data && Array.isArray(data.data) && data.data.length === 0) {
+        // Handle empty products case - return empty array instead of error
+        return []
       } else {
         throw new Error(data.message || 'Failed to load products')
       }

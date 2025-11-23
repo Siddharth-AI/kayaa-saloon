@@ -274,10 +274,6 @@ export interface CancelBookingRequest {
   id: string; // Booking ID to cancel
 }
 
-
-
-
-
 export interface CreateCustomerParams {
   fname: string;
   lname: string;
@@ -296,4 +292,45 @@ export interface GetPaymentFormResponse {
   message: string;
   code: number;
   data: string;
+}
+
+// ---------------------- Address Types ----------------------
+
+export interface CreateAddressRequest {
+  address_type: 'billing' | 'shipping';
+  street_address: string;
+  city: string;
+  state: string;
+  pincode: number;
+  vendor_location_uuid: string;
+}
+
+export interface UpdateAddressRequest {
+  address_type: 'billing' | 'shipping';
+  street_address: string;
+  id: number;
+  city: string;
+  state: string;
+  pincode: number;
+  vendor_location_uuid: string;
+}
+
+export interface GetAddressesRequest {
+  address_type: string;
+  vendor_location_uuid: string;
+}
+
+export interface AddressResponse {
+  id: number;
+  vendor_location_id: number;
+  address_type: string;
+  street_address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  is_default: boolean;
+  user_id: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }

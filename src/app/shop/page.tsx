@@ -13,7 +13,7 @@ import {
   selectCurrentFilters,
 } from "@/store/slices/productsSlice";
 import Image from "next/image";
-import { Search, ChevronDown, Grid, List, ViewIcon, View } from "lucide-react";
+import { Search, ChevronDown, Grid, List, ViewIcon, View, ShoppingBag } from "lucide-react";
 import shopHeader from "@/assets/shop/shop_header.jpg";
 import productImage from "@/assets/shop/product-image.png";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
@@ -186,6 +186,7 @@ const SortDropdown = ({
 
 export default function Products() {
   const dispatch = useAppDispatch();
+  const { selectedLocationUuid } = useAppSelector((state) => state.services);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -306,8 +307,10 @@ export default function Products() {
 
   // Fetch products on component mount
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    if (selectedLocationUuid) {
+      dispatch(fetchProducts(selectedLocationUuid));
+    }
+  }, [dispatch, selectedLocationUuid]);
 
   // Reset page when filters change
   useEffect(() => {
@@ -393,7 +396,11 @@ export default function Products() {
         <div className="text-center">
           <p className="text-red-600 font-medium">Error: {error}</p>
           <button
-            onClick={() => dispatch(fetchProducts())}
+            onClick={() => {
+              if (selectedLocationUuid) {
+                dispatch(fetchProducts(selectedLocationUuid));
+              }
+            }}
             className="mt-4 px-6 py-2 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors">
             Retry
           </button>
@@ -639,23 +646,24 @@ export default function Products() {
                 </div>
               ) : sortedProducts.length === 0 ? (
                 <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
-                  <div className="max-w-md mx-auto">
-                    <div className="w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Search className="w-10 h-10 text-gray-400" />
+                  <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-full flex items-center justify-center mb-6">
+                      <ShoppingBag className="w-12 h-12 text-[#B11C5F]" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                      No products found
+                    <h3 className="text-2xl font-playfair font-bold text-[#B11C5F] mb-3">
+                      No Products Available
                     </h3>
-                    <p className="text-gray-500 mb-6">
-                      No products match your current search and filter criteria.
+                    <p className="text-[#444444] font-lato mb-6 max-w-md">
+                      We couldn't find any products for this location. Please try selecting a different location or check back later.
                     </p>
                     <button
                       onClick={() => {
-                        dispatch(setSearchQuery(""));
-                        dispatch(setSelectedCategory("all"));
+                        if (selectedLocationUuid) {
+                          dispatch(fetchProducts(selectedLocationUuid));
+                        }
                       }}
-                      className="px-6 py-3 bg-gradient-to-r from-orange-400 to-pink-400 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium">
-                      Clear All Filters
+                      className="px-6 py-3 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white rounded-lg hover:shadow-lg transition-all duration-300 font-lato font-semibold">
+                      Refresh Products
                     </button>
                   </div>
                 </div>

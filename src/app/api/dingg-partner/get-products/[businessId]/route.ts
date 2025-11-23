@@ -1,28 +1,27 @@
 import { NextRequest } from 'next/server';
-import { getBusinessHours } from '@/services/dingg-service';
+import { getProducts } from '@/services/dingg-service';
 import { responseHandler, errorHandler } from '@/lib/response-handler';
 import { messages } from '@/lib/messages';
 
-export async function GET(
-  req: NextRequest, context: any) {
+export async function GET(req: NextRequest,
+  context: any) {
   try {
+    // Check if context and params exist
+    if (!context || !context.params) {
+      return errorHandler('Invalid request context');
+    }
+
     // Extract businessId from the dynamic route parameter
-    const params = await context.params;
-    const { businessId } = params;
+    const { businessId } = context.params;
 
     // Validate businessId
     if (!businessId || businessId.trim() === '') {
       return errorHandler('Business ID is required');
     }
 
-    // Call the service function
-    const result = await getBusinessHours(businessId);
-
+    const result = await getProducts(businessId);
     return responseHandler(messages.record_found, true, result);
   } catch (error: any) {
-    return errorHandler(
-      error.message || 'Failed to fetch business hours',
-      error
-    );
+    return errorHandler(error.message || 'Failed to fetch locations', error);
   }
 }

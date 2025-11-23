@@ -1,6 +1,7 @@
 export const messages = {
   record_found: "Records Found",
   record_created: "Record created successfully",
+  record_updated: "Record updated successfully",
   record_deleted: "Record deleted successfully",
   vendor_location_uuid_required: "Vendor location UUID is required in headers",
   no_record_found: "No Records Found",

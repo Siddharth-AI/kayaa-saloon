@@ -32,7 +32,7 @@ export async function generateToken(): Promise<string> {
     tokenData.token = token;
     tokenData.expiry = Date.now() + (expires_in - bufferSeconds) * 1000;
 
-    // console.log("Token generated and stored:", tokenData);
+    console.log("Token generated and stored:", tokenData.token);
     return token;
   } catch (err: any) {
     console.error("Error in generateToken:", err.response?.data || err.message);
