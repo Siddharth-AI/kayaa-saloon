@@ -168,7 +168,8 @@ export const selectFilteredProducts = (state: any): Product[] => {
     let categoryMatch = selectedCategory === 'all'
 
     if (!categoryMatch && state?.products?.categories && Array.isArray(state.products.categories)) {
-      categoryMatch = state.products.categories.some((category: Category) =>
+      // Check if selectedCategory is a main category
+      const mainCategoryMatch = state.products.categories.some((category: Category) =>
         category?.id === selectedCategory &&
         category?.subcategories &&
         Array.isArray(category.subcategories) &&
@@ -178,6 +179,20 @@ export const selectFilteredProducts = (state: any): Product[] => {
           sub.items.some((item: Product) => item?.id === product?.id)
         )
       )
+
+      // Check if selectedCategory is a subcategory
+      const subCategoryMatch = state.products.categories.some((category: Category) =>
+        category?.subcategories &&
+        Array.isArray(category.subcategories) &&
+        category.subcategories.some((sub: Subcategory) =>
+          sub?.id === selectedCategory &&
+          sub?.items &&
+          Array.isArray(sub.items) &&
+          sub.items.some((item: Product) => item?.id === product?.id)
+        )
+      )
+
+      categoryMatch = mainCategoryMatch || subCategoryMatch
     }
 
     // Price filter with null checks
@@ -204,7 +219,11 @@ export const selectCategories = (state: any) => {
     .filter((category: Category) => category?.id && category?.name)
     .map((category: Category) => ({
       id: category.id,
-      name: category.name
+      name: category.name,
+      subcategories: category.subcategories?.map((sub: Subcategory) => ({
+        id: sub.id,
+        name: sub.name
+      })) || []
     }))
 
   return [...baseCategories, ...categoryOptions]

@@ -1,0 +1,2952 @@
+{
+  "status": true,
+  "message": "Records Found",
+  "fromCache": false,
+  "data": {
+    "message": "Business products details.",
+    "error": null,
+    "data": [
+      {
+        "id": "115100",
+        "name": "Hair",
+        "subcategories": [
+          {
+            "id": "115102",
+            "name": "Conditioner",
+            "items": [
+              {
+                "id": 45932,
+                "name": "Hair-wac-qa2",
+                "price": 140,
+                "cost": 120,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 14,
+                "item_code": "12327864",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45944,
+                "name": "wac-lot-qa",
+                "price": 90,
+                "cost": 70,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 18,
+                "item_code": "12327867",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46012,
+                "name": "product-dhiraj-test",
+                "price": 400,
+                "cost": 380,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 20,
+                "unit": "ml",
+                "stock": 30,
+                "item_code": "12327890",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40237,
+                "name": "test-conditioner-shampoo",
+                "price": 120,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 6,
+                "item_code": "T27638",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45931,
+                "name": "hair-wac-qa",
+                "price": 100,
+                "cost": 85,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 34,
+                "item_code": "12327863",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45654,
+                "name": "testing hair",
+                "price": 20,
+                "cost": 15,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 15,
+                "item_code": "12327827",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115101",
+            "name": "Shampoo",
+            "items": [
+              {
+                "id": 39826,
+                "name": "CLC Shampoo ",
+                "price": 100,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 89,
+                "item_code": "T27588",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 39707,
+                "name": "Test sa1",
+                "price": 28,
+                "cost": 5,
+                "brand": "DINGG",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 13,
+                "item_code": "T27560",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46037,
+                "name": "Mamaearth-hair-shampoo-100ml",
+                "price": 340,
+                "cost": 320.45,
+                "brand": "mamaearth",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 33,
+                "item_code": "12327900",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46321,
+                "name": "testing 100% discount",
+                "price": 500,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327982",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45968,
+                "name": "Shampoo-wac-test",
+                "price": 340,
+                "cost": 300,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1,
+                "unit": "pc",
+                "stock": 38,
+                "item_code": "12327873",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46283,
+                "name": "New Shampoo-GP-Test",
+                "price": 100,
+                "cost": 80,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 1,
+                "item_code": "12327971",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46323,
+                "name": "testing discount 100%",
+                "price": 500,
+                "cost": 400,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327983",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46331,
+                "name": "test 100% discount",
+                "price": 400,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 50,
+                "unit": "ml",
+                "stock": 20,
+                "item_code": "12327985",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46335,
+                "name": "test discount 100%",
+                "price": 400,
+                "cost": 200,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327986",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45636,
+                "name": "Great Shampoo",
+                "price": 300,
+                "cost": 150,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 25,
+                "item_code": "12327825",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40013,
+                "name": "Anti-Dandruff Shampoo",
+                "price": 100,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1,
+                "unit": "pc",
+                "stock": 2,
+                "item_code": "T27608",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40014,
+                "name": "test shampoo",
+                "price": 0,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 1,
+                "item_code": "T27609",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40015,
+                "name": "Anti-Dandruff Shampoo-2",
+                "price": 900,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 2,
+                "unit": "pc",
+                "stock": 5,
+                "item_code": "T27610",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115105",
+            "name": "Oil",
+            "items": [
+              {
+                "id": 40568,
+                "name": "Oil 3",
+                "price": 300,
+                "cost": 250,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 11,
+                "item_code": "12327668",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40017,
+                "name": "Hair Growth-Oil",
+                "price": 900,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 300,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "T27612",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40026,
+                "name": "Hair Growth-Anti dandruff Oil",
+                "price": 10,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "T27619",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40569,
+                "name": "Oil 4",
+                "price": 400,
+                "cost": 350,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 22,
+                "item_code": "12327669",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40667,
+                "name": "hair-oil-growth1",
+                "price": 100,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 20,
+                "unit": "ml",
+                "stock": 20,
+                "item_code": "12327719",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40020,
+                "name": "hair adivasi oil",
+                "price": 100,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "T27614",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40566,
+                "name": "Oil 1",
+                "price": 100,
+                "cost": 70,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "12327666",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40567,
+                "name": "Oil 2",
+                "price": 200,
+                "cost": 190,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 21,
+                "item_code": "12327667",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40570,
+                "name": "Oil 5",
+                "price": 1000,
+                "cost": 990,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 400,
+                "unit": "ml",
+                "stock": 22,
+                "item_code": "12327670",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40516,
+                "name": "Hair Growth Oil- Test",
+                "price": 1300,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "null",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 44,
+                "item_code": "T27650",
+                "is_public": true,
+                "images": [
+                  "null"
+                ]
+              },
+              {
+                "id": 40035,
+                "name": "Hair Growth Traya Oil",
+                "price": 1000,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "T27620",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40036,
+                "name": "Hair Growth Oil-3",
+                "price": 0,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "T27621",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40018,
+                "name": "Coconut Oil Hair",
+                "price": 40,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 150,
+                "unit": "ml",
+                "stock": 3,
+                "item_code": "T27613",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115109",
+            "name": "Treatment",
+            "items": [
+              {
+                "id": 45990,
+                "name": "Gel Moisturiser 100ml",
+                "price": 999,
+                "cost": 970.54,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 40,
+                "item_code": "12327883",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115104",
+            "name": "Mask",
+            "items": [
+              {
+                "id": 45979,
+                "name": "Tresemme Hair Mask",
+                "price": 80,
+                "cost": 100,
+                "brand": "Tresemme",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1,
+                "unit": "pc",
+                "stock": 33,
+                "item_code": "12327878",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45974,
+                "name": "Lakme Hair Mask",
+                "price": 100,
+                "cost": 100,
+                "brand": "lakme",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1,
+                "unit": "pc",
+                "stock": 6,
+                "item_code": "12327876",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45318,
+                "name": "testing issue -01",
+                "price": 2000,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 20,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327754",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115103",
+            "name": "Cream",
+            "items": [
+              {
+                "id": 46119,
+                "name": "product qa test",
+                "price": 1000,
+                "cost": 899,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 109,
+                "item_code": "12327917",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "115000",
+        "name": "Other",
+        "subcategories": [
+          {
+            "id": "115099",
+            "name": "Other",
+            "items": [
+              {
+                "id": 26883,
+                "name": "9/7 Illuminia",
+                "price": 450,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "P10688",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26885,
+                "name": "12/89 Koleston P",
+                "price": 390,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 1,
+                "item_code": "P10690",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26962,
+                "name": "1002-C2L REFLECT NEOPRENE BLAZE COLLAR L",
+                "price": 1269,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 58,
+                "item_code": "P10746",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26963,
+                "name": "1003-C5M RFLCT N PRENE PLAY CARD COLLAR M",
+                "price": 999,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P10747",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26964,
+                "name": "1005-C4XS- REFLECT YELLOW COLLAR",
+                "price": 799,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 90,
+                "item_code": "P10748",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26965,
+                "name": "101628 - TEA TREE OIL SHAMPOO - 8 IN 1",
+                "price": 1199,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 77,
+                "item_code": "P10749",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26967,
+                "name": "1078ADJ - ADJUSTABLE DINER 1600 ML",
+                "price": 1025,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 20,
+                "item_code": "P10751",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26986,
+                "name": "3003-L6S-REFLCTIVE NEOPRNE BLUE LEASH S",
+                "price": 1099,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 25,
+                "item_code": "P10767",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26988,
+                "name": "3005DBLE LEMON - DRY BATH SHAMPOO",
+                "price": 265,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P10769",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26073,
+                "name": "9.13 Dia Light",
+                "price": 330,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 11,
+                "item_code": "P14053",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26067,
+                "name": "Ake talc",
+                "price": 1,
+                "cost": 1,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 13,
+                "item_code": "P14139",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26068,
+                "name": "4.2 Majirel",
+                "price": 335,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P14140",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26069,
+                "name": "5.6 Majirel",
+                "price": 325,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 2,
+                "item_code": "P14141",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26071,
+                "name": "8.28 Dia Light",
+                "price": 330,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 11,
+                "item_code": "P14142",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26072,
+                "name": "6.28 Dia Light",
+                "price": 330,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P14143",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26082,
+                "name": "20.20 Volo",
+                "price": 100,
+                "cost": 100,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 1,
+                "item_code": "P14146",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26083,
+                "name": "24 K Glod Moist Spf 25",
+                "price": 895,
+                "cost": 895,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 5,
+                "item_code": "P14147",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 27058,
+                "name": "ANIMOLOGY - DERMA DOG SHAMPOO - 250ML",
+                "price": 790,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P10835",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26523,
+                "name": "Absolute essential cream 3",
+                "price": 2950,
+                "cost": 2950,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P10380",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26859,
+                "name": "2 INOA",
+                "price": 445,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 5,
+                "item_code": "P10664",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40266,
+                "name": "New-QA-Test",
+                "price": 500,
+                "cost": 450,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 590,
+                "item_code": "T27643",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 34860,
+                "name": "Test1",
+                "price": 10,
+                "cost": 5,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 16,
+                "item_code": "P14356",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40197,
+                "name": "Automation Product sPxEk",
+                "price": 100,
+                "cost": 150,
+                "brand": "",
+                "detail": "This Product is Created by Automation",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 102,
+                "item_code": "T27634",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 26854,
+                "name": "3434",
+                "price": 23423,
+                "cost": 23423,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P14222",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26871,
+                "name": "10/36 Illuminia",
+                "price": 425,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 15,
+                "item_code": "P10676",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26614,
+                "name": "Facial kit",
+                "price": 1,
+                "cost": 1,
+                "brand": "null",
+                "detail": "null",
+                "image": null,
+                "measurement": 500,
+                "unit": "ml",
+                "stock": 150,
+                "item_code": "P14210",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26193,
+                "name": "Color Mask",
+                "price": 80,
+                "cost": 80,
+                "brand": "null",
+                "detail": "null",
+                "image": null,
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 34,
+                "item_code": "P10137",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26728,
+                "name": "Power mask powder",
+                "price": 1,
+                "cost": 1,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 44,
+                "item_code": "P10574",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26512,
+                "name": "2020 Reaffirming mask -N",
+                "price": 4100,
+                "cost": 4100,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 4,
+                "item_code": "P10370",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26515,
+                "name": "2080 gold mark",
+                "price": 5900,
+                "cost": 4000,
+                "brand": "null",
+                "detail": "null",
+                "image": null,
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "P10373",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26887,
+                "name": "12/0 Koleston P",
+                "price": 390,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 17,
+                "item_code": "P10692",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26070,
+                "name": "5.5 Majirel",
+                "price": 325,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 2,
+                "item_code": "P10015",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 39781,
+                "name": "Automation DND",
+                "price": 450,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 92,
+                "item_code": "T27576",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 39639,
+                "name": "Masala Chai",
+                "price": 40,
+                "cost": 15,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 200,
+                "item_code": "P14384",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26100,
+                "name": "ALGA MANI PEDI KIT",
+                "price": 1,
+                "cost": 1,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 1,
+                "item_code": "P10071",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26961,
+                "name": "10011 GOODIE BONE - M - KONG",
+                "price": 1115,
+                "cost": 100,
+                "brand": "null",
+                "detail": "null",
+                "image": null,
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 93,
+                "item_code": "P10745",
+                "is_public": true,
+                "images": []
+              }
+            ]
+          },
+          {
+            "id": "115001",
+            "name": "Houskeeping",
+            "items": [
+              {
+                "id": 45998,
+                "name": "without-lot-product-gp",
+                "price": 900,
+                "cost": 850,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 9,
+                "item_code": "12327886",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46008,
+                "name": "invoice-product-issue",
+                "price": 1000,
+                "cost": 900,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 14,
+                "item_code": "12327889",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46014,
+                "name": "product-dhiraj-test-2",
+                "price": 10,
+                "cost": 15,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 35,
+                "item_code": "12327891",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46024,
+                "name": "withLot-product",
+                "price": 800,
+                "cost": 790,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 29,
+                "item_code": "12327895",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46036,
+                "name": "test-wac-ganesh",
+                "price": 10,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 8,
+                "item_code": "12327899",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46167,
+                "name": "shampoo-new-hairfall-reduction-50",
+                "price": 500,
+                "cost": 445,
+                "brand": "",
+                "detail": "",
+                "image": "https://img.dingg.app/file_1758258175024.jpg",
+                "measurement": 50,
+                "unit": "ml",
+                "stock": 20,
+                "item_code": "12327932",
+                "is_public": true,
+                "images": [
+                  "https://img.dingg.app/file_1758258175024.jpg"
+                ]
+              },
+              {
+                "id": 46094,
+                "name": "Xampoo Conditioner",
+                "price": 1000,
+                "cost": 990,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 1,
+                "item_code": "12327911",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46148,
+                "name": "gp_qa_3",
+                "price": 300,
+                "cost": 280,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 30,
+                "unit": "ml",
+                "stock": 7,
+                "item_code": "12327924",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46181,
+                "name": "SKU Product",
+                "price": 1000,
+                "cost": 982,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327936",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46171,
+                "name": "test audit issue",
+                "price": 100,
+                "cost": 80,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 4,
+                "unit": "ml",
+                "stock": 9,
+                "item_code": "12327933",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40572,
+                "name": "INV/2024-25/3348",
+                "price": 500,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 450,
+                "item_code": "917020509476",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40573,
+                "name": "INV/2024-25/3349",
+                "price": 1800,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 1800,
+                "item_code": "917798090032",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40574,
+                "name": "INV/2024-25/3350",
+                "price": 795.5,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 795,
+                "item_code": "918103226825",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40575,
+                "name": "INV/2024-25/3351",
+                "price": 1061,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 954,
+                "item_code": "917020509476",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40576,
+                "name": "INV/2024-25/3352",
+                "price": 340,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 340,
+                "item_code": "919826012345",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40577,
+                "name": "INV/2024-25/3353",
+                "price": 3350,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 3350,
+                "item_code": "912026651204",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40578,
+                "name": "INV/2024-25/3354",
+                "price": 3050,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 2135,
+                "item_code": "918739011111",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40558,
+                "name": "Spa color Shampoo",
+                "price": 310,
+                "cost": 250,
+                "brand": "Mama Earth",
+                "detail": "null",
+                "image": null,
+                "measurement": 111,
+                "unit": "ml",
+                "stock": 23,
+                "item_code": "T27660",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40562,
+                "name": "Face Scrub",
+                "price": 199,
+                "cost": 159,
+                "brand": " maMaEArth ",
+                "detail": "null",
+                "image": null,
+                "measurement": 34,
+                "unit": "ml",
+                "stock": 5,
+                "item_code": "T27664",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40563,
+                "name": "Test_Product_Flow2",
+                "price": 1000,
+                "cost": 900,
+                "brand": "Lakme",
+                "detail": "Testing ",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 39,
+                "item_code": "PRODUCT1",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40621,
+                "name": "Transfer_P2",
+                "price": 1000,
+                "cost": 999,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 95,
+                "item_code": "12327678",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40783,
+                "name": "Sync Product 3",
+                "price": 1200,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "12327730",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 40607,
+                "name": "Transfer2",
+                "price": 1000,
+                "cost": 999,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 89,
+                "item_code": "12327674",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40653,
+                "name": "<script>alert(document.domain)</script>",
+                "price": 200,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 20,
+                "unit": "ml",
+                "stock": 13,
+                "item_code": "12327705",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40595,
+                "name": "T2",
+                "price": 1999,
+                "cost": 1990,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 300,
+                "unit": "ml",
+                "stock": 80,
+                "item_code": "PT2",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45513,
+                "name": "Test-Lot-Merge 3",
+                "price": 1000,
+                "cost": 999,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 72,
+                "item_code": "12327813",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45517,
+                "name": "Test-Lot-Merge 4",
+                "price": 2999,
+                "cost": 2500,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 113,
+                "item_code": "12327814",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45616,
+                "name": "Merge 1",
+                "price": 1000,
+                "cost": 900,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 13,
+                "item_code": "12327822",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45623,
+                "name": "Merge 2",
+                "price": 1000,
+                "cost": 900,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 22,
+                "item_code": "12327823",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45629,
+                "name": "Merge 3",
+                "price": 1000,
+                "cost": 900,
+                "brand": "",
+                "detail": "",
+                "image": "null",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 2,
+                "item_code": "12327824",
+                "is_public": true,
+                "images": [
+                  "null"
+                ]
+              },
+              {
+                "id": 45529,
+                "name": "Test-Product-QA2",
+                "price": 60,
+                "cost": 45,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 45,
+                "item_code": "12327815",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45759,
+                "name": "Low quant product",
+                "price": 1000,
+                "cost": 999,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 6,
+                "item_code": "12327843",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45960,
+                "name": "audit-wac-qa2",
+                "price": 120,
+                "cost": 115,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 35,
+                "item_code": "12327871",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45964,
+                "name": "Scan Product",
+                "price": 1000,
+                "cost": 999,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 31,
+                "item_code": "12327872",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45996,
+                "name": "Gel Moisturiser 150ml",
+                "price": 1500,
+                "cost": 1200,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 150,
+                "unit": "ml",
+                "stock": 15,
+                "item_code": "12327885",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45992,
+                "name": "wac-lot-product",
+                "price": 800,
+                "cost": 720.75,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 48,
+                "item_code": "12327884",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45738,
+                "name": "gp-test-01",
+                "price": 100,
+                "cost": 90,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 2,
+                "unit": "ml",
+                "stock": 3,
+                "item_code": "12327841",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46000,
+                "name": "with-lot-transfer",
+                "price": 900,
+                "cost": 850.45,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 30,
+                "item_code": "12327887",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46020,
+                "name": "withoutLot-product",
+                "price": 900,
+                "cost": 860,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 26,
+                "item_code": "12327894",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46004,
+                "name": "without-lot-transfer",
+                "price": 900,
+                "cost": 820.78,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 40,
+                "item_code": "12327888",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46046,
+                "name": "WAC-P2",
+                "price": 1000,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 9,
+                "item_code": "12327903",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46058,
+                "name": "Xampoo",
+                "price": 1200,
+                "cost": 1099,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 26,
+                "item_code": "P456",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46140,
+                "name": "gp_qa_1",
+                "price": 100,
+                "cost": 80,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 11,
+                "unit": "ml",
+                "stock": 1,
+                "item_code": "12327922",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46157,
+                "name": "sd_transfer",
+                "price": 100,
+                "cost": 90,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 8,
+                "item_code": "12327930",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46032,
+                "name": "Everyuth Naturals Face Scrub-25gm",
+                "price": 30,
+                "cost": 25,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 25,
+                "unit": "gms",
+                "stock": 50,
+                "item_code": "12327897",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45940,
+                "name": "Audit-wac-qa",
+                "price": 120,
+                "cost": 115,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 13,
+                "item_code": "12327866",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46074,
+                "name": "New_App_Product 1",
+                "price": 500,
+                "cost": 491,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327906",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46114,
+                "name": "product-gp-qa",
+                "price": 100,
+                "cost": 100,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1,
+                "unit": "ml",
+                "stock": 8,
+                "item_code": "12327915",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46144,
+                "name": "gp_qa_2",
+                "price": 200,
+                "cost": 180,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 22,
+                "unit": "ml",
+                "stock": 2,
+                "item_code": "12327923",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46154,
+                "name": "gp_qa_4",
+                "price": 200,
+                "cost": 180,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 13,
+                "item_code": "12327927",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46034,
+                "name": "Everyuth Naturals Face Scrub-100gm",
+                "price": 100,
+                "cost": 90,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "gms",
+                "stock": 1,
+                "item_code": "12327898",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46078,
+                "name": "New_App_Product 2",
+                "price": 600,
+                "cost": 550,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 210,
+                "unit": "ml",
+                "stock": 5,
+                "item_code": "12327907",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46082,
+                "name": "New_App_Product 3",
+                "price": 800,
+                "cost": 799,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 300,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "12327908",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46191,
+                "name": "bedsheet",
+                "price": 100,
+                "cost": 87,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "pc",
+                "stock": 3,
+                "item_code": "12327938",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46195,
+                "name": "cotton bedsheet",
+                "price": 300,
+                "cost": 275,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 5,
+                "unit": "pc",
+                "stock": 2,
+                "item_code": "12327939",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46127,
+                "name": "lot no issue",
+                "price": 1200,
+                "cost": 1000,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 9,
+                "item_code": "12327919",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46199,
+                "name": "Mamaearth Glow Face Cream-80gm",
+                "price": 500,
+                "cost": 445,
+                "brand": "mamaearth",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 80,
+                "unit": "gms",
+                "stock": 20,
+                "item_code": "12327940",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46203,
+                "name": "Audit Product W/O Lot 1",
+                "price": 499,
+                "cost": 422.12,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 120,
+                "unit": "ml",
+                "stock": 18,
+                "item_code": "12327941",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46288,
+                "name": "D-Tan-QA",
+                "price": 1375,
+                "cost": 825,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 3,
+                "item_code": "12327973",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46207,
+                "name": "Audit Product W/O Lot 2",
+                "price": 345,
+                "cost": 234,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 210,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "12327942",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46211,
+                "name": "Audit Product W Lot 1",
+                "price": 122.88,
+                "cost": 12.22,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 120,
+                "unit": "ml",
+                "stock": 13,
+                "item_code": "12327943",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46364,
+                "name": "13 Nov Product 2",
+                "price": 700,
+                "cost": 689,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 55,
+                "item_code": "12327988",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46278,
+                "name": "29th oct product",
+                "price": 100,
+                "cost": 98,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 9,
+                "item_code": "12327969",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46292,
+                "name": "d-tan-qa2",
+                "price": 1155,
+                "cost": 622.88,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1,
+                "unit": "pc",
+                "stock": 3,
+                "item_code": "12327974",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46215,
+                "name": "Audit Product W Lot 2",
+                "price": 213,
+                "cost": 200,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 210,
+                "unit": "ml",
+                "stock": 17,
+                "item_code": "12327944",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46296,
+                "name": "D-Tan-qa3",
+                "price": 1155,
+                "cost": 622.88,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1,
+                "unit": "pc",
+                "stock": 4,
+                "item_code": "12327975",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46368,
+                "name": "13th Nov Lot Product",
+                "price": 200,
+                "cost": 189,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 65,
+                "item_code": "12327989",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46219,
+                "name": "Audit Product sd 1",
+                "price": 231,
+                "cost": 211,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 120,
+                "unit": "ml",
+                "stock": 26,
+                "item_code": "12327945",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46372,
+                "name": "13th Nov Only Lot",
+                "price": 200,
+                "cost": 198,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 45,
+                "item_code": "12327990",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46327,
+                "name": "Test product 7th nov",
+                "price": 400,
+                "cost": 380,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 120,
+                "unit": "ml",
+                "stock": 44,
+                "item_code": "12327984",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46223,
+                "name": "Audit Product sd 2",
+                "price": 422,
+                "cost": 311,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 211,
+                "unit": "ml",
+                "stock": 25,
+                "item_code": "12327946",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46284,
+                "name": "Product-gp-new-qa",
+                "price": 100,
+                "cost": 80,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 3,
+                "item_code": "12327972",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46227,
+                "name": "Fixed Product Issue",
+                "price": 290,
+                "cost": 278.12,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 6,
+                "unit": "pc",
+                "stock": 5,
+                "item_code": "12327947",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46231,
+                "name": "test product issue",
+                "price": 100,
+                "cost": 80,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 2,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "12327948",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40557,
+                "name": "TEST_ProductFlow",
+                "price": 1000,
+                "cost": 900,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 200,
+                "unit": "ml",
+                "stock": 20,
+                "item_code": "T27659",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40622,
+                "name": "Transfer_P3",
+                "price": 1100,
+                "cost": 1100,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 90,
+                "item_code": "12327679",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40626,
+                "name": "qap2",
+                "price": 999,
+                "cost": 900,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 86,
+                "item_code": "12327681",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40652,
+                "name": "testing 123",
+                "price": 100,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 5,
+                "item_code": "12327704",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40593,
+                "name": "T1",
+                "price": 1000,
+                "cost": 999,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 250,
+                "unit": "ml",
+                "stock": 81,
+                "item_code": "PT1",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 39691,
+                "name": "Beard Oil",
+                "price": 650,
+                "cost": 560,
+                "brand": "MamaEarth",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 93,
+                "item_code": "T27555",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "115200",
+        "name": "Makeup",
+        "subcategories": [
+          {
+            "id": "115201",
+            "name": "Lips",
+            "items": [
+              {
+                "id": 26052,
+                "name": "00304 BLK04 DOG LEAD BLACK",
+                "price": 479,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 108,
+                "item_code": "P10005",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26051,
+                "name": "00206 BLK06 ROPE LEASH BLACK",
+                "price": 1499,
+                "cost": 1700,
+                "brand": "null",
+                "detail": "null",
+                "image": null,
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 148,
+                "item_code": "P10006",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 26053,
+                "name": "00304-BLU04 DOG LEAD BLUE",
+                "price": 479,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 23,
+                "item_code": "P10007",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 39687,
+                "name": "uniom",
+                "price": 556,
+                "cost": 556,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 98,
+                "item_code": "T27554",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115204",
+            "name": "Face",
+            "items": [
+              {
+                "id": 40720,
+                "name": "Lakme Absolute Creme-25 gms",
+                "price": 250,
+                "cost": 200,
+                "brand": "lakme",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 25,
+                "unit": "gms",
+                "stock": 10,
+                "item_code": "12327724",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 46028,
+                "name": "Everyuth Naturals Face Scrub-7gm",
+                "price": 10,
+                "cost": 8.75,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 7,
+                "unit": "gms",
+                "stock": 90,
+                "item_code": "12327896",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 45649,
+                "name": "face primer 10 ml",
+                "price": 174,
+                "cost": 150,
+                "brand": "Insight",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 10,
+                "unit": "ml",
+                "stock": 24,
+                "item_code": "12327826",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40724,
+                "name": "Lakme Absolute Creme-50 gms",
+                "price": 500,
+                "cost": 420,
+                "brand": "    lakme   ",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 50,
+                "unit": "gms",
+                "stock": 33,
+                "item_code": "12327725",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 40728,
+                "name": "Lakme Superglow Skin Perfecting Makeup Fixer",
+                "price": 234,
+                "cost": 200,
+                "brand": "LAKME",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 60,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327726",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115203",
+            "name": "Eyes",
+            "items": [
+              {
+                "id": 26057,
+                "name": "00304 RED04 DOG LEAD RED",
+                "price": 479,
+                "cost": 0,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 52,
+                "item_code": "P10009",
+                "is_public": true,
+                "images": []
+              }
+            ]
+          },
+          {
+            "id": "115206",
+            "name": "Brushes",
+            "items": [
+              {
+                "id": 40614,
+                "name": "test-980",
+                "price": 980,
+                "cost": 780,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 10,
+                "item_code": "12327675",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "115250",
+        "name": "Personal Care",
+        "subcategories": [
+          {
+            "id": "115254",
+            "name": "Grooming - Men",
+            "items": [
+              {
+                "id": 40602,
+                "name": "ks-test-product",
+                "price": 200,
+                "cost": 170,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 100,
+                "unit": "ml",
+                "stock": 12,
+                "item_code": "12327672",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115255",
+            "name": "Dental Care",
+            "items": [
+              {
+                "id": 39631,
+                "name": "ABCD2",
+                "price": 2035,
+                "cost": 100,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 5,
+                "item_code": "P14376",
+                "is_public": true,
+                "images": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "115150",
+        "name": "Skin",
+        "subcategories": [
+          {
+            "id": "115152",
+            "name": "Facial",
+            "items": [
+              {
+                "id": 26038,
+                "name": "testprodsyn1",
+                "price": 1000,
+                "cost": 1100,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 26,
+                "item_code": "P10003",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              },
+              {
+                "id": 34827,
+                "name": "test",
+                "price": 600,
+                "cost": 0,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 1000,
+                "unit": "ml",
+                "stock": 5,
+                "item_code": "P14350",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "115153",
+            "name": "Moisturiser",
+            "items": [
+              {
+                "id": 39637,
+                "name": "Haldi Chandan Soap",
+                "price": 50,
+                "cost": 20,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 99,
+                "item_code": "P14382",
+                "is_public": true,
+                "images": []
+              },
+              {
+                "id": 39640,
+                "name": "Gulab Jamun",
+                "price": 120,
+                "cost": 60,
+                "brand": null,
+                "detail": null,
+                "image": null,
+                "measurement": null,
+                "unit": "ml",
+                "stock": 9,
+                "item_code": "P14385",
+                "is_public": true,
+                "images": []
+              }
+            ]
+          },
+          {
+            "id": "115159",
+            "name": "Eye Care",
+            "items": [
+              {
+                "id": 40515,
+                "name": "Eye Drop-new",
+                "price": 200,
+                "cost": 230,
+                "brand": "",
+                "detail": "",
+                "image": "undefined",
+                "measurement": 400,
+                "unit": "ml",
+                "stock": 25,
+                "item_code": "T27649",
+                "is_public": true,
+                "images": [
+                  "undefined"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

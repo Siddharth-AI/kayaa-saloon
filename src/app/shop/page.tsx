@@ -13,7 +13,15 @@ import {
   selectCurrentFilters,
 } from "@/store/slices/productsSlice";
 import Image from "next/image";
-import { Search, ChevronDown, Grid, List, ViewIcon, View, ShoppingBag } from "lucide-react";
+import {
+  Search,
+  ChevronDown,
+  Grid,
+  List,
+  ViewIcon,
+  View,
+  ShoppingBag,
+} from "lucide-react";
 import shopHeader from "@/assets/shop/shop_header.jpg";
 import productImage from "@/assets/shop/product-image.png";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
@@ -40,81 +48,157 @@ interface Product {
   images: string[];
 }
 
-// Custom Category Dropdown Component
+// Updated CategoryDropdown Component with Main Category and Subcategory support
 const CategoryDropdown = ({
   categories,
   selectedCategory,
   onCategorySelect,
   loading,
 }: {
-  categories: Array<{ id: string | number; name: string }>;
+  categories: Array<{
+    id: string | number;
+    name: string;
+    subcategories?: Array<{ id: string | number; name: string }>;
+  }>;
   selectedCategory: string | number;
   onCategorySelect: (categoryId: string | number) => void;
   loading: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<
+    Set<string | number>
+  >(new Set());
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
-  // Create the full categories list including additional ones
-  const allCategories = [...categories];
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
 
-  const activeCategory = allCategories.find(
-    (cat) => cat.id === selectedCategory
-  );
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleCategory = (categoryId: string | number) => {
+    const newExpanded = new Set(expandedCategories);
+    if (newExpanded.has(categoryId)) {
+      newExpanded.delete(categoryId);
+    } else {
+      newExpanded.add(categoryId);
+    }
+    setExpandedCategories(newExpanded);
+  };
+
+  const activeCategory = categories.find((cat) => cat.id === selectedCategory);
 
   return (
-    <div className="relative">
+    <div className="relative w-full" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full min-w-[200px] flex items-center justify-between px-4 py-4 bg-white border border-gray-200 hover:bg-gray-50 outline-none transition-all duration-200">
-        <span className="text-gray-700 font-medium truncate">
-          {activeCategory?.name || "All Categories"}
+        disabled={loading}
+        className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm flex items-center justify-between hover:border-pink-300 transition-all disabled:opacity-50">
+        <span className="text-gray-700 font-medium">
+          {loading ? "Loading..." : activeCategory?.name || "All Categories"}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
+          className={`w-5 h-5 text-gray-500 transition-transform ${
             isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
+      {isOpen && !loading && (
+        <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-96 overflow-y-auto">
+          {/* All Categories Option */}
+          <button
+            onClick={() => {
+              onCategorySelect("all");
+              setIsOpen(false);
+            }}
+            className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors ${
+              selectedCategory === "all"
+                ? "bg-pink-100 text-pink-600 font-semibold"
+                : "text-gray-700"
+            }`}>
+            All Categories
+          </button>
 
-          {/* Dropdown Menu */}
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 shadow-lg z-20 max-h-60 overflow-y-auto">
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="flex justify-center items-center py-12">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C]"></div>
-                </div>
-              </div>
-            ) : (
-              allCategories.map((category) => (
+          {/* Main Categories with Subcategories */}
+          {categories.map((category) => (
+            <div key={category.id} className="border-t border-gray-100">
+              {/* Main Category */}
+              <div className="flex items-center">
                 <button
-                  key={category.id}
                   onClick={() => {
                     onCategorySelect(category.id);
                     setIsOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-4 hover:bg-gray-50 transition-colors duration-200 ${
+                  className={`flex-1 px-4 py-3 text-left hover:bg-pink-50 transition-colors ${
                     selectedCategory === category.id
-                      ? "bg-[#F28C8C] text-white shadow-md"
+                      ? "bg-pink-100 text-pink-600 font-semibold"
                       : "text-gray-700"
                   }`}>
                   {category.name}
                 </button>
-              ))
-            )}
-          </div>
-        </>
+
+                {/* Expand/Collapse Button for Subcategories */}
+                {category.subcategories &&
+                  category.subcategories.length > 0 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleCategory(category.id);
+                      }}
+                      className="px-3 py-3 hover:bg-gray-100">
+                      <ChevronDown
+                        className={`w-4 h-4 text-gray-500 transition-transform ${
+                          expandedCategories.has(category.id)
+                            ? "rotate-180"
+                            : ""
+                        }`}
+                      />
+                    </button>
+                  )}
+              </div>
+
+              {/* Subcategories */}
+              {expandedCategories.has(category.id) &&
+                category.subcategories &&
+                category.subcategories.length > 0 && (
+                  <div className="bg-gray-50">
+                    {category.subcategories.map((subcategory) => (
+                      <button
+                        key={subcategory.id}
+                        onClick={() => {
+                          onCategorySelect(subcategory.id);
+                          setIsOpen(false);
+                        }}
+                        className={`w-full px-8 py-2 text-left text-sm hover:bg-pink-50 transition-colors ${
+                          selectedCategory === subcategory.id
+                            ? "bg-pink-100 text-pink-600 font-semibold"
+                            : "text-gray-600"
+                        }`}>
+                        {subcategory.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
 };
+
 // Custom Sort Dropdown Component
 const SortDropdown = ({
   sortBy,
@@ -302,6 +386,9 @@ export default function Products() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("shuffle");
   const [currentPage, setCurrentPage] = useState(1);
+  const [expandedDesktopCategories, setExpandedDesktopCategories] = useState<
+    Set<string | number>
+  >(new Set());
 
   const productsPerPage = 12;
 
@@ -559,15 +646,74 @@ export default function Products() {
                 ) : (
                   [...categoryOptions].map((cat) => (
                     <li key={cat.id}>
-                      <button
-                        className={`text-left w-full px-5 py-2 transition-all duration-300 font-lato font-medium ${
-                          currentFilters.selectedCategory === cat.id
-                            ? "bg-[#F28C8C] text-white shadow-md"
-                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
-                        }`}
-                        onClick={() => dispatch(setSelectedCategory(cat.id))}>
-                        {cat.name}
-                      </button>
+                      {/* Main Category */}
+                      <div className="flex items-center">
+                        <button
+                          className={`flex-1 text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
+                            currentFilters.selectedCategory === cat.id
+                              ? "bg-[#F28C8C] text-white shadow-md"
+                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
+                          }`}
+                          onClick={() => dispatch(setSelectedCategory(cat.id))}>
+                          {cat.name}
+                        </button>
+
+                        {/* Expand/Collapse Button for Subcategories */}
+                        {cat.subcategories && cat.subcategories.length > 0 && (
+                          <button
+                            onClick={() => {
+                              const newExpanded = new Set(
+                                expandedDesktopCategories
+                              );
+                              if (newExpanded.has(cat.id)) {
+                                newExpanded.delete(cat.id);
+                              } else {
+                                newExpanded.add(cat.id);
+                              }
+                              setExpandedDesktopCategories(newExpanded);
+                            }}
+                            className="px-3 py-2 hover:bg-gray-100">
+                            <ChevronDown
+                              className={`w-4 h-4 text-gray-500 transition-transform ${
+                                expandedDesktopCategories.has(cat.id)
+                                  ? "rotate-180"
+                                  : ""
+                              }`}
+                            />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Subcategories */}
+                      {expandedDesktopCategories.has(cat.id) &&
+                        cat.subcategories &&
+                        cat.subcategories.length > 0 && (
+                          <ul className="bg-gray-50">
+                            {cat.subcategories.map(
+                              (subcategory: {
+                                id: string | number;
+                                name: string;
+                              }) => (
+                                <li key={subcategory.id}>
+                                  <button
+                                    className={`w-full text-left px-8 py-2 text-sm transition-all duration-300 font-lato ${
+                                      currentFilters.selectedCategory ===
+                                      subcategory.id
+                                        ? "bg-[#F28C8C] text-white shadow-md"
+                                        : "bg-gray-50 text-[#666666] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
+                                    }`}
+                                    onClick={() =>
+                                      dispatch(
+                                        setSelectedCategory(subcategory.id)
+                                      )
+                                    }>
+                                    {subcategory.name}
+                                  </button>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        )}
                     </li>
                   ))
                 )}
@@ -654,7 +800,8 @@ export default function Products() {
                       No Products Available
                     </h3>
                     <p className="text-[#444444] font-lato mb-6 max-w-md">
-                      We couldn't find any products for this location. Please try selecting a different location or check back later.
+                      We couldn't find any products for this location. Please
+                      try selecting a different location or check back later.
                     </p>
                     <button
                       onClick={() => {
