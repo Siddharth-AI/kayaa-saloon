@@ -334,3 +334,68 @@ export interface AddressResponse {
   updatedAt: string;
   deletedAt: string | null;
 }
+
+// ---------------------- Order Types ----------------------
+
+export interface CreateOrderRequest {
+  vendor_location_uuid: string;
+  order_type: 'online-delivery' | 'online-pickup';
+  ref_no: string;
+  po_date: string; // YYYY-MM-DD format
+  merchant_customer_id: number | null;
+  total_qty: number;
+  items: Array<{
+    product_id: number;
+    ord_qty: number;
+  }>;
+  billing_address_id: number;
+  shipping_address_id: number;
+  remark?: string;
+}
+
+export interface CreateOrderResponse {
+  status: string;
+  success: boolean;
+  message: string;
+  code: number;
+  data: {
+    sales_order_uuid: string;
+    status: string;
+    order_type: string;
+    order_items: Array<{
+      product_id: number;
+      quantity: number;
+    }>;
+  };
+}
+
+
+// ---------------------- Get Orders Types ----------------------
+
+export interface GetOrdersRequest {
+  vendor_location_uuid: string;
+  limit?: number;
+  page?: number;
+}
+
+export interface OrderItem {
+  id: number;
+  uuid: string;
+  ref_no: string;
+  po_date: string;
+  po_number: string;
+  order_status: string;
+  total: number;
+  total_qty: number;
+  order_type: string;
+  remark: string;
+}
+
+export interface GetOrdersResponse {
+  message: string;
+  code: number;
+  data: {
+    count: number;
+    rows: OrderItem[];
+  };
+}

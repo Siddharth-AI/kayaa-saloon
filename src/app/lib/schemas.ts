@@ -250,3 +250,49 @@ export const getAddressesSchema = Joi.object({
 export const deleteAddressSchema = Joi.object({
   vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
 });
+
+// ---------------------- create-order-schema ----------------------
+
+export const createOrderSchema = Joi.object({
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID'),
+  order_type: Joi.string()
+    .valid('online-delivery', 'online-pickup')
+    .required()
+    .label('Order Type')
+    .messages({
+      'any.only': '"order_type" must be either "online-delivery" or "online-pickup"'
+    }),
+  ref_no: Joi.string().required().label('Reference Number'),
+  po_date: Joi.string()
+    .pattern(/^\d{4}-\d{2}-\d{2}$/)
+    .required()
+    .label('PO Date')
+    .messages({
+      'string.pattern.base': '"po_date" must be in YYYY-MM-DD format'
+    }),
+  merchant_customer_id: Joi.number().integer().allow(null).optional().label('Merchant Customer ID'),
+  total_qty: Joi.number().integer().min(1).required().label('Total Quantity'),
+  items: Joi.array()
+    .items(
+      Joi.object({
+        product_id: Joi.number().integer().required().label('Product ID'),
+        ord_qty: Joi.number().integer().min(1).required().label('Order Quantity')
+      })
+    )
+    .min(1)
+    .required()
+    .label('Items'),
+  billing_address_id: Joi.number().integer().required().label('Billing Address ID'),
+  shipping_address_id: Joi.number().integer().required().label('Shipping Address ID'),
+  remark: Joi.string().allow('').optional().label('Remark')
+});
+
+
+// ---------------------- get-orders-schema ----------------------
+
+export const getOrdersSchema = Joi.object({
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID'),
+  limit: Joi.number().integer().min(1).default(10).label('Limit'),
+  page: Joi.number().integer().min(1).default(1).label('Page')
+});
+
