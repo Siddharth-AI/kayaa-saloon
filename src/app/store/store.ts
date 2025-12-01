@@ -21,7 +21,7 @@ import paymentReducer from './slices/paymentSlice';
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["cart", "auth"], // add slices you want to persist
+  whitelist: ["cart", "auth", "products"], // add slices you want to persist
 }
 
 const rootReducer = {

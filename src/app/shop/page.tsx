@@ -1,6 +1,7 @@
 // pages/shop/page.tsx
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
   fetchProducts,
@@ -27,7 +28,7 @@ import productImage from "@/assets/shop/product-image.png";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { IoCart } from "react-icons/io5";
 import { Loader } from "@/components/provider/Providers";
-import ProductModal from "@/components/model/ProductModal";
+
 // Import the new action
 import { addProductToCart } from "@/store/slices/cartSlice";
 import { toastSuccess } from "@/components/common/toastService";
@@ -270,14 +271,21 @@ const SortDropdown = ({
 
 export default function Products() {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const { selectedLocationUuid } = useAppSelector((state) => state.services);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Helper function to create URL slug from product name
+  const createSlug = (name: string, id: number): string => {
+    return `${name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')}-${id}`;
+  };
 
-  // Add this handler function
+  // Navigate to product page with slug
   const handleViewProduct = (product: Product) => {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
+    const slug = createSlug(product.name, product.id);
+    console.log('Navigating to:', `/shop/${slug}`);
+    router.push(`/shop/${slug}`);
   };
 
   // ADD after your imports
@@ -371,10 +379,7 @@ export default function Products() {
     // console.log("Product added to cart:", product.name);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-  };
+
   // Redux state with proper selectors
   const loading = useAppSelector(selectProductsLoading);
   const error = useAppSelector(selectProductsError);
@@ -392,12 +397,16 @@ export default function Products() {
 
   const productsPerPage = 12;
 
-  // Fetch products on component mount
+  // Fetch products only if not already loaded and location is available
   useEffect(() => {
-    if (selectedLocationUuid) {
-      dispatch(fetchProducts(selectedLocationUuid));
+    if (selectedLocationUuid && !loading) {
+      // Check if we have products for this location
+      const hasProductsForLocation = filteredProducts.length > 0;
+      if (!hasProductsForLocation) {
+        dispatch(fetchProducts(selectedLocationUuid));
+      }
     }
-  }, [dispatch, selectedLocationUuid]);
+  }, [dispatch, selectedLocationUuid, loading]);
 
   // Reset page when filters change
   useEffect(() => {
@@ -983,11 +992,7 @@ export default function Products() {
           </div>
         </div>
       </div>
-      <ProductModal
-        product={selectedProduct}
-        isOpen={isModalOpen}
-        onClose={closeModal}
-      />
+
     </div>
   );
 }

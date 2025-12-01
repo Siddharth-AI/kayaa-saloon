@@ -1,5 +1,5 @@
 // store/slices/productsSlice.ts
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit'
 
 // Types based on your API response
 interface Product {
@@ -98,6 +98,9 @@ const productsSlice = createSlice({
       state.selectedCategory = 'all'
       state.priceRange = { min: 0, max: 10000 }
       state.searchQuery = ''
+    },
+    clearError: (state) => {
+      state.error = null
     }
   },
   extraReducers: (builder) => {
@@ -122,32 +125,36 @@ export const {
   setSelectedCategory,
   setPriceRange,
   setSearchQuery,
-  clearFilters
+  clearFilters,
+  clearError
 } = productsSlice.actions
 
 export default productsSlice.reducer
 
-// Fixed Selectors with proper null checks
-export const selectAllProducts = (state: any): Product[] => {
-  // Add null checks and fallbacks
-  if (!state?.products?.categories || !Array.isArray(state.products.categories)) {
-    return []
-  }
-
-  const allProducts: Product[] = []
-
-  state.products.categories.forEach((category: Category) => {
-    if (category?.subcategories && Array.isArray(category.subcategories)) {
-      category.subcategories.forEach((subcategory: Subcategory) => {
-        if (subcategory?.items && Array.isArray(subcategory.items)) {
-          allProducts.push(...subcategory.items)
-        }
-      })
+// Memoized selector to prevent unnecessary rerenders
+export const selectAllProducts = createSelector(
+  [(state: any) => state?.products?.categories],
+  (categories): Product[] => {
+    // Add null checks and fallbacks
+    if (!categories || !Array.isArray(categories)) {
+      return []
     }
-  })
 
-  return allProducts
-}
+    const allProducts: Product[] = []
+
+    categories.forEach((category: Category) => {
+      if (category?.subcategories && Array.isArray(category.subcategories)) {
+        category.subcategories.forEach((subcategory: Subcategory) => {
+          if (subcategory?.items && Array.isArray(subcategory.items)) {
+            allProducts.push(...subcategory.items)
+          }
+        })
+      }
+    })
+
+    return allProducts
+  }
+)
 
 export const selectFilteredProducts = (state: any): Product[] => {
   const allProducts = selectAllProducts(state)

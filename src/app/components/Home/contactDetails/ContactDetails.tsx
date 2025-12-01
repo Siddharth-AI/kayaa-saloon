@@ -148,7 +148,7 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ bookButton }) => {
         </div>
         {bookButton && (
           <button
-            onClick={() => Router.push("/services")}
+            onClick={() => Router.push("/saloon-services")}
             className="px-8 py-3 bg-[#F28C8C] to-[#C59D5F] rounded-2xl font-lato font-semibold text-lg text-white shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#F28C8C] focus:ring-offset-2 hover:bg-[#F28C8C]/90">
             Book Appointment
           </button>
