@@ -835,15 +835,15 @@ export default function Products() {
                     {displayedProducts.map((product) => (
                       <div
                         key={product?.id || Math.random()}
-                        className={`bg-white rounded-sm shadow-lg overflow-hidden hover:shadow-2xl hover:cursor-pointer transition-all duration-300 group ${
+                        className={`bg-white rounded-sm shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group ${
                           viewMode === "list" ? "flex" : ""
-                        }`}
-                        onClick={() => handleViewProduct(product)}>
+                        }`}>
                         {/* Product Image */}
                         <div
-                          className={`relative ${
+                          className={`relative cursor-pointer ${
                             viewMode === "list" ? "w-56 h-56" : "aspect-square"
-                          } overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200`}>
+                          } overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200`}
+                          onClick={() => handleViewProduct(product)}>
                           <Image
                             src={getProductImage(product)}
                             alt={product?.name || "Product"}
@@ -870,11 +870,12 @@ export default function Products() {
 
                         {/* Product Info */}
                         <div
-                          className={`p-5 ${
+                          className={`p-5 cursor-pointer ${
                             viewMode === "list"
                               ? "flex-1 flex flex-col justify-between"
                               : ""
-                          }`}>
+                          }`}
+                          onClick={() => handleViewProduct(product)}>
                           <div>
                             <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-2 leading-tight group-hover:text-[#F28C8C] transition-colors duration-300">
                               {product?.name.length > 20

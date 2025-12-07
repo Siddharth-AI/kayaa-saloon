@@ -48,8 +48,9 @@ interface Product {
 const createSlug = (name: string, id: number): string => {
   return `${name
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")}-${id}`;
+    .replace(/[^a-z0-9]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")}-${id}`;
 };
 
 // Helper function to extract ID from slug

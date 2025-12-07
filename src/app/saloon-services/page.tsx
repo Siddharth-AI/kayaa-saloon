@@ -16,6 +16,7 @@ import serviceImage from "@/assets/kayaa-home/Kaya-Beauty.png";
 import { IoCart } from "react-icons/io5";
 import { FaAnglesRight } from "react-icons/fa6";
 import { FaAnglesLeft } from "react-icons/fa6";
+import { ChevronDown } from "lucide-react";
 import CategoryDropdown from "./CategoryDropdown";
 import { toastSuccess } from "@/components/common/toastService";
 
@@ -151,19 +152,34 @@ export default function Services() {
     string | null
   >(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [expandedDesktopCategories, setExpandedDesktopCategories] = useState<Set<string | null>>(new Set());
   const servicesPerPage = 8;
 
-  // Get unique categories from services
+  // Get unique categories with their services
   const categories = useMemo(() => {
-    const uniqueCategories = [
-      ...new Set(allServices.map((service: any) => service.subcategory)),
-    ];
-    return [
-      { name: "All", slug: null },
-      ...uniqueCategories.map((cat) => ({
-        name: String(cat),
-        slug: cat !== null && cat !== undefined ? String(cat) : null,
+    const categoryMap = new Map();
+    
+    allServices.forEach((service: any) => {
+      const catName = service.subcategory;
+      if (!categoryMap.has(catName)) {
+        categoryMap.set(catName, []);
+      }
+      categoryMap.get(catName).push(service);
+    });
+
+    const categoriesWithServices = Array.from(categoryMap.entries()).map(([name, services]) => ({
+      name: String(name),
+      slug: name,
+      subcategories: services.map((s: any) => ({
+        id: s.id,
+        name: s.service,
+        slug: s.id,
       })),
+    }));
+
+    return [
+      { name: "All", slug: null, subcategories: [] },
+      ...categoriesWithServices,
     ];
   }, [allServices]);
 
@@ -265,7 +281,9 @@ export default function Services() {
 
   const filteredProducts = processedServices.filter((service: any) => {
     return (
-      (!selectedCategory || service.subcategory === selectedCategory) &&
+      (!selectedCategory || 
+        service.subcategory === selectedCategory || 
+        service.id === selectedCategory) &&
       (service.service.toLowerCase().includes(search.toLowerCase()) ||
         (service.subcategory || "")
           .toLowerCase()
@@ -465,7 +483,7 @@ export default function Services() {
               </div>
 
               <div className="my-6 bg-white rounded-xl shadow-lg">
-                <h2 className="font-playfair font-bold mb-1 text-xl rounded-t-2xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
+                <h2 className="font-playfair font-bold text-xl rounded-t-2xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
                   CATEGORIES
                 </h2>
 
@@ -477,23 +495,60 @@ export default function Services() {
                   />
                 </div>
 
-                <ul className="hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
+                <ul className="my-1 hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
                   {categories.map((cat) => (
-                    <li
-                      key={
-                        cat.slug !== null && cat.slug !== undefined
-                          ? String(cat.slug)
-                          : "all"
-                      }>
-                      <button
-                        className={`text-left w-full px-5 py-2 transition-all duration-300 font-lato font-medium ${
-                          selectedCategory === cat.slug
-                            ? "bg-[#F28C8C] text-white shadow-md"
-                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] "
-                        }`}
-                        onClick={() => setSelectedCategory(cat.slug)}>
-                        {String(cat.name)}
-                      </button>
+                    <li key={cat.slug !== null && cat.slug !== undefined ? String(cat.slug) : "all"}>
+                      <div className="flex items-center">
+                        <button
+                          className={`flex-1 text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
+                            selectedCategory === cat.slug
+                              ? "bg-[#F28C8C] text-white shadow-md"
+                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
+                          }`}
+                          onClick={() => setSelectedCategory(cat.slug)}>
+                          {String(cat.name)}
+                        </button>
+
+                        {cat.subcategories && cat.subcategories.length > 0 && (
+                          <button
+                            onClick={() => {
+                              const newExpanded = new Set(expandedDesktopCategories);
+                              if (newExpanded.has(cat.slug)) {
+                                newExpanded.delete(cat.slug);
+                              } else {
+                                newExpanded.add(cat.slug);
+                              }
+                              setExpandedDesktopCategories(newExpanded);
+                            }}
+                            className="px-3 py-2 hover:bg-gray-100">
+                            <ChevronDown
+                              className={`w-4 h-4 text-gray-500 transition-transform ${
+                                expandedDesktopCategories.has(cat.slug) ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+                        )}
+                      </div>
+
+                      {expandedDesktopCategories.has(cat.slug) &&
+                        cat.subcategories &&
+                        cat.subcategories.length > 0 && (
+                          <ul className="bg-gray-50">
+                            {cat.subcategories.map((subcategory: any) => (
+                              <li key={subcategory.id}>
+                                <button
+                                  className={`w-full text-left px-8 py-2 text-sm transition-all duration-300 font-lato ${
+                                    selectedCategory === subcategory.id
+                                      ? "bg-[#F28C8C] text-white shadow-md"
+                                      : "bg-gray-50 text-[#666666] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
+                                  }`}
+                                  onClick={() => setSelectedCategory(subcategory.id)}>
+                                  {subcategory.name}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                     </li>
                   ))}
                 </ul>
