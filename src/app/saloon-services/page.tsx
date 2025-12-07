@@ -16,7 +16,7 @@ import serviceImage from "@/assets/kayaa-home/Kaya-Beauty.png";
 import { IoCart } from "react-icons/io5";
 import { FaAnglesRight } from "react-icons/fa6";
 import { FaAnglesLeft } from "react-icons/fa6";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Grid, List } from "lucide-react";
 import CategoryDropdown from "./CategoryDropdown";
 import { toastSuccess } from "@/components/common/toastService";
 
@@ -153,6 +153,8 @@ export default function Services() {
   >(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [expandedDesktopCategories, setExpandedDesktopCategories] = useState<Set<string | null>>(new Set());
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState("shuffle");
   const servicesPerPage = 8;
 
   // Get unique categories with their services
@@ -276,8 +278,25 @@ export default function Services() {
       ),
     }));
 
-    return sortArray(servicesWithImages);
-  }, [allServices]);
+    let sorted = sortArray(servicesWithImages);
+
+    // Apply sorting
+    switch (sortBy) {
+      case "price-low":
+        sorted = [...sorted].sort((a, b) => a.price - b.price);
+        break;
+      case "price-high":
+        sorted = [...sorted].sort((a, b) => b.price - a.price);
+        break;
+      case "name":
+        sorted = [...sorted].sort((a, b) => a.service.localeCompare(b.service));
+        break;
+      default:
+        break;
+    }
+
+    return sorted;
+  }, [allServices, sortBy]);
 
   const filteredProducts = processedServices.filter((service: any) => {
     return (
@@ -463,26 +482,7 @@ export default function Services() {
           <div className="flex flex-col gap-8 md:flex-row md:gap-14">
             {/* Sidebar */}
             <aside className="w-full md:w-[350px]">
-              <div className="pb-4 border-b border-[#F28C8C]/30">
-                <form
-                  className="flex border border-[#F28C8C]/30 rounded-2xl overflow-hidden bg-white shadow-md"
-                  onSubmit={(e) => e.preventDefault()}>
-                  <input
-                    type="search"
-                    className="flex-1 px-4 py-3 outline-none bg-transparent text-[#444444] placeholder:text-[#C59D5F] font-lato"
-                    placeholder="Type to search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="px-4 py-3 bg-[#F28C8C] hover:bg-[#F28C8C]/90 text-white hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300">
-                    <span className="sr-only">Search</span>🔍
-                  </button>
-                </form>
-              </div>
-
-              <div className="my-6 bg-white rounded-xl shadow-lg">
+              <div className="mb-4 bg-white rounded-xl shadow-lg">
                 <h2 className="font-playfair font-bold text-xl rounded-t-2xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4">
                   CATEGORIES
                 </h2>
@@ -555,23 +555,75 @@ export default function Services() {
               </div>
             </aside>
 
-            <div className="flex flex-col">
-              <div className="bg-gradient-to-r from-[#fefaf4] to-white rounded-2xl px-6 py-4 shadow-md font-lato font-semibold text-lg mb-6 text-[#B11C5F] border border-[#F28C8C]/20">
-                We are providing a total of{" "}
-                <span className="text-[#F28C8C] ml-1">
-                  {filteredProducts.length}
-                </span>{" "}
-                services.
-                <span className="text-sm font-normal text-[#C59D5F] ml-2">
-                  (Premium services available)
-                </span>
-              </div>
+            <div className="flex-1">
+              <h2 className="font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4 rounded-t-2xl">
+                {selectedCategory === null
+                  ? "All Services"
+                  : categories.find((c) => c.slug === selectedCategory)?.name || "Services"}
+              </h2>
+              <div className="flex-1 flex flex-col bg-white p-5">
+                <div className="mb-6">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+                    <div className="flex-1">
+                      <input
+                        type="search"
+                        className="border border-[#F28C8C]/30 rounded-lg overflow-hidden bg-white w-full px-4 py-3 outline-none text-[#444444] placeholder:text-[#C59D5F] font-lato focus:ring-2 focus:ring-[#F28C8C]/30 focus:border-[#F28C8C] transition-all duration-200"
+                        placeholder="Search services..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-2">
+                      {/* Sort Dropdown */}
+                      <div className="flex-1 sm:flex-initial">
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value)}
+                          className="w-full min-w-[180px] px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-200 text-gray-700 font-medium">
+                          <option value="shuffle">Shuffle (Random)</option>
+                          <option value="name">Name A-Z</option>
+                          <option value="price-low">Price: Low to High</option>
+                          <option value="price-high">Price: High to Low</option>
+                        </select>
+                      </div>
+
+                      {/* View Mode Toggle */}
+                      <div className="flex bg-gray-100 border border-gray-200 rounded-lg overflow-hidden">
+                        <button
+                          onClick={() => setViewMode("grid")}
+                          className={`p-3 sm:p-2.5 transition-all duration-200 ${
+                            viewMode === "grid"
+                              ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
+                              : "text-gray-600 hover:bg-gray-200"
+                          }`}>
+                          <Grid className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => setViewMode("list")}
+                          className={`p-3 sm:p-2.5 transition-all duration-200 ${
+                            viewMode === "list"
+                              ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
+                              : "text-gray-600 hover:bg-gray-200"
+                          }`}>
+                          <List className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`grid gap-6 mb-8 ${
+                  viewMode === "grid"
+                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                    : "grid-cols-1"
+                }`}>
                 {displayedServices.map((service: any, index: any) => (
                   <div
                     key={service.id}
-                    className="service-card-animate relative group rounded-3xl bg-gradient-to-br from-white to-[#fefaf4] border border-[#F28C8C]/20 shadow-lg overflow-hidden transform transition-all duration-500  hover:shadow-2xl opacity-100"
+                    className={`service-card-animate relative group rounded-3xl bg-gradient-to-br from-white to-[#fefaf4] border border-[#F28C8C]/20 shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-2xl opacity-100 ${
+                      viewMode === "list" ? "flex" : ""
+                    }`}
                     style={{
                       animationDelay: `${index * 100}ms`,
                     }}>
@@ -584,7 +636,9 @@ export default function Services() {
 
                     {/* Image section - UPDATED WITH RANDOM CATEGORY IMAGES */}
                     <div 
-                      className="relative overflow-hidden rounded-t-3xl h-48 sm:h-56 cursor-pointer"
+                      className={`relative overflow-hidden cursor-pointer ${
+                        viewMode === "list" ? "w-56 h-56 rounded-l-3xl" : "rounded-t-3xl h-48 sm:h-56"
+                      }`}
                       onClick={() => {
                         const slug = service.service
                           .toLowerCase()
@@ -624,7 +678,9 @@ export default function Services() {
                     </div>
 
                     <div 
-                      className="p-5 sm:p-6 flex flex-col justify-between h-52 cursor-pointer"
+                      className={`p-5 sm:p-6 flex flex-col justify-between cursor-pointer ${
+                        viewMode === "list" ? "flex-1" : "h-52"
+                      }`}
                       onClick={() => {
                         const slug = service.service
                           .toLowerCase()
@@ -671,10 +727,10 @@ export default function Services() {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#F28C8C]/0 via-[#F28C8C]/5 to-[#C59D5F]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"></div>
                   </div>
                 ))}
-              </div>
+                </div>
 
-              {/* Pagination or Load More */}
-              {showPagination ? (
+                {/* Pagination or Load More */}
+                {showPagination ? (
                 <div className="mt-8 flex justify-center items-center gap-2">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -721,19 +777,17 @@ export default function Services() {
                     }`}>
                     <FaAnglesRight />
                   </button>
-                </div>
-              ) : showLoadMore ? (
-                <div className="mt-8 flex justify-center mb-4 md:mb-0">
+                  </div>
+                ) : showLoadMore ? (
+                  <div className="flex justify-center">
                   <button
                     onClick={handleLoadMore}
                     className="px-8 py-3 rounded-full bg-[#F28C8C] text-white font-lato font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 hover:bg-[#f28c8cd6] ">
                     Load More
-                  </button>
-                </div>
-              ) : null}
-
-              {/* Mobile spacing for fixed bottom bar */}
-              <div className="lg:hidden pb-24"></div>
+                    </button>
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         )}
