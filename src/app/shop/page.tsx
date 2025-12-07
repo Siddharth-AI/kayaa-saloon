@@ -27,7 +27,7 @@ import shopHeader from "@/assets/shop/shop_header.jpg";
 import productImage from "@/assets/shop/product-image.png";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { IoCart } from "react-icons/io5";
-import { Loader } from "@/components/provider/Providers";
+import { ProductCardSkeleton, CategorySkeleton } from "@/components/common/Skeleton";
 
 // Import the new action
 import { addProductToCart } from "@/store/slices/cartSlice";
@@ -650,10 +650,8 @@ export default function Products() {
 
               <ul className=" my-1 hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
                 {loading ? (
-                  <div className="text-center py-12">
-                    <div className="flex justify-center items-center py-12">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C]"></div>
-                    </div>
+                  <div className="space-y-2">
+                    {[...Array(6)].map((_, i) => <CategorySkeleton key={i} />)}
                   </div>
                 ) : (
                   [...categoryOptions].map((cat) => (
@@ -786,10 +784,8 @@ export default function Products() {
 
               {/* Products Content */}
               {loading ? (
-                <div className="text-center py-12">
-                  <div className="flex justify-center items-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C]"></div>
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)}
                 </div>
               ) : sortedProducts.length === 0 ? (
                 <div className="text-center py-16 bg-white rounded-2xl shadow-lg">

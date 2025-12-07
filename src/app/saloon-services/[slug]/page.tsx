@@ -15,6 +15,7 @@ import serviceImage from "@/assets/kayaa-home/Kaya-Beauty.png";
 import { IoCart } from "react-icons/io5";
 import { FiArrowLeft, FiClock, FiStar, FiCheck } from "react-icons/fi";
 import { toastSuccess } from "@/components/common/toastService";
+import { ServiceCardSkeleton } from "@/components/common/Skeleton";
 
 const categoryImages: { [key: string]: string[] } = {
   haircuts: [
@@ -147,10 +148,12 @@ export default function ServicePage() {
   // Show loading state while fetching data
   if (loading || (!serviceData && allServices.length === 0)) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#fefaf4] to-pink-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C] mx-auto mb-4"></div>
-          <p className="text-[#B11C5F] font-lato">Loading service details...</p>
+      <div className="min-h-screen bg-gradient-to-br from-[#fefaf4] to-pink-50">
+        <div className="w-full h-64 bg-gray-200 animate-pulse" />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <ServiceCardSkeleton />
+          </div>
         </div>
       </div>
     );

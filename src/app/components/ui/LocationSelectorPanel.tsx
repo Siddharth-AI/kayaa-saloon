@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { FiMapPin, FiX, FiSearch } from "react-icons/fi";
+import { LocationSelectorSkeleton, Skeleton } from "@/components/common/Skeleton";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
 import { fetchLocations } from "@/store/slices/locationsSlice";
 import {
@@ -171,13 +172,7 @@ export default function LocationSelectorPanel({
     <>
       {/* Location Selector Button */}
       {locationsState.loading ? (
-        <div className="relative flex items-center sm:space-x-2 px-2 sm:px-4 py-2 bg-gray-200 shadow-md rounded-full border border-gray-200 overflow-hidden">
-          {/* Shimmer overlay */}
-          <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
-
-          <div className="w-4 h-4 bg-gray-300 rounded-full"></div>
-          <div className="hidden sm:block w-20 h-3 bg-gray-300 rounded"></div>
-        </div>
+        <LocationSelectorSkeleton />
       ) : (
         <button
           onClick={() => setShowLocationPanel(true)}
@@ -226,11 +221,13 @@ export default function LocationSelectorPanel({
             {/* Locations */}
             <div className="flex-1 overflow-y-auto p-2">
               {locationsState.loading ? (
-                <div className="text-center py-8">
-                  <div className="w-8 h-8 border-2 border-[#F28C8C] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="font-lato text-sm text-[#444444]">
-                    Loading locations...
-                  </p>
+                <div className="space-y-2 p-4">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="flex items-center space-x-3 p-3 rounded-xl bg-gray-100">
+                      <Skeleton className="w-8 h-8 rounded-full" />
+                      <Skeleton className="h-4 flex-1" />
+                    </div>
+                  ))}
                 </div>
               ) : locationsState.error ? (
                 <div className="text-center py-8 space-y-4">

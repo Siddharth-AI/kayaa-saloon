@@ -113,8 +113,8 @@ export default function ProfileDropdown() {
   // Don't render anything until initialized
   if (!isInitialized) {
     return (
-      <div className="p-2 rounded-full bg-white shadow-md">
-        <Loader2 className="w-5 h-5 text-[#B11C5F] animate-spin" />
+      <div className="p-2 rounded-full bg-gray-200 shadow-md">
+        <div className="w-5 h-5 rounded-full bg-gray-300 animate-pulse" />
       </div>
     );
   }
@@ -276,8 +276,8 @@ export default function ProfileDropdown() {
   // Show loading state if we have a token and are loading profile (page refresh scenario)
   if (tempToken && isLoadingProfile) {
     return (
-      <div className="p-2 rounded-full bg-white shadow-md">
-        <Loader2 className="w-5 h-5 text-[#B11C5F] animate-spin" />
+      <div className="p-2 rounded-full bg-gray-200 shadow-md">
+        <div className="w-5 h-5 rounded-full bg-gray-300 animate-pulse" />
       </div>
     );
   }

@@ -18,6 +18,7 @@ import {
   Home,
 } from "lucide-react";
 import { IoCart } from "react-icons/io5";
+import { ProductDetailSkeleton } from "@/components/common/Skeleton";
 import productImage from "@/assets/shop/product-image.png";
 import shopHeader from "@/assets/shop/shop_header.jpg";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
@@ -130,10 +131,10 @@ export default function ProductPage() {
   // Show loading state while fetching
   if (loading && !product) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C] mx-auto mb-4"></div>
-          <p className="text-[#B11C5F] font-medium">Loading product...</p>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
+        <div className="w-full h-64 bg-gray-200 animate-pulse" />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <ProductDetailSkeleton />
         </div>
       </div>
     );

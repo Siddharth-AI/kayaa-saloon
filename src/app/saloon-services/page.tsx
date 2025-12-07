@@ -19,6 +19,7 @@ import { FaAnglesLeft } from "react-icons/fa6";
 import { ChevronDown, Grid, List } from "lucide-react";
 import CategoryDropdown from "./CategoryDropdown";
 import { toastSuccess } from "@/components/common/toastService";
+import { ServiceCardSkeleton, CategorySkeleton } from "@/components/common/Skeleton";
 
 // Category images mapping with multiple images per category
 type CategoryImagesType = {
@@ -469,14 +470,27 @@ export default function Services() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {!selectedLocationUuid || loading ? (
-          <div className="text-center py-12">
-            <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C]"></div>
+          <div className="flex flex-col gap-8 md:flex-row md:gap-14">
+            <aside className="w-full md:w-[350px]">
+              <div className="mb-4 bg-white rounded-xl shadow-lg">
+                <h2 className="font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4 rounded-t-2xl">CATEGORIES</h2>
+                <div className="space-y-1">
+                  {[...Array(6)].map((_, i) => <CategorySkeleton key={i} />)}
+                </div>
+              </div>
+            </aside>
+            <div className="flex-1">
+              <h2 className="font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4 rounded-t-2xl">All Services</h2>
+              <div className="bg-white p-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[...Array(6)].map((_, i) => <ServiceCardSkeleton key={i} />)}
+                </div>
+              </div>
             </div>
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <div className="text-red-600">Error: {error}</div>
+            <div className="text-red-600 font-lato">Error: {error}</div>
           </div>
         ) : (
           <div className="flex flex-col gap-8 md:flex-row md:gap-14">

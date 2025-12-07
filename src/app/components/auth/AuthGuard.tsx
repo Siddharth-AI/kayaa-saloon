@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { openModal } from "@/store/slices/modalSlice"; // Make sure this path is correct
+import { openModal } from "@/store/slices/modalSlice";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
+import { AuthGuardSkeleton } from "@/components/common/Skeleton";
 
 // A small utility hook to get the previous value of a prop or state.
 function usePrevious(value: boolean) {
@@ -73,10 +74,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   // The LoginModal from your AppWrapper will appear on top of this.
   return (
     <div className="fixed inset-0 z-60 bg-black flex items-center justify-center">
-      {/* We only show the spinner during the initial auth check */}
-      {isAuthenticating && (
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#c59d5f]"></div>
-      )}
+      {/* We only show the skeleton during the initial auth check */}
+      {isAuthenticating && <AuthGuardSkeleton />}
     </div>
   );
 }

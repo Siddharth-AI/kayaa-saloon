@@ -21,8 +21,13 @@ import {
 import LeftPanel from "@/components/leftPanel/LeftPanel";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { toastError, toastWarning } from "@/components/common/toastService"; // Ensure toastWarning is imported
+import { toastError, toastWarning } from "@/components/common/toastService";
 import BookingBottomBar from "@/saloon-services/BookingBottomBar";
+import {
+  Skeleton,
+  OperatorsSkeleton,
+  SlotsSkeleton,
+} from "@/components/common/Skeleton";
 
 const jsDayToName = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -218,7 +223,7 @@ const Slots: React.FC = () => {
         })
       );
     }
-  }, [dispatch, servicesState.selectedLocationUuid, selectedDate, cart]);
+  }, [dispatch, servicesState.selectedLocationUuid, selectedDate]);
 
   const processedSlots = useMemo(() => {
     const selectedDateString = formatDateForAPI(selectedDateObj);
@@ -327,7 +332,9 @@ const Slots: React.FC = () => {
     // This function is now simpler. The cart is already updated.
     // It just needs to save and navigate.
     if (servicesState.selectedLocationUuid) {
-      dispatch(saveCartToStorageWithLocation(servicesState.selectedLocationUuid));
+      dispatch(
+        saveCartToStorageWithLocation(servicesState.selectedLocationUuid)
+      );
     }
     router.push("/saloon-services/view");
   }
@@ -581,18 +588,8 @@ const Slots: React.FC = () => {
                 )}
               </div>
               {operatorsState.loading ? (
-                <div className="flex items-center justify-center h-20">
-                  <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#F28C8C]/30 border-t-[#B11C5F]"></div>
-                  <span className="ml-3 text-[#444444] font-lato">
-                    Loading operators...
-                  </span>
-                </div>
+                <OperatorsSkeleton />
               ) : (
-                //  operatorsState.error ? (
-                //   <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-3 text-red-600 text-sm font-lato">
-                //     Error loading operators: {operatorsState.error}
-                //   </div>
-                // ) :
                 <>
                   {displayOperators.length === 1 && cart.length > 0 && (
                     <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-3 text-yellow-700 text-sm font-lato">
@@ -713,20 +710,45 @@ const Slots: React.FC = () => {
                 </div>
               )}
 
-              {renderSlotSection(
-                "Morning",
-                processedSlots.morning,
-                timeSlotsState.loading
-              )}
-              {renderSlotSection(
-                "Afternoon",
-                processedSlots.afternoon,
-                timeSlotsState.loading
-              )}
-              {renderSlotSection(
-                "Evening",
-                processedSlots.evening,
-                timeSlotsState.loading
+              {timeSlotsState.loading ? (
+                <>
+                  <div className="mb-4">
+                    <h4 className="text-center font-playfair font-bold mb-3 text-[#B11C5F]">
+                      Morning
+                    </h4>
+                    <SlotsSkeleton />
+                  </div>
+                  <div className="mb-4">
+                    <h4 className="text-center font-playfair font-bold mb-3 text-[#B11C5F]">
+                      Afternoon
+                    </h4>
+                    <SlotsSkeleton />
+                  </div>
+                  <div className="mb-4">
+                    <h4 className="text-center font-playfair font-bold mb-3 text-[#B11C5F]">
+                      Evening
+                    </h4>
+                    <SlotsSkeleton />
+                  </div>
+                </>
+              ) : (
+                <>
+                  {renderSlotSection(
+                    "Morning",
+                    processedSlots.morning,
+                    timeSlotsState.loading
+                  )}
+                  {renderSlotSection(
+                    "Afternoon",
+                    processedSlots.afternoon,
+                    timeSlotsState.loading
+                  )}
+                  {renderSlotSection(
+                    "Evening",
+                    processedSlots.evening,
+                    timeSlotsState.loading
+                  )}
+                </>
               )}
 
               <div className="hidden md:block mt-4">
