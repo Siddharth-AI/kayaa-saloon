@@ -655,45 +655,34 @@ export default function Products() {
                 ) : (
                   [...categoryOptions].map((cat) => (
                     <li key={cat.id}>
-                      {/* Main Category */}
-                      <div className="flex items-center">
-                        <button
-                          className={`flex-1 text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
-                            currentFilters.selectedCategory === cat.id
-                              ? "bg-[#F28C8C] text-white shadow-md"
-                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
-                          }`}
-                          onClick={() => dispatch(setSelectedCategory(cat.id))}>
-                          {cat.name}
-                        </button>
-
-                        {/* Expand/Collapse Button for Subcategories */}
+                      <button
+                        className={`flex items-center justify-between w-full text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
+                          currentFilters.selectedCategory === cat.id
+                            ? "bg-[#F28C8C] text-white shadow-md"
+                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
+                        }`}
+                        onClick={() => {
+                          dispatch(setSelectedCategory(cat.id));
+                          if (cat.subcategories && cat.subcategories.length > 0) {
+                            const newExpanded = new Set(expandedDesktopCategories);
+                            if (newExpanded.has(cat.id)) {
+                              newExpanded.delete(cat.id);
+                            } else {
+                              newExpanded.add(cat.id);
+                            }
+                            setExpandedDesktopCategories(newExpanded);
+                          }
+                        }}>
+                        <span>{cat.name}</span>
                         {cat.subcategories && cat.subcategories.length > 0 && (
-                          <button
-                            onClick={() => {
-                              const newExpanded = new Set(
-                                expandedDesktopCategories
-                              );
-                              if (newExpanded.has(cat.id)) {
-                                newExpanded.delete(cat.id);
-                              } else {
-                                newExpanded.add(cat.id);
-                              }
-                              setExpandedDesktopCategories(newExpanded);
-                            }}
-                            className="px-3 py-2 hover:bg-gray-100">
-                            <ChevronDown
-                              className={`w-4 h-4 text-gray-500 transition-transform ${
-                                expandedDesktopCategories.has(cat.id)
-                                  ? "rotate-180"
-                                  : ""
-                              }`}
-                            />
-                          </button>
+                          <ChevronDown
+                            className={`w-4 h-4 text-gray-500 transition-transform ${
+                              expandedDesktopCategories.has(cat.id) ? "rotate-180" : ""
+                            }`}
+                          />
                         )}
-                      </div>
+                      </button>
 
-                      {/* Subcategories */}
                       {expandedDesktopCategories.has(cat.id) &&
                         cat.subcategories &&
                         cat.subcategories.length > 0 && (

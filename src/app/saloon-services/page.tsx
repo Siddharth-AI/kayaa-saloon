@@ -498,37 +498,33 @@ export default function Services() {
                 <ul className="my-1 hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
                   {categories.map((cat) => (
                     <li key={cat.slug !== null && cat.slug !== undefined ? String(cat.slug) : "all"}>
-                      <div className="flex items-center">
-                        <button
-                          className={`flex-1 text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
-                            selectedCategory === cat.slug
-                              ? "bg-[#F28C8C] text-white shadow-md"
-                              : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
-                          }`}
-                          onClick={() => setSelectedCategory(cat.slug)}>
-                          {String(cat.name)}
-                        </button>
-
+                      <button
+                        className={`flex items-center justify-between w-full text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
+                          selectedCategory === cat.slug
+                            ? "bg-[#F28C8C] text-white shadow-md"
+                            : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
+                        }`}
+                        onClick={() => {
+                          setSelectedCategory(cat.slug);
+                          if (cat.subcategories && cat.subcategories.length > 0) {
+                            const newExpanded = new Set(expandedDesktopCategories);
+                            if (newExpanded.has(cat.slug)) {
+                              newExpanded.delete(cat.slug);
+                            } else {
+                              newExpanded.add(cat.slug);
+                            }
+                            setExpandedDesktopCategories(newExpanded);
+                          }
+                        }}>
+                        <span>{String(cat.name)}</span>
                         {cat.subcategories && cat.subcategories.length > 0 && (
-                          <button
-                            onClick={() => {
-                              const newExpanded = new Set(expandedDesktopCategories);
-                              if (newExpanded.has(cat.slug)) {
-                                newExpanded.delete(cat.slug);
-                              } else {
-                                newExpanded.add(cat.slug);
-                              }
-                              setExpandedDesktopCategories(newExpanded);
-                            }}
-                            className="px-3 py-2 hover:bg-gray-100">
-                            <ChevronDown
-                              className={`w-4 h-4 text-gray-500 transition-transform ${
-                                expandedDesktopCategories.has(cat.slug) ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
+                          <ChevronDown
+                            className={`w-4 h-4 text-gray-500 transition-transform ${
+                              expandedDesktopCategories.has(cat.slug) ? "rotate-180" : ""
+                            }`}
+                          />
                         )}
-                      </div>
+                      </button>
 
                       {expandedDesktopCategories.has(cat.slug) &&
                         cat.subcategories &&
