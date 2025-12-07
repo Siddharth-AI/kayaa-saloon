@@ -532,7 +532,17 @@ export default function Services() {
                     </div>
 
                     {/* Image section - UPDATED WITH RANDOM CATEGORY IMAGES */}
-                    <div className="relative overflow-hidden rounded-t-3xl h-48 sm:h-56">
+                    <div 
+                      className="relative overflow-hidden rounded-t-3xl h-48 sm:h-56 cursor-pointer"
+                      onClick={() => {
+                        const slug = service.service
+                          .toLowerCase()
+                          .replace(/[^a-z0-9]/g, "-")
+                          .replace(/-+/g, "-")
+                          .replace(/^-|-$/g, "")
+                          .trim();
+                        router.push(`/saloon-services/${slug}`);
+                      }}>
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent z-10"></div>
 
                       <Image
@@ -562,18 +572,16 @@ export default function Services() {
                       </div>
                     </div>
 
-                    <div
+                    <div 
                       className="p-5 sm:p-6 flex flex-col justify-between h-52 cursor-pointer"
                       onClick={() => {
                         const slug = service.service
                           .toLowerCase()
-                          .replace(/[^a-z0-9\s&]/g, "") // Remove special chars except & and spaces
-                          .replace(/\s+/g, "-") // Replace spaces with hyphens
-                          .replace(/-+/g, "-") // Replace multiple hyphens with single
+                          .replace(/[^a-z0-9]/g, "-")
+                          .replace(/-+/g, "-")
+                          .replace(/^-|-$/g, "")
                           .trim();
-                        router.push(
-                          `/saloon-services/${encodeURIComponent(slug)}`
-                        );
+                        router.push(`/saloon-services/${slug}`);
                       }}>
                       <div className="mb-4">
                         <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-2 leading-tight group-hover:text-[#F28C8C] transition-colors duration-300">
@@ -593,7 +601,10 @@ export default function Services() {
                       <div className="flex items-center justify-start">
                         <button
                           className="group/btn relative px-6 py-3 bg-[#F28C8C] text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform  active:scale-95 transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden"
-                          onClick={(e) => handleAdd(service, e)}>
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAdd(service, e);
+                          }}>
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
 
                           <div className="relative flex items-center space-x-2">

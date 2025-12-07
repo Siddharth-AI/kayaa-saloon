@@ -75,18 +75,15 @@ export default function ServicePage() {
   const normalizeString = (str: string) => {
     return str
       .toLowerCase()
-      .replace(/&amp;/g, "&") // Convert HTML entities
-      .replace(/[^a-z0-9\s&]/g, "") // Remove special chars except & and spaces
-      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/&amp;/g, "&")
+      .replace(/[^a-z0-9]/g, "-") // Replace all non-alphanumeric with hyphen
       .replace(/-+/g, "-") // Replace multiple hyphens with single
+      .replace(/^-|-$/g, "") // Remove leading/trailing hyphens
       .trim();
   };
 
   // Get single service or category services
   const serviceData = useMemo(() => {
-    console.log("Debug - slug:", slug);
-    console.log("Debug - allServices length:", allServices.length);
-
     if (isServiceId) {
       const service = allServices.find((s: any) => s.id === serviceId);
       return service
@@ -98,76 +95,39 @@ export default function ServicePage() {
             },
           }
         : null;
-    } else {
-      // Try multiple matching strategies
-      const decodedSlug = decodeURIComponent(slug).replace(/&amp;/g, "&");
-
-      // Strategy 1: Exact slug match with proper URL decoding
-      const decodedSlugForMatch = decodeURIComponent(slug);
-      let singleService = allServices.find((s: any) => {
-        const serviceSlug = s.service.toLowerCase().replace(/\s+/g, "-");
-        console.log(
-          "Comparing:",
-          serviceSlug,
-          "with",
-          decodedSlugForMatch.toLowerCase()
-        );
-        return serviceSlug === decodedSlugForMatch.toLowerCase();
-      });
-
-      // Strategy 2: Normalized match
-      if (!singleService) {
-        const normalizedSlug = normalizeString(decodedSlug);
-        console.log("Normalized slug:", normalizedSlug);
-
-        singleService = allServices.find((s: any) => {
-          const normalizedServiceName = normalizeString(s.service);
-          console.log("Normalized service:", normalizedServiceName);
-          return normalizedServiceName === normalizedSlug;
-        });
-      }
-
-      // Strategy 3: Partial match
-      if (!singleService) {
-        singleService = allServices.find((s: any) => {
-          const serviceName = s.service.toLowerCase();
-          const slugName = slug.toLowerCase().replace(/-/g, " ");
-          return (
-            serviceName.includes(slugName) || slugName.includes(serviceName)
-          );
-        });
-      }
-
-      if (singleService) {
-        console.log("Found service:", singleService.service);
-        return {
-          type: "single",
-          service: {
-            ...singleService,
-            categoryImage: getCategoryImage(singleService.subcategory),
-          },
-        };
-      }
-
-      // If not found by service name, try category
-      const services = allServices
-        .filter(
-          (service: any) =>
-            service.subcategory.toLowerCase() === categoryName?.toLowerCase()
-        )
-        .map((service: any) => ({
-          ...service,
-          categoryImage: getCategoryImage(service.subcategory),
-        }));
-      return services.length > 0
-        ? {
-            type: "category",
-            services,
-            categoryName,
-          }
-        : null;
     }
-  }, [allServices, isServiceId, serviceId, serviceName, categoryName, slug]);
+
+    const normalizedSlug = normalizeString(decodeURIComponent(slug));
+
+    // Find service by normalized name
+    const singleService = allServices.find((s: any) => 
+      normalizeString(s.service) === normalizedSlug
+    );
+
+    if (singleService) {
+      return {
+        type: "single",
+        service: {
+          ...singleService,
+          categoryImage: getCategoryImage(singleService.subcategory),
+        },
+      };
+    }
+
+    // Try category match
+    const services = allServices
+      .filter((service: any) =>
+        service.subcategory.toLowerCase() === categoryName?.toLowerCase()
+      )
+      .map((service: any) => ({
+        ...service,
+        categoryImage: getCategoryImage(service.subcategory),
+      }));
+
+    return services.length > 0
+      ? { type: "category", services, categoryName }
+      : null;
+  }, [allServices, isServiceId, serviceId, categoryName, slug]);
 
   const handleAdd = (service: any) => {
     dispatch(
