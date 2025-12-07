@@ -397,16 +397,19 @@ export default function Products() {
 
   const productsPerPage = 12;
 
-  // Fetch products only if not already loaded and location is available
+  // Track previous location to detect changes
+  const [previousLocation, setPreviousLocation] = useState<string | null>(null);
+
+  // Fetch products when location changes
   useEffect(() => {
-    if (selectedLocationUuid && !loading) {
-      // Check if we have products for this location
-      const hasProductsForLocation = filteredProducts.length > 0;
-      if (!hasProductsForLocation) {
+    if (selectedLocationUuid) {
+      // If location changed, fetch new products
+      if (previousLocation !== selectedLocationUuid) {
         dispatch(fetchProducts(selectedLocationUuid));
+        setPreviousLocation(selectedLocationUuid);
       }
     }
-  }, [dispatch, selectedLocationUuid, loading]);
+  }, [dispatch, selectedLocationUuid, previousLocation]);
 
   // Reset page when filters change
   useEffect(() => {

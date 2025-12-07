@@ -17,11 +17,13 @@ import modalReducer from "./slices/modalSlice";
 import cancelBookingReducer from './slices/cancelBookingSlice'; // Adjust
 import productsReducer from './slices/productsSlice';
 import paymentReducer from './slices/paymentSlice';
+import addressReducer from './slices/addressSlice';
+import orderReducer from './slices/orderSlice';
 // Persist config for the root reducer
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["cart", "auth", "products"], // add slices you want to persist
+  whitelist: ["cart", "auth", "products", "address", "order"], // add slices you want to persist
 }
 
 const rootReducer = {
@@ -39,7 +41,9 @@ const rootReducer = {
   modal: modalReducer,
   cancelBooking: cancelBookingReducer,
   products: productsReducer,
-  payment: paymentReducer
+  payment: paymentReducer,
+  address: addressReducer,
+  order: orderReducer
 }
 
 const persistedReducer = persistReducer(persistConfig, (state: any, action: any) => {

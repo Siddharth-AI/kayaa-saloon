@@ -101,6 +101,11 @@ const productsSlice = createSlice({
     },
     clearError: (state) => {
       state.error = null
+    },
+    clearProducts: (state) => {
+      state.categories = []
+      state.selectedCategory = 'all'
+      state.searchQuery = ''
     }
   },
   extraReducers: (builder) => {
@@ -126,7 +131,8 @@ export const {
   setPriceRange,
   setSearchQuery,
   clearFilters,
-  clearError
+  clearError,
+  clearProducts
 } = productsSlice.actions
 
 export default productsSlice.reducer

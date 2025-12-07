@@ -129,10 +129,10 @@ const paymentSlice = createSlice({
       })
       .addCase(getPaymentCards.fulfilled, (state, action) => {
         state.loading = false;
-        state.paymentCards = action.payload;
+        state.paymentCards = Array.isArray(action.payload) ? action.payload : [];
         // Auto-select first card if none selected
-        if (action.payload.length > 0 && !state.selectedCardId) {
-          state.selectedCardId = action.payload[0].id;
+        if (state.paymentCards.length > 0 && !state.selectedCardId) {
+          state.selectedCardId = state.paymentCards[0].id;
         }
       })
       .addCase(getPaymentCards.rejected, (state, action) => {
