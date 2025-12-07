@@ -8,8 +8,9 @@ const getProductNameFromSlug = (slug: string): string => {
   return nameParts.join(' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const productName = getProductNameFromSlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const productName = getProductNameFromSlug(slug);
   
   return {
     title: `${productName} | Kaya Beauty Salon`,

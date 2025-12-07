@@ -562,6 +562,3 @@ export default function ProductPage() {
     </div>
   );
 }
-
-// Export the helper function for use in other components
-export { createSlug };

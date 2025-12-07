@@ -85,6 +85,11 @@ export default function ProfileDropdown() {
     setIsOpen(false);
   };
 
+  const handleMyOrders = () => {
+    Router.push("/orders");
+    setIsOpen(false);
+  };
+
   const handleLogout = async () => {
     // console.log("Logout button clicked");
     setIsOpen(false);
@@ -224,6 +229,16 @@ export default function ProfileDropdown() {
                 </div>
                 <span className="font-lato text-[#444444] group-hover:text-[#B11C5F] transition-colors duration-300">
                   Account Settings
+                </span>
+              </button>
+              <button
+                onClick={handleMyOrders}
+                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-white/50 transition-all duration-300 group border border-transparent hover:border-[#F28C8C]/20">
+                <div className="w-8 h-8 bg-gradient-to-r from-[#F28C8C]/20 to-[#C59D5F]/20 rounded-full flex items-center justify-center group-hover:from-[#F28C8C]/30 group-hover:to-[#C59D5F]/30 transition-colors duration-300">
+                  <Settings className="w-4 h-4 text-[#B11C5F]" />
+                </div>
+                <span className="font-lato text-[#444444] group-hover:text-[#B11C5F] transition-colors duration-300">
+                  My Orders
                 </span>
               </button>
 

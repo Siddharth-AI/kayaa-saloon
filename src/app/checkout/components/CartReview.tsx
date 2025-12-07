@@ -16,7 +16,7 @@ export default function CartReview({ onNext }: CartReviewProps) {
   const dispatch = useAppDispatch();
   const { products } = useAppSelector((state) => state.cart);
 
-  const subtotal = products.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = products.reduce((sum: any, item: any) => sum + item.price * item.quantity, 0);
   const tax = subtotal * 0.18; // 18% GST
   const total = subtotal + tax;
 
@@ -39,7 +39,7 @@ export default function CartReview({ onNext }: CartReviewProps) {
           </h2>
 
           <div className="space-y-4">
-            {products.map((product, index) => (
+            {products.map((product: any, index: any) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}

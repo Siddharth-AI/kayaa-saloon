@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { createOrder, setLastOrderDetails } from "@/store/slices/orderSlice";
+import { createOrder } from "@/store/slices/orderSlice";
 import { clearProducts } from "@/store/slices/cartSlice";
 import { getPaymentCards, setSelectedCard } from "@/store/slices/paymentSlice";
 import { ArrowLeft, Check, Loader2, IndianRupee, Package, Truck, AlertCircle } from "lucide-react";
@@ -22,7 +22,7 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
   const { products } = useAppSelector((state) => state.cart);
   const { selectedLocationUuid } = useAppSelector((state) => state.services);
   const { selectedBillingId, selectedShippingId, billingAddresses, shippingAddresses } = useAppSelector((state) => state.address);
-  const { loading } = useAppSelector((state) => state.order);
+  const { loading } = useAppSelector((state) => state.orders);
   const { paymentCards, selectedCardId } = useAppSelector((state) => state.payment);
 
   const [orderType, setOrderType] = useState<"online-delivery" | "online-pickup">("online-delivery");
@@ -36,13 +36,13 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
     }
   }, [selectedLocationUuid, dispatch]);
 
-  const subtotal = products.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = products.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
   const tax = subtotal * 0.18;
   const total = subtotal + tax;
-  const totalQty = products.reduce((sum, item) => sum + item.quantity, 0);
+  const totalQty = products.reduce((sum: number, item: any) => sum + item.quantity, 0);
 
-  const billingAddress = billingAddresses.find(a => a.id === selectedBillingId);
-  const shippingAddress = shippingAddresses.find(a => a.id === selectedShippingId);
+  const billingAddress = billingAddresses.find((a: any) => a.id === selectedBillingId);
+  const shippingAddress = shippingAddresses.find((a: any) => a.id === selectedShippingId);
 
   const handlePlaceOrder = async () => {
     if (!selectedCardId) {
@@ -55,22 +55,18 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       return;
     }
 
-    const refNo = `ORD${Date.now()}`;
     const poDate = new Date().toISOString().split("T")[0];
 
     const orderPayload = {
       vendor_location_uuid: selectedLocationUuid,
       order_type: orderType,
-      ref_no: refNo,
-      po_date: poDate,
-      merchant_customer_id: selectedCardId,
-      total_qty: totalQty,
-      items: products.map(p => ({
+      sales_order_date: poDate,
+      billing_address_id: selectedBillingId,
+      shipping_address_id: selectedShippingId,
+      products: products.map((p: any) => ({
         product_id: p.id,
         ord_qty: p.quantity,
       })),
-      billing_address_id: selectedBillingId,
-      shipping_address_id: selectedShippingId,
       remark: remark || undefined,
     };
 
@@ -87,20 +83,9 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       }
       
       // Extract order ID from response (handle different response structures)
-      const orderId = result?.order_uuid || result?.data?.order_uuid || result?.id || refNo;
+      const orderId = result?.order_uuid || result?.data?.order_uuid || result?.id || result?.ref_no || 'unknown';
       
-      // Save order data to Redux before clearing cart
-      const orderData = {
-        orderId: orderId,
-        orderNumber: refNo,
-        total: total,
-        items: products,
-        orderType: orderType,
-        billingAddress: billingAddress,
-        shippingAddress: shippingAddress,
-        createdAt: new Date().toISOString(),
-      };
-      dispatch(setLastOrderDetails(orderData));
+      // Order created successfully - data is already in Redux state via createOrder.fulfilled
       
       toastSuccess("Order placed successfully!");
       dispatch(clearProducts());

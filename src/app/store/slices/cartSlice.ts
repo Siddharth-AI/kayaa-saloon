@@ -161,6 +161,22 @@ const mergeServices = (existingServices: ServiceCartItem[], newServices: Service
   return merged
 }
 
+// Helper to merge products (add quantities for same products)
+const mergeProducts = (existingProducts: ProductCartItem[], newProducts: ProductCartItem[]): ProductCartItem[] => {
+  const merged = [...existingProducts]
+
+  newProducts.forEach(newProduct => {
+    const existingIndex = merged.findIndex(existing => existing.id === newProduct.id)
+    if (existingIndex >= 0) {
+      merged[existingIndex].quantity += newProduct.quantity
+    } else {
+      merged.push(newProduct)
+    }
+  })
+
+  return merged
+}
+
 // Helper to save cart data with location structure
 const saveCartToStorage = (cartData: any, locationId: string, isUser: boolean, userId?: string) => {
   const storageKey = isUser ? `userCart_${userId}` : "guestCart"
@@ -410,7 +426,7 @@ export const syncCartOnLogin = (user: User, locationId: string): AppThunk => asy
     // Merge user cart + guest cart
     const mergedCartData = {
       services: [...userCartData.services, ...guestCartData.services],
-      products: [...userCartData.products, ...guestCartData.products],
+      products: mergeProducts(userCartData.products, guestCartData.products),
       items: [...userCartData.items, ...guestCartData.items]
     }
 

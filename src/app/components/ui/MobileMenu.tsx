@@ -58,7 +58,10 @@ export default function MobileMenu() {
     { label: "Shop", href: "/shop" },
     { label: "About Us", href: "/about-us" },
     { label: "Contact Us", href: "/contact-us" },
-    { label: "Account Settings", href: "/settings/profile" },
+    ...(user?.isLoggedIn ? [
+      { label: "My Orders", href: "/orders" },
+      { label: "Account Settings", href: "/settings/profile" },
+    ] : []),
   ];
 
   return (

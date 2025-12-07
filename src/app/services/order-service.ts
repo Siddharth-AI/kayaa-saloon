@@ -162,6 +162,10 @@ export async function cancelOrder(
     });
 
     if (response.status === 200) {
+      // Check if the response status is false
+      if (response.data && response.data.status === false) {
+        throw new Error(response.data.message || 'Failed to cancel order');
+      }
       return response.data;
     } else {
       throw new Error(`Error: ${response.status} - ${response.statusText}`);

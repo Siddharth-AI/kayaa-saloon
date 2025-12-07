@@ -146,7 +146,7 @@ export default function AddressStep({ onNext, onBack }: AddressStepProps) {
 
         {/* Address List */}
         <div className="space-y-4 mb-6">
-          {addresses.map((address) => (
+          {addresses.map((address: any) => (
             <motion.div
               key={address.id}
               initial={{ opacity: 0, y: 20 }}

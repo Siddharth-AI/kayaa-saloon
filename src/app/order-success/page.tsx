@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
-import { clearLastOrderDetails } from "@/store/slices/orderSlice";
+import { clearCurrentOrder } from "@/store/slices/orderSlice";
 import { motion } from "framer-motion";
 import { CheckCircle, Package, Home, ShoppingBag } from "lucide-react";
 
@@ -15,7 +15,7 @@ export default function OrderSuccessPage() {
   const [showConfetti, setShowConfetti] = useState(true);
   
   // Get order data from Redux persist
-  const orderData = useAppSelector((state) => state.order.lastOrderDetails);
+  const orderData = useAppSelector((state) => state.orders.currentOrder);
 
   useEffect(() => {
     if (!orderId) {
@@ -27,7 +27,7 @@ export default function OrderSuccessPage() {
     
     // Clear order details after 5 minutes
     const clearTimer = setTimeout(() => {
-      dispatch(clearLastOrderDetails());
+      dispatch(clearCurrentOrder());
     }, 300000);
     
     return () => clearTimeout(clearTimer);
@@ -101,11 +101,11 @@ export default function OrderSuccessPage() {
               <div className="border-t-2 border-[#F28C8C]/20 pt-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600 font-lato">Items:</span>
-                  <span className="font-semibold text-[#B11C5F]">{orderData.items?.length || 0} products</span>
+                  <span className="font-semibold text-[#B11C5F]">{orderData.sales_order_items?.length || 0} products</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600 font-lato">Delivery Type:</span>
-                  <span className="font-semibold text-[#B11C5F] capitalize">{orderData.orderType?.replace('-', ' ')}</span>
+                  <span className="font-semibold text-[#B11C5F] capitalize">{orderData.order_type?.replace('-', ' ')}</span>
                 </div>
                 <div className="flex justify-between text-lg font-bold">
                   <span className="text-[#B11C5F] font-playfair">Total:</span>

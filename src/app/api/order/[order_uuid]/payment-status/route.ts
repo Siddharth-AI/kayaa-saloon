@@ -4,7 +4,7 @@ import { responseHandler, errorHandler } from '@/lib/response-handler';
 import { messages } from '@/lib/messages';
 
 interface RouteContext {
-  params: { order_uuid: string };
+  params: Promise<{ order_uuid: string }>;
 }
 
 export async function GET(
@@ -19,7 +19,7 @@ export async function GET(
     }
 
     // Extract order_uuid from the dynamic route parameter
-    const { order_uuid } = context.params;
+    const { order_uuid } = await context.params;
 
     // Validate order_uuid
     if (!order_uuid || order_uuid.trim() === '') {

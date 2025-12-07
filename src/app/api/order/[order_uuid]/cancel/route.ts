@@ -4,7 +4,7 @@ import { responseHandler, errorHandler } from '@/lib/response-handler';
 import { messages } from '@/lib/messages';
 
 interface RouteContext {
-  params: { order_uuid: string };
+  params: Promise<{ order_uuid: string }>;
 }
 
 export async function DELETE(
@@ -19,7 +19,7 @@ export async function DELETE(
     }
 
     // Extract order_uuid from the dynamic route parameter
-    const { order_uuid } = context.params;
+    const { order_uuid } = await context.params;
 
     // Validate order_uuid
     if (!order_uuid || order_uuid.trim() === '') {
@@ -34,7 +34,7 @@ export async function DELETE(
       return errorHandler('Vendor location UUID is required');
     }
 
-    // Call the service function
+    // Call the service function - it will throw error if cancellation fails
     const result = await cancelOrder(
       { uuid: order_uuid, vendor_location_uuid },
       userToken
@@ -42,10 +42,8 @@ export async function DELETE(
 
     return responseHandler('Order cancelled successfully', true, result);
   } catch (error: any) {
-
-    // Handle axios errors with full response data
-    const errorMessage = error.response?.data?.message || error.message || 'Failed to cancel order';
-    const errorData = error.response?.data || null;
-    return errorHandler(errorMessage, errorData);
+    // Service layer throws error when API returns status: false
+    const errorMessage = error.message || 'Failed to cancel order';
+    return errorHandler(errorMessage, error);
   }
 }

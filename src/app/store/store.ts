@@ -18,7 +18,7 @@ import cancelBookingReducer from './slices/cancelBookingSlice'; // Adjust
 import productsReducer from './slices/productsSlice';
 import paymentReducer from './slices/paymentSlice';
 import addressReducer from './slices/addressSlice';
-import orderReducer from './slices/orderSlice';
+import ordersReducer from './slices/orderSlice';
 // Persist config for the root reducer
 const persistConfig = {
   key: "root",
@@ -43,7 +43,7 @@ const rootReducer = {
   products: productsReducer,
   payment: paymentReducer,
   address: addressReducer,
-  order: orderReducer
+  orders: ordersReducer
 }
 
 const persistedReducer = persistReducer(persistConfig, (state: any, action: any) => {
