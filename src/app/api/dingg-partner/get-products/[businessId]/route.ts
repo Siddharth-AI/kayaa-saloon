@@ -12,7 +12,7 @@ export async function GET(req: NextRequest,
     }
 
     // Extract businessId from the dynamic route parameter
-    const { businessId } = context.params;
+    const { businessId } = await context.params;
 
     // Validate businessId
     if (!businessId || businessId.trim() === '') {

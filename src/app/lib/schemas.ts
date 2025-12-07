@@ -296,3 +296,45 @@ export const getOrdersSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1).label('Page')
 });
 
+
+// ---------------------- get-order-detail-schema ----------------------
+export const getOrderDetailSchema = Joi.object({
+  id: Joi.string().required().label('Order ID'),
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
+});
+
+// ---------------------- get-payment-status-schema ----------------------
+export const getPaymentStatusSchema = Joi.object({
+  order_uuid: Joi.string().required().label('Order UUID'),
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
+});
+
+// ---------------------- cancel-order-schema ----------------------
+export const cancelOrderSchema = Joi.object({
+  uuid: Joi.string().required().label('Order UUID'),
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID')
+});
+
+// ---------------------- calculate-summary-schema ----------------------
+export const calculateSummarySchema = Joi.object({
+  vendor_location_uuid: Joi.string().required().label('Vendor Location UUID'),
+  order_type: Joi.string()
+    .valid('online-delivery', 'online-pickup')
+    .required()
+    .label('Order Type'),
+  sales_order_date: Joi.string()
+    .pattern(/^\d{4}-\d{2}-\d{2}$/)
+    .required()
+    .label('Sales Order Date')
+    .messages({ 'string.pattern.base': '"sales_order_date" must be in YYYY-MM-DD format' }),
+  products: Joi.array()
+    .items(
+      Joi.object({
+        product_id: Joi.number().integer().required().label('Product ID'),
+        ord_qty: Joi.number().integer().min(1).required().label('Order Quantity')
+      })
+    )
+    .min(1)
+    .required()
+    .label('Products')
+});

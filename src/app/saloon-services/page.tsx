@@ -1,8 +1,13 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { addServiceToCart, addToCart, initializeCartWithAuth } from "@/store/slices/cartSlice";
+import {
+  addServiceToCart,
+  addToCart,
+  initializeCartWithAuth,
+} from "@/store/slices/cartSlice";
 import Image, { StaticImageData } from "next/image";
 import LeftPanel from "@/components/leftPanel/LeftPanel";
 import BookingBottomBar from "@/saloon-services/BookingBottomBar";
@@ -61,22 +66,17 @@ const categoryImages: CategoryImagesType = {
   default: [serviceImage],
 };
 
-// Updated function to get random image from category
-const getCategoryImage = (subcategory: string) => {
+// Updated function to get image from category
+const getCategoryImage = (subcategory: string, serviceId: number) => {
   const categoryImageArray =
     categoryImages[subcategory] || categoryImages.default;
-  const randomIndex = Math.floor(Math.random() * categoryImageArray.length);
-  return categoryImageArray[randomIndex];
+  const index = serviceId % categoryImageArray.length;
+  return categoryImageArray[index];
 };
 
-// Shuffle function for randomizing services
-const shuffleArray = (array: any[]) => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
+// Sort function for consistent ordering
+const sortArray = (array: any[]) => {
+  return [...array].sort((a, b) => a.id - b.id);
 };
 
 // --- Fly to Cart Animation Helper ---
@@ -130,6 +130,7 @@ function flyCardToCart({
 }
 
 export default function Services() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { allServices, loading, error, selectedLocationUuid } = useAppSelector(
     (state) => state.services
@@ -249,16 +250,18 @@ export default function Services() {
     }
   }, [selectedCategory, search, isInitialized]);
 
-  // Process services: shuffle them and assign random category images
+  // Process services: sort them and assign category images
   const processedServices = useMemo(() => {
     const servicesWithImages = allServices.map((service: any) => ({
       ...service,
-      categoryImage: getCategoryImage(service.subcategory.toLowerCase()), // This will get a random image from the category
+      categoryImage: getCategoryImage(
+        service.subcategory.toLowerCase(),
+        service.id
+      ),
     }));
 
-    // Shuffle ALL services
-    return shuffleArray(servicesWithImages);
-  }, [allServices, selectedCategory]); // Added selectedCategory to re-shuffle images when category changes
+    return sortArray(servicesWithImages);
+  }, [allServices]);
 
   const filteredProducts = processedServices.filter((service: any) => {
     return (
@@ -488,9 +491,7 @@ export default function Services() {
                             ? "bg-[#F28C8C] text-white shadow-md"
                             : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] "
                         }`}
-                        onClick={() =>
-                          setSelectedCategory(cat.slug as string | null)
-                        }>
+                        onClick={() => setSelectedCategory(cat.slug)}>
                         {String(cat.name)}
                       </button>
                     </li>
@@ -511,7 +512,7 @@ export default function Services() {
                 </span>{" "}
                 services.
                 <span className="text-sm font-normal text-[#C59D5F] ml-2">
-                  (Services & images are shuffled for variety)
+                  (Premium services available)
                 </span>
               </div>
 
@@ -561,7 +562,19 @@ export default function Services() {
                       </div>
                     </div>
 
-                    <div className="p-5 sm:p-6 flex flex-col justify-between h-52">
+                    <div
+                      className="p-5 sm:p-6 flex flex-col justify-between h-52 cursor-pointer"
+                      onClick={() => {
+                        const slug = service.service
+                          .toLowerCase()
+                          .replace(/[^a-z0-9\s&]/g, "") // Remove special chars except & and spaces
+                          .replace(/\s+/g, "-") // Replace spaces with hyphens
+                          .replace(/-+/g, "-") // Replace multiple hyphens with single
+                          .trim();
+                        router.push(
+                          `/saloon-services/${encodeURIComponent(slug)}`
+                        );
+                      }}>
                       <div className="mb-4">
                         <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-2 leading-tight group-hover:text-[#F28C8C] transition-colors duration-300">
                           {service.service.length > 20

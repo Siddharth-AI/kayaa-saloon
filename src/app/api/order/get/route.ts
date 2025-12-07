@@ -4,7 +4,6 @@ import { responseHandler, errorHandler } from '@/lib/response-handler';
 import { messages } from '@/lib/messages';
 import { getOrdersSchema } from '@/lib/schemas';
 import { GetOrdersRequest } from '@/lib/types';
-import Joi from 'joi';
 
 export async function GET(req: NextRequest) {
   try {

@@ -399,3 +399,125 @@ export interface GetOrdersResponse {
     rows: OrderItem[];
   };
 }
+
+
+// ---------------------- Order Detail Types ----------------------
+export interface GetOrderDetailRequest {
+  id: string; // order UUID
+  vendor_location_uuid: string;
+}
+
+export interface OrderDetailResponse {
+  message: string;
+  code: number;
+  data: {
+    id: number;
+    user_id: number;
+    is_inclusive_tax: boolean;
+    is_same_state: boolean;
+    signature: string | null;
+    po_number: string;
+    po_date: string;
+    po_file: string | null;
+    ref_no: string;
+    order_status: string;
+    remark: string;
+    terms_conditions: string | null;
+    order_by: number;
+    billing_address_id: number;
+    shipping_address_id: number;
+    sale_by: number;
+    total_tax: number;
+    gross: number | null;
+    total_qty: number;
+    total: number;
+    modified_by: number | null;
+    order_type: string;
+    uuid: string;
+    user: {
+      id: number;
+      user_histories: Array<{
+        fname: string;
+        lname: string;
+        email: string;
+        mobile: string;
+        registration_no: string;
+        user_id: number;
+        extra_details: any;
+      }>;
+    };
+    employee: {
+      name: string;
+    };
+    sales_order_deliveries: any[];
+    sales_order_items: any[];
+    sales_order_taxes: any[];
+    billing_address: any;
+    shipping_address: any;
+  };
+}
+
+// ---------------------- Payment Status Types ----------------------
+export interface GetPaymentStatusRequest {
+  order_uuid: string;
+  vendor_location_uuid: string;
+}
+
+export interface PaymentStatusResponse {
+  message: string;
+  code: number;
+  data: {
+    payment_status: string;
+  };
+}
+
+// ---------------------- Cancel Order Types ----------------------
+export interface CancelOrderRequest {
+  uuid: string;
+  vendor_location_uuid: string;
+}
+
+export interface CancelOrderResponse {
+  message: string;
+  code: number;
+  data: {
+    id: number;
+    uuid: string;
+    order_status: string;
+    order_type: string;
+    total_qty: number;
+    total: number;
+    user_id: number;
+    po_date: string;
+    ref_no: string;
+    po_number: string;
+    vendor_location_id: number;
+    updatedAt: string;
+  };
+}
+
+// ---------------------- Calculate Summary Types ----------------------
+export interface CalculateSummaryRequest {
+  vendor_location_uuid: string;
+  order_type: 'online-delivery' | 'online-pickup';
+  sales_order_date: string; // YYYY-MM-DD format
+  products: Array<{
+    product_id: number;
+    ord_qty: number;
+  }>;
+}
+
+export interface CalculateSummaryResponse {
+  message: string;
+  code: number;
+  data: {
+    total: number;
+    product_sub: number;
+    tax: number;
+    discount: number;
+    delivery_charges: number;
+    net: number;
+    total_payable: number;
+    remark: string;
+  };
+}
