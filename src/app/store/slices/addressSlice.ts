@@ -62,7 +62,7 @@ export const createAddress = createAsyncThunk(
   }
 );
 
-// Get Addresses
+// Get Addresse
 export const getAddresses = createAsyncThunk(
   'address/getAddresses',
   async (payload: {
