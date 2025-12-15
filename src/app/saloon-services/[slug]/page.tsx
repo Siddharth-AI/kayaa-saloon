@@ -56,6 +56,7 @@ export default function ServicePage() {
   const { allServices, selectedLocationUuid, loading } = useAppSelector(
     (state) => state.services
   );
+  const { services: cartServices } = useAppSelector((state) => state.cart);
 
   const slug = params.slug as string;
 
@@ -131,6 +132,13 @@ export default function ServicePage() {
   }, [allServices, isServiceId, serviceId, categoryName, slug]);
 
   const handleAdd = (service: any) => {
+    const isAlreadyAdded = cartServices.some((s: any) => s.id === service.id);
+
+    if (isAlreadyAdded) {
+      toastSuccess(`✓ ${service.service} is already in cart!`);
+      return;
+    }
+
     dispatch(
       addServiceToCart({
         id: service.id,
@@ -180,218 +188,214 @@ export default function ServicePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fefaf4] to-pink-50 text-[#444444]">
-      {/* Header */}
-      <div className="w-full relative py-28 pl-11 pt-32 overflow-hidden">
+      {/* Header Banner */}
+      <div className="w-full relative py-20 pl-11 pt-24 overflow-hidden group">
         <div className="absolute inset-0">
           <Image
             src="/images/service/service.webp"
             alt="Services background"
             fill
-            className="object-cover brightness-75"
+            sizes="100vw"
+            priority
+            className="object-cover object-center filter brightness-75 transition-transform duration-[8000ms] ease-out group-hover:scale-105"
+            style={{
+              zIndex: 1,
+            }}
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+
+        <div className="absolute inset-0 z-[2] animate-pulse-slow" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent z-[3]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent z-[4]" />
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
-          {/* Breadcrumb */}
-          <nav className="mb-6 text-white/80 font-lato text-sm">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => router.push("/")}
-                className="hover:text-white transition-colors">
-                Home
-              </button>
-              <span>/</span>
-              <button
-                onClick={() => router.push("/saloon-services")}
-                className="hover:text-white transition-colors">
-                Services
-              </button>
-              {serviceData.type === "single" && (
-                <>
-                  <span>/</span>
-                  <span className="text-white">
-                    {serviceData.service.service}
-                  </span>
-                </>
-              )}
-              {serviceData.type === "category" && (
-                <>
-                  <span>/</span>
-                  <span className="text-white capitalize">
-                    {serviceData.categoryName}
-                  </span>
-                </>
-              )}
-            </div>
-          </nav>
+          <div className="relative">
+            <div className="absolute -inset-6 bg-gradient-to-r from-[#FFF6F8]/10 via-white/5 to-[#F28C8C]/15 blur-2xl rounded-3xl animate-pulse-glow" />
 
-          <button
-            onClick={() => router.back()}
-            className="mb-6 flex items-center gap-2 text-white hover:text-[#F28C8C] transition-colors">
-            <FiArrowLeft className="w-5 h-5" />
-            <span className="font-lato">Back</span>
-          </button>
+            <h1 className="text-3xl lg:text-4xl pt-6 font-playfair font-bold tracking-wide relative z-20">
+              <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-sm">
+                SERVICE DETAILS
+              </span>
+              <div className="absolute -bottom-1 left-0 w-0 h-1 bg-gradient-to-r from-[#FFF6F8] via-[white] to-[#FFF6F8] animate-expand-width shadow-lg" />
+            </h1>
 
-          <h1 className="text-4xl lg:text-5xl font-playfair font-bold text-white mb-4 capitalize">
-            {serviceData.type === "single"
-              ? serviceData.service.service
-              : `${serviceData.categoryName} Services`}
-          </h1>
-          <p className="text-white/90 font-lato text-lg">
-            {serviceData.type === "single"
-              ? `₹${serviceData.service.price} • ${serviceData.service.service_time} min`
-              : `${serviceData.services.length} services available`}
-          </p>
+            <p className="dancing-script text-lg lg:text-xl text-[#FFF6F8] mt-3 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+              ✨ Premium salon excellence
+            </p>
+          </div>
+        </div>
+
+        {/* Floating Beauty Icons */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+          <div className="absolute top-16 left-16 text-[#FFF6F8]/40 animate-pulse delay-1000 text-xl">
+            💄
+          </div>
+          <div className="absolute top-24 right-24 text-[#F28C8C]/50 animate-bounce-slow delay-2000 text-lg">
+            ✂️
+          </div>
+          <div className="absolute bottom-32 left-32 text-white/30 animate-pulse delay-1500 text-xl">
+            💅
+          </div>
+          <div className="absolute bottom-16 right-16 text-[#C59D5F]/40 animate-bounce-slow delay-500 text-lg">
+            🧴
+          </div>
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Breadcrumb */}
+        <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+          <button
+            onClick={() => router.push("/")}
+            className="flex items-center hover:text-[#B11C5F] transition-colors">
+            <span>Home</span>
+          </button>
+          <span>/</span>
+          <button
+            onClick={() => router.push("/saloon-services")}
+            className="hover:text-[#B11C5F] transition-colors">
+            Services
+          </button>
+          {serviceData.type === "single" && (
+            <>
+              <span>/</span>
+              <span className="text-[#B11C5F] font-medium truncate">
+                {serviceData.service.service}
+              </span>
+            </>
+          )}
+          {serviceData.type === "category" && (
+            <>
+              <span>/</span>
+              <span className="text-[#B11C5F] font-medium truncate capitalize">
+                {serviceData.categoryName}
+              </span>
+            </>
+          )}
+        </nav>
+
         {serviceData.type === "single" ? (
           // Single Service View
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
-              <div className="relative h-64 md:h-80">
-                <Image
-                  src={
-                    serviceData.service.image ||
-                    serviceData.service.categoryImage ||
-                    serviceImage
-                  }
-                  alt={serviceData.service.service}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-                <div className="absolute top-4 right-4 bg-[#C59D5F] px-4 py-2 rounded-full shadow-lg">
-                  <span className="font-playfair font-bold text-white text-lg">
-                    ₹{serviceData.service.price}
-                  </span>
-                </div>
-                <div className="absolute bottom-4 left-4 flex gap-2">
-                  <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1">
-                    <FiClock className="w-4 h-4 text-[#B11C5F]" />
-                    <span className="text-sm font-medium text-[#B11C5F]">
-                      {serviceData.service.service_time} min
-                    </span>
-                  </div>
-                  <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1">
-                    <FiStar className="w-4 h-4 text-yellow-500" />
-                    <span className="text-sm font-medium text-[#B11C5F]">
-                      4.8
-                    </span>
-                  </div>
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="flex flex-col lg:flex-row">
+              {/* Left Side - Image */}
+              <div className="lg:w-1/2 p-8">
+                <div className="relative aspect-square mb-6 rounded-2xl overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                  <Image
+                    src={
+                      serviceData.service.image ||
+                      serviceData.service.categoryImage ||
+                      serviceImage
+                    }
+                    alt={serviceData.service.service}
+                    fill
+                    className="object-cover object-center scale-105 transition-transform duration-700"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    unoptimized
+                  />
                 </div>
               </div>
 
-              <div className="p-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h2 className="font-playfair font-bold text-3xl text-[#B11C5F] mb-4">
-                      {serviceData.service.service}
-                    </h2>
-                    <div className="flex items-center gap-4 mb-6">
-                      <span className="text-[#C59D5F] font-cormorant italic text-lg">
-                        {serviceData.service.subcategory}
-                      </span>
-                      <span className="text-[#B11C5F] font-lato font-semibold">
-                        {serviceData.service.service_time} minutes
-                      </span>
-                    </div>
-
-                    <div className="mb-6">
-                      <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-3">
-                        Description
-                      </h3>
-                      <p className="text-gray-600 font-lato leading-relaxed">
-                        {serviceData.service.description ||
-                          `Experience our premium ${serviceData.service.service.toLowerCase()} service. Our expert professionals use high-quality products and advanced techniques to ensure you get the best results. This service is designed to enhance your natural beauty and leave you feeling refreshed and confident.`}
-                      </p>
-                    </div>
-
-                    <div className="mb-6">
-                      <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-3">
-                        What's Included
-                      </h3>
-                      <ul className="space-y-2">
-                        <li className="flex items-center gap-2 text-gray-600 font-lato">
-                          <FiCheck className="w-4 h-4 text-green-500" />
-                          Professional consultation
-                        </li>
-                        <li className="flex items-center gap-2 text-gray-600 font-lato">
-                          <FiCheck className="w-4 h-4 text-green-500" />
-                          Premium products
-                        </li>
-                        <li className="flex items-center gap-2 text-gray-600 font-lato">
-                          <FiCheck className="w-4 h-4 text-green-500" />
-                          Expert styling
-                        </li>
-                        <li className="flex items-center gap-2 text-gray-600 font-lato">
-                          <FiCheck className="w-4 h-4 text-green-500" />
-                          Aftercare advice
-                        </li>
-                      </ul>
-                    </div>
+              {/* Right Side - Details */}
+              <div className="lg:w-1/2 p-8 lg:pl-4">
+                {/* Service Header */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-1 h-6 bg-gradient-to-b from-[#F28C8C] to-[#C59D5F] rounded-full"></div>
+                    <span className="font-cormorant text-[#C59D5F] italic text-lg">
+                      {serviceData.service.subcategory}
+                    </span>
                   </div>
 
-                  <div>
-                    <div className="bg-gradient-to-br from-[#fefaf4] to-pink-50 rounded-2xl p-6 mb-6">
-                      <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-4">
-                        Service Details
-                      </h3>
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-lato">
-                            Duration:
-                          </span>
-                          <span className="font-lato font-semibold text-[#B11C5F]">
-                            {serviceData.service.service_time} minutes
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-lato">
-                            Price:
-                          </span>
-                          <span className="font-playfair font-bold text-xl text-[#C59D5F]">
-                            ₹{serviceData.service.price}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-lato">
-                            Category:
-                          </span>
-                          <span className="font-lato font-semibold text-[#B11C5F] capitalize">
-                            {serviceData.service.subcategory}
-                          </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-600 font-lato">
-                            Rating:
-                          </span>
-                          <div className="flex items-center gap-1">
-                            <FiStar className="w-4 h-4 text-yellow-500 fill-current" />
-                            <span className="font-lato font-semibold text-[#B11C5F]">
-                              4.8 (124 reviews)
-                            </span>
-                          </div>
-                        </div>
+                  <h1 className="font-playfair font-bold text-3xl text-[#B11C5F] mb-3 leading-tight">
+                    {serviceData.service.service}
+                  </h1>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <FiStar
+                          key={i}
+                          className={`w-4 h-4 ${
+                            i < 4
+                              ? "text-yellow-400 fill-current"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm text-gray-600 font-lato">
+                      4.8 (127 reviews)
+                    </span>
+                  </div>
+
+                  {/* Price */}
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="font-playfair font-bold text-4xl text-[#B11C5F]">
+                      ₹{serviceData.service.price}
+                    </span>
+                    <span className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white px-3 py-1 rounded-full text-sm font-semibold">
+                      {serviceData.service.service_time} min
+                    </span>
+                  </div>
+                </div>
+
+                {/* Service Description */}
+                <div className="mb-6">
+                  <h3 className="font-playfair font-semibold text-xl text-[#B11C5F] mb-3">
+                    About This Service
+                  </h3>
+                  <p className="font-lato text-gray-700 leading-relaxed mb-4">
+                    {serviceData.service.description ||
+                      `Experience our premium ${serviceData.service.service.toLowerCase()} service. Our expert professionals use high-quality products and advanced techniques to ensure you get the best results. This service is designed to enhance your natural beauty and leave you feeling refreshed and confident.`}
+                  </p>
+
+                  {/* What's Included */}
+                  <div className="mb-4">
+                    <h4 className="font-playfair font-semibold text-lg text-[#B11C5F] mb-2">
+                      What's Included
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="flex items-center gap-2">
+                        <FiCheck className="w-4 h-4 text-green-500" />
+                        <span className="font-lato text-sm text-gray-700">
+                          Professional consultation
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <FiCheck className="w-4 h-4 text-green-500" />
+                        <span className="font-lato text-sm text-gray-700">
+                          Premium products
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <FiCheck className="w-4 h-4 text-green-500" />
+                        <span className="font-lato text-sm text-gray-700">
+                          Expert styling
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <FiCheck className="w-4 h-4 text-green-500" />
+                        <span className="font-lato text-sm text-gray-700">
+                          Aftercare advice
+                        </span>
                       </div>
                     </div>
-
-                    <div className="bg-white border-2 border-[#F28C8C]/20 rounded-2xl p-6">
-                      <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-4">
-                        Why Choose This Service?
-                      </h3>
-                      <ul className="space-y-2 text-gray-600 font-lato">
-                        <li>• Expert professionals with years of experience</li>
-                        <li>• Premium quality products and equipment</li>
-                        <li>• Personalized service tailored to your needs</li>
-                        <li>• Relaxing and comfortable environment</li>
-                        <li>• Satisfaction guaranteed</li>
-                      </ul>
-                    </div>
                   </div>
+                </div>
+
+                {/* Action Button */}
+                <div className="border-t border-gray-200 pt-6">
+                  <button
+                    onClick={() => handleAdd(serviceData.service)}
+                    className="w-full group/btn relative px-8 py-4 bg-[#F28C8C] text-white font-lato font-bold rounded-2xl shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-300 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                    <div className="relative flex items-center justify-center space-x-3">
+                      <IoCart className="w-5 h-5" />
+                      <span>Book Service</span>
+                    </div>
+                  </button>
                 </div>
               </div>
             </div>

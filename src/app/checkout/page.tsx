@@ -3,13 +3,15 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
-import { Check, ShoppingBag, MapPin, CreditCard, Package } from "lucide-react";
+import { Check, ShoppingBag, MapPin, CreditCard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import CartReview from "./components/CartReview";
 import AddressStep from "./components/AddressStep";
 import CheckoutStep from "./components/CheckoutStep";
 import { openModal } from "@/store/slices/modalSlice";
 import { toastError } from "@/components/common/toastService";
+import shopHeader from "@/assets/shop/shop_header.jpg";
 
 const steps = [
   { id: 1, name: "Cart Review", icon: ShoppingBag },
@@ -27,14 +29,12 @@ export default function CheckoutPage() {
   const { user } = useAppSelector((state) => state.auth);
   const { selectedLocationUuid } = useAppSelector((state) => state.services);
 
-  // Set initial location
   useEffect(() => {
     if (selectedLocationUuid && !checkoutLocationUuid) {
       setCheckoutLocationUuid(selectedLocationUuid);
     }
   }, [selectedLocationUuid, checkoutLocationUuid]);
 
-  // Detect location change during checkout
   useEffect(() => {
     if (checkoutLocationUuid && selectedLocationUuid && checkoutLocationUuid !== selectedLocationUuid) {
       toastError("Location changed. Please restart checkout.");
@@ -50,7 +50,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    // Only redirect if cart is empty and we're not coming from order success
     if (products.length === 0 && currentStep === 1) {
       toastError("Your cart is empty");
       router.push("/shop");
@@ -74,21 +73,59 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-pink-50 py-8 pt-28">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-playfair font-bold text-[#B11C5F] mb-2 sm:mb-4">
-            Checkout
-          </h1>
-          <p className="text-sm sm:text-base text-[#C59D5F] font-lato">
-            Complete your purchase in 3 easy steps
-          </p>
-        </motion.div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-orange-50">
+      {/* Header Banner */}
+      <div className="w-full relative py-20 pl-11 pt-24 overflow-hidden group">
+        <div className="absolute inset-0">
+          <Image
+            src={shopHeader}
+            alt="Checkout background"
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover object-center filter brightness-75 transition-transform duration-[8000ms] ease-out group-hover:scale-105"
+            style={{ zIndex: 1 }}
+          />
+        </div>
 
+        <div className="absolute inset-0 z-[2] animate-pulse-slow" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent z-[3]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent z-[4]" />
+
+        <div className="max-w-7xl mx-auto px-4 relative z-10">
+          <div className="relative">
+            <div className="absolute -inset-6 bg-gradient-to-r from-[#FFF6F8]/10 via-white/5 to-[#F28C8C]/15 blur-2xl rounded-3xl animate-pulse-glow" />
+
+            <h1 className="text-3xl lg:text-4xl pt-6 font-playfair font-bold tracking-wide relative z-20">
+              <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-sm">
+                CHECKOUT
+              </span>
+              <div className="absolute -bottom-1 left-0 w-0 h-1 bg-gradient-to-r from-[#FFF6F8] via-[white] to-[#FFF6F8] animate-expand-width shadow-lg" />
+            </h1>
+
+            <p className="dancing-script text-lg lg:text-xl text-[#FFF6F8] mt-3 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+              ✨ Complete your purchase securely
+            </p>
+          </div>
+        </div>
+
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+          <div className="absolute top-16 left-16 text-[#FFF6F8]/40 animate-pulse delay-1000 text-xl">
+            🛍️
+          </div>
+          <div className="absolute top-24 right-24 text-[#F28C8C]/50 animate-bounce-slow delay-2000 text-lg">
+            💳
+          </div>
+          <div className="absolute bottom-32 left-32 text-white/30 animate-pulse delay-1500 text-xl">
+            ✓
+          </div>
+          <div className="absolute bottom-16 right-16 text-[#C59D5F]/40 animate-bounce-slow delay-500 text-lg">
+            🎁
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Progress Steps */}
         <div className="mb-8 sm:mb-12">
           <div className="flex items-center justify-center max-w-4xl mx-auto px-2">

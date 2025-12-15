@@ -137,6 +137,7 @@ export default function Services() {
   const { allServices, loading, error, selectedLocationUuid } = useAppSelector(
     (state) => state.services
   );
+  const { services: cartServices } = useAppSelector((state) => state.cart);
 
   // Initialize cart with location when location changes
   useEffect(() => {
@@ -329,6 +330,13 @@ export default function Services() {
   };
 
   const handleAdd = (service: any, e: React.MouseEvent<HTMLButtonElement>) => {
+    const isAlreadyAdded = cartServices.some((s: any) => s.id === service.id);
+
+    if (isAlreadyAdded) {
+      toastSuccess(`✓ ${service.service || service.name} is already in cart!`);
+      return;
+    }
+
     const card = (e.target as HTMLElement).closest(
       ".service-card-animate"
     ) as HTMLElement;
@@ -683,7 +691,11 @@ export default function Services() {
 
                       <div className="flex items-center justify-start">
                         <button
-                          className="group/btn relative px-6 py-3 bg-[#F28C8C] text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform  active:scale-95 transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden"
+                          className={`group/btn relative px-6 py-3 text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-300 overflow-hidden ${
+                            cartServices.some((s: any) => s.id === service.id)
+                              ? "bg-green-500 hover:bg-green-600"
+                              : "bg-[#F28C8C] hover:from-[#B11C5F] hover:to-[#F28C8C]"
+                          }`}
                           onClick={(e) => {
                             e.stopPropagation();
                             handleAdd(service, e);
@@ -691,7 +703,7 @@ export default function Services() {
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
 
                           <div className="relative flex items-center space-x-2">
-                            <span>Add</span>
+                            <span>{cartServices.some((s: any) => s.id === service.id) ? "Added" : "Add"}</span>
                             <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover/btn:rotate-12 transition-transform duration-300">
                               <IoCart className="text-xs" />
                             </div>
