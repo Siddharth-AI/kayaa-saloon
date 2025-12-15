@@ -131,20 +131,6 @@ const CategoryDropdown = ({
 
       {isOpen && !loading && (
         <div className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-96 overflow-y-auto">
-          {/* All Categories Option */}
-          <button
-            onClick={() => {
-              onCategorySelect("all");
-              setIsOpen(false);
-            }}
-            className={`w-full px-4 py-3 text-left hover:bg-pink-50 transition-colors ${
-              selectedCategory === "all"
-                ? "bg-pink-100 text-pink-600 font-semibold"
-                : "text-gray-700"
-            }`}>
-            All Categories
-          </button>
-
           {/* Main Categories with Subcategories */}
           {categories.map((category) => (
             <div key={category.id} className="border-t border-gray-100">
