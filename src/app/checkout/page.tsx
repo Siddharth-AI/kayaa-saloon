@@ -91,10 +91,10 @@ export default function CheckoutPage() {
 
         {/* Progress Steps */}
         <div className="mb-8 sm:mb-12">
-          <div className="flex items-center justify-between max-w-3xl mx-auto px-2">
+          <div className="flex items-center justify-center max-w-4xl mx-auto px-2">
             {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center flex-1">
-                <div className="flex flex-col items-center flex-1">
+              <div key={step.id} className="flex items-center">
+                <div className="flex flex-col items-center">
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -121,7 +121,7 @@ export default function CheckoutPage() {
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={`h-1 flex-1 mx-1 sm:mx-4 transition-all duration-300 ${
+                    className={`h-1 w-12 sm:w-20 mx-2 sm:mx-4 transition-all duration-300 ${
                       currentStep > step.id
                         ? "bg-green-500"
                         : "bg-gray-300"
