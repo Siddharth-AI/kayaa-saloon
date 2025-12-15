@@ -102,7 +102,16 @@ const CategoryDropdown = ({
     setExpandedCategories(newExpanded);
   };
 
-  const activeCategory = categories.find((cat) => cat.id === selectedCategory);
+  let activeCategory = categories.find((cat) => cat.id === selectedCategory);
+  if (!activeCategory) {
+    for (const cat of categories) {
+      const sub = cat.subcategories?.find((s) => s.id === selectedCategory);
+      if (sub) {
+        activeCategory = sub;
+        break;
+      }
+    }
+  }
 
   return (
     <div className="relative w-full" ref={dropdownRef}>

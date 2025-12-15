@@ -165,7 +165,6 @@ export const selectAllProducts = createSelector(
 export const selectFilteredProducts = (state: any): Product[] => {
   const allProducts = selectAllProducts(state)
 
-  // Return empty array if no products or state not ready
   if (!allProducts || allProducts.length === 0) {
     return []
   }
@@ -177,24 +176,11 @@ export const selectFilteredProducts = (state: any): Product[] => {
   }
 
   return allProducts.filter((product: Product) => {
-    // Category filter with null checks
     let categoryMatch = selectedCategory === 'all'
 
     if (!categoryMatch && state?.products?.categories && Array.isArray(state.products.categories)) {
-      // Check if selectedCategory is a main category
-      const mainCategoryMatch = state.products.categories.some((category: Category) =>
-        category?.id === selectedCategory &&
-        category?.subcategories &&
-        Array.isArray(category.subcategories) &&
-        category.subcategories.some((sub: Subcategory) =>
-          sub?.items &&
-          Array.isArray(sub.items) &&
-          sub.items.some((item: Product) => item?.id === product?.id)
-        )
-      )
-
-      // Check if selectedCategory is a subcategory
-      const subCategoryMatch = state.products.categories.some((category: Category) =>
+      // Check if selectedCategory is a subcategory first
+      categoryMatch = state.products.categories.some((category: Category) =>
         category?.subcategories &&
         Array.isArray(category.subcategories) &&
         category.subcategories.some((sub: Subcategory) =>
@@ -205,14 +191,24 @@ export const selectFilteredProducts = (state: any): Product[] => {
         )
       )
 
-      categoryMatch = mainCategoryMatch || subCategoryMatch
+      // If not a subcategory match, check if it's a main category
+      if (!categoryMatch) {
+        categoryMatch = state.products.categories.some((category: Category) =>
+          category?.id === selectedCategory &&
+          category?.subcategories &&
+          Array.isArray(category.subcategories) &&
+          category.subcategories.some((sub: Subcategory) =>
+            sub?.items &&
+            Array.isArray(sub.items) &&
+            sub.items.some((item: Product) => item?.id === product?.id)
+          )
+        )
+      }
     }
 
-    // Price filter with null checks
     const priceMatch = (product?.price || 0) >= (priceRange?.min || 0) &&
       (product?.price || 0) <= (priceRange?.max || 10000)
 
-    // Search filter with null checks
     const searchMatch = !searchQuery ||
       (product?.name && product.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (product?.brand && product.brand.toLowerCase().includes(searchQuery.toLowerCase()))
