@@ -153,7 +153,7 @@ export default function Services() {
     string | null
   >(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [expandedDesktopCategories, setExpandedDesktopCategories] = useState<Set<string | null>>(new Set());
+
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("shuffle");
   const servicesPerPage = 8;
@@ -513,52 +513,14 @@ export default function Services() {
                   {categories.map((cat) => (
                     <li key={cat.slug !== null && cat.slug !== undefined ? String(cat.slug) : "all"}>
                       <button
-                        className={`flex items-center justify-between w-full text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
+                        className={`w-full text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
                           selectedCategory === cat.slug
                             ? "bg-[#F28C8C] text-white shadow-md"
                             : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
                         }`}
-                        onClick={() => {
-                          setSelectedCategory(cat.slug);
-                          if (cat.subcategories && cat.subcategories.length > 0) {
-                            const newExpanded = new Set(expandedDesktopCategories);
-                            if (newExpanded.has(cat.slug)) {
-                              newExpanded.delete(cat.slug);
-                            } else {
-                              newExpanded.add(cat.slug);
-                            }
-                            setExpandedDesktopCategories(newExpanded);
-                          }
-                        }}>
+                        onClick={() => setSelectedCategory(cat.slug)}>
                         <span>{String(cat.name)}</span>
-                        {cat.subcategories && cat.subcategories.length > 0 && (
-                          <ChevronDown
-                            className={`w-4 h-4 text-gray-500 transition-transform ${
-                              expandedDesktopCategories.has(cat.slug) ? "rotate-180" : ""
-                            }`}
-                          />
-                        )}
                       </button>
-
-                      {expandedDesktopCategories.has(cat.slug) &&
-                        cat.subcategories &&
-                        cat.subcategories.length > 0 && (
-                          <ul className="bg-gray-50">
-                            {cat.subcategories.map((subcategory: any) => (
-                              <li key={subcategory.id}>
-                                <button
-                                  className={`w-full text-left px-8 py-2 text-sm transition-all duration-300 font-lato ${
-                                    selectedCategory === subcategory.id
-                                      ? "bg-[#F28C8C] text-white shadow-md"
-                                      : "bg-gray-50 text-[#666666] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
-                                  }`}
-                                  onClick={() => setSelectedCategory(subcategory.id)}>
-                                  {subcategory.name}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
                     </li>
                   ))}
                 </ul>

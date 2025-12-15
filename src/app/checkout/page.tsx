@@ -80,18 +80,18 @@ export default function CheckoutPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-playfair font-bold text-[#B11C5F] mb-4">
+          className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-playfair font-bold text-[#B11C5F] mb-2 sm:mb-4">
             Checkout
           </h1>
-          <p className="text-[#C59D5F] font-lato">
+          <p className="text-sm sm:text-base text-[#C59D5F] font-lato">
             Complete your purchase in 3 easy steps
           </p>
         </motion.div>
 
         {/* Progress Steps */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between max-w-3xl mx-auto">
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-center justify-between max-w-3xl mx-auto px-2">
             {steps.map((step, index) => (
               <div key={step.id} className="flex items-center flex-1">
                 <div className="flex flex-col items-center flex-1">
@@ -99,7 +99,7 @@ export default function CheckoutPage() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                       currentStep > step.id
                         ? "bg-green-500"
                         : currentStep === step.id
@@ -107,13 +107,13 @@ export default function CheckoutPage() {
                         : "bg-gray-300"
                     }`}>
                     {currentStep > step.id ? (
-                      <Check className="w-6 h-6 text-white" />
+                      <Check className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     ) : (
-                      <step.icon className="w-6 h-6 text-white" />
+                      <step.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     )}
                   </motion.div>
                   <span
-                    className={`mt-2 text-sm font-lato font-medium ${
+                    className={`mt-1 sm:mt-2 text-xs sm:text-sm font-lato font-medium text-center px-1 ${
                       currentStep >= step.id ? "text-[#B11C5F]" : "text-gray-400"
                     }`}>
                     {step.name}
@@ -121,7 +121,7 @@ export default function CheckoutPage() {
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={`h-1 flex-1 mx-4 transition-all duration-300 ${
+                    className={`h-1 flex-1 mx-1 sm:mx-4 transition-all duration-300 ${
                       currentStep > step.id
                         ? "bg-green-500"
                         : "bg-gray-300"

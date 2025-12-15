@@ -27,12 +27,16 @@ import shopHeader from "@/assets/shop/shop_header.jpg";
 import productImage from "@/assets/shop/product-image.png";
 import { FaAnglesLeft, FaAnglesRight } from "react-icons/fa6";
 import { IoCart } from "react-icons/io5";
-import { ProductCardSkeleton, CategorySkeleton } from "@/components/common/Skeleton";
+import {
+  ProductCardSkeleton,
+  CategorySkeleton,
+} from "@/components/common/Skeleton";
 
 // Import the new action
 import { addProductToCart } from "@/store/slices/cartSlice";
 import { toastSuccess } from "@/components/common/toastService";
 import ProductsCart from "@/components/leftPanel/ProductsCart";
+import ShopBottomCart from "./ShopBottomCart";
 interface Product {
   id: number;
   name: string;
@@ -277,14 +281,14 @@ export default function Products() {
   const createSlug = (name: string, id: number): string => {
     return `${name
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')}-${id}`;
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")}-${id}`;
   };
 
   // Navigate to product page with slug
   const handleViewProduct = (product: Product) => {
     const slug = createSlug(product.name, product.id);
-    console.log('Navigating to:', `/shop/${slug}`);
+    console.log("Navigating to:", `/shop/${slug}`);
     router.push(`/shop/${slug}`);
   };
 
@@ -378,7 +382,6 @@ export default function Products() {
 
     // console.log("Product added to cart:", product.name);
   };
-
 
   // Redux state with proper selectors
   const loading = useAppSelector(selectProductsLoading);
@@ -651,7 +654,9 @@ export default function Products() {
               <ul className=" my-1 hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
                 {loading ? (
                   <div className="space-y-2">
-                    {[...Array(6)].map((_, i) => <CategorySkeleton key={i} />)}
+                    {[...Array(6)].map((_, i) => (
+                      <CategorySkeleton key={i} />
+                    ))}
                   </div>
                 ) : (
                   [...categoryOptions].map((cat) => (
@@ -664,8 +669,13 @@ export default function Products() {
                         }`}
                         onClick={() => {
                           dispatch(setSelectedCategory(cat.id));
-                          if (cat.subcategories && cat.subcategories.length > 0) {
-                            const newExpanded = new Set(expandedDesktopCategories);
+                          if (
+                            cat.subcategories &&
+                            cat.subcategories.length > 0
+                          ) {
+                            const newExpanded = new Set(
+                              expandedDesktopCategories
+                            );
                             if (newExpanded.has(cat.id)) {
                               newExpanded.delete(cat.id);
                             } else {
@@ -678,7 +688,9 @@ export default function Products() {
                         {cat.subcategories && cat.subcategories.length > 0 && (
                           <ChevronDown
                             className={`w-4 h-4 text-gray-500 transition-transform ${
-                              expandedDesktopCategories.has(cat.id) ? "rotate-180" : ""
+                              expandedDesktopCategories.has(cat.id)
+                                ? "rotate-180"
+                                : ""
                             }`}
                           />
                         )}
@@ -719,7 +731,9 @@ export default function Products() {
               </ul>
             </div>
 
-            <ProductsCart />
+            <div className="hidden md:block">
+              <ProductsCart />
+            </div>
           </aside>
 
           {/* Right Content Area */}
@@ -785,7 +799,9 @@ export default function Products() {
               {/* Products Content */}
               {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)}
+                  {[...Array(6)].map((_, i) => (
+                    <ProductCardSkeleton key={i} />
+                  ))}
                 </div>
               ) : sortedProducts.length === 0 ? (
                 <div className="text-center py-16 bg-white rounded-2xl shadow-lg">
@@ -982,6 +998,9 @@ export default function Products() {
         </div>
       </div>
 
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
+        <ShopBottomCart />
+      </div>
     </div>
   );
 }
