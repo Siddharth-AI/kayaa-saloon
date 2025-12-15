@@ -96,7 +96,6 @@ function flyCardToCart({
   const endRect = cartIcon.getBoundingClientRect();
 
   const clonedCard = cardElement.cloneNode(true) as HTMLElement;
-
   clonedCard.style.position = "fixed";
   clonedCard.style.zIndex = "9999";
   clonedCard.style.left = `${startRect.left}px`;
@@ -108,7 +107,6 @@ function flyCardToCart({
   clonedCard.style.borderRadius = "12px";
   clonedCard.style.boxShadow = "0 8px 32px 0 rgba(242, 140, 140, 0.8)";
   clonedCard.style.transition = "all 0.8s cubic-bezier(.68,-0.55,.27,1.55)";
-
   clonedCard.style.outline = "2px solid #F28C8C";
   clonedCard.style.outlineOffset = "2px";
 
@@ -340,29 +338,19 @@ export default function Services() {
     const card = (e.target as HTMLElement).closest(
       ".service-card-animate"
     ) as HTMLElement;
+
     if (card) {
-      const img = card.querySelector("img") as HTMLImageElement;
-      if (img) {
-        card.classList.add("card-shrink");
-        setTimeout(() => card.classList.remove("card-shrink"), 200);
+      card.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        card.style.transform = "";
+      }, 200);
 
-        flyCardToCart({
-          cardElement: card,
-          onComplete: () => {
-            console.log("Card animation completed!");
-          },
-        });
-      } else {
-        card.classList.add("card-shrink");
-        setTimeout(() => card.classList.remove("card-shrink"), 200);
-
-        flyCardToCart({
-          cardElement: card,
-          onComplete: () => {
-            console.log("Card animation completed!");
-          },
-        });
-      }
+      flyCardToCart({
+        cardElement: card,
+        onComplete: () => {
+          console.log("Service flew to cart successfully!");
+        },
+      });
     }
 
     dispatch(
