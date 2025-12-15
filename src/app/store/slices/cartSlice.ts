@@ -423,9 +423,9 @@ export const syncCartOnLogin = (user: User, locationId: string): AppThunk => asy
     // console.log("📦 User cart services before merge:", userCartData.services)
     // console.log("📦 Guest cart services before merge:", guestCartData.services)
 
-    // Merge user cart + guest cart
+    // Merge user cart + guest cart (deduplicate services)
     const mergedCartData = {
-      services: [...userCartData.services, ...guestCartData.services],
+      services: mergeServices(userCartData.services, guestCartData.services),
       products: mergeProducts(userCartData.products, guestCartData.products),
       items: [...userCartData.items, ...guestCartData.items]
     }
