@@ -6,6 +6,12 @@ import { validateJSON } from '@/lib/validate';
 import { createOrderSchema } from '@/lib/schemas';
 import { CreateOrderRequest } from '@/lib/types';
 
+function generateRefNo(): string {
+  const timestamp = Date.now().toString();
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  return timestamp + random;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Get auth token from headers
@@ -14,9 +20,25 @@ export async function POST(req: NextRequest) {
       return errorHandler('Authorization token is required');
     }
 
-    // Validate request body
-    const body = await validateJSON<CreateOrderRequest>(req, createOrderSchema);
-
+    // Parse body first
+    const rawBody = await req.json();
+    
+    // Enrich body with auto-generated values
+    const enrichedBody = {
+      ...rawBody,
+      ref_no: generateRefNo(),
+      po_date: new Date().toISOString().split('T')[0],
+    };
+    
+    // Create a new request with enriched body for validation
+    const enrichedReq = new NextRequest(req, {
+      body: JSON.stringify(enrichedBody),
+    });
+    
+    // Validate enriched body
+    const body = await validateJSON<CreateOrderRequest>(enrichedReq, createOrderSchema);
+    console.log('Validated Body:', body);
+    
     // Call the service function
     const result = await createOrder(body, userToken);
 

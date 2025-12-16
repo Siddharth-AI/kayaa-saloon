@@ -23,7 +23,7 @@ export async function createOrder(
     const customer_uuid = await getCustomerUuid(token);
     console.log('Customer UUID:', customer_uuid);
     const url = `${process.env.DINGG_API_URL}/vendor/sales-order/online`;
-
+    console.log('Create Order URL:=>>>>>>>>>>>>>>>', data);
     const payload = {
       vendor_location_uuid: data.vendor_location_uuid,
       order_type: data.order_type,

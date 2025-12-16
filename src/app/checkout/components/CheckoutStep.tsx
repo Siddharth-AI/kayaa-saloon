@@ -55,18 +55,17 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       return;
     }
 
-    const poDate = new Date().toISOString().split("T")[0];
-
     const orderPayload = {
       vendor_location_uuid: selectedLocationUuid,
       order_type: orderType,
-      sales_order_date: poDate,
       billing_address_id: selectedBillingId,
       shipping_address_id: selectedShippingId,
-      products: products.map((p: any) => ({
+      items: products.map((p: any) => ({
         product_id: p.id,
         ord_qty: p.quantity,
       })),
+      total_qty: totalQty,
+      merchant_customer_id: 822,
       remark: remark || undefined,
     };
 
