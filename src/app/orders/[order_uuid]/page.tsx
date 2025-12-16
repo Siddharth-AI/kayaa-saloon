@@ -85,7 +85,7 @@ export default function OrderDetailPage() {
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | undefined) => {
     switch (status?.toLowerCase()) {
       case "open":
         return "bg-blue-100 text-blue-800";
@@ -98,7 +98,7 @@ export default function OrderDetailPage() {
     }
   };
 
-  const getPaymentStatusColor = (status: string) => {
+  const getPaymentStatusColor = (status: string | undefined) => {
     switch (status?.toLowerCase()) {
       case "is_paid":
         return "bg-green-100 text-green-800";
@@ -159,7 +159,7 @@ export default function OrderDetailPage() {
                 className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(
                   currentOrder.order_status
                 )}`}>
-                {currentOrder.order_status.toUpperCase()}
+                {(currentOrder.order_status || "unknown").toUpperCase()}
               </span>
               {paymentStatus && (
                 <span
@@ -168,7 +168,7 @@ export default function OrderDetailPage() {
                   )}`}>
                   {paymentStatus === "is_paid"
                     ? "PAID"
-                    : paymentStatus.toUpperCase()}
+                    : (paymentStatus || "unknown").toUpperCase()}
                 </span>
               )}
             </div>
@@ -181,14 +181,14 @@ export default function OrderDetailPage() {
                   Order Items
                 </h2>
                 <div className="space-y-4">
-                  {currentOrder.sales_order_items.map((item: any) => (
+                  {currentOrder.sales_order_items?.map((item: any) => (
                     <div
                       key={item.id}
                       className="flex gap-4 p-4 bg-gradient-to-r from-[#fefaf4] to-pink-50 rounded-xl">
                       <div className="w-20 h-20 bg-white rounded-lg overflow-hidden flex-shrink-0">
                         <Image
                           src={productImage}
-                          alt={item.product.name}
+                          alt={item.product?.name || "Product"}
                           width={80}
                           height={80}
                           className="w-full h-full object-cover"
@@ -196,10 +196,10 @@ export default function OrderDetailPage() {
                       </div>
                       <div className="flex-1">
                         <h3 className="font-playfair font-bold text-lg text-[#B11C5F] mb-1">
-                          {item.product.name}
+                          {item.product?.name || "N/A"}
                         </h3>
                         <p className="text-sm text-gray-600 font-lato mb-2">
-                          {item.product.product_cat_subcategory.name}
+                          {item.product?.product_cat_subcategory?.name || "N/A"}
                         </p>
                         <div className="flex items-center gap-4 text-sm">
                           <span className="text-gray-600 font-lato">
@@ -289,7 +289,7 @@ export default function OrderDetailPage() {
                   <div className="flex items-center gap-2 text-gray-600">
                     <Package className="w-4 h-4" />
                     <span className="font-lato capitalize">
-                      {currentOrder.order_type.replace("-", " ")}
+                      {(currentOrder.order_type || "unknown").replace("-", " ")}
                     </span>
                   </div>
                 </div>
@@ -304,27 +304,27 @@ export default function OrderDetailPage() {
                     <div className="flex items-center gap-2 text-gray-700">
                       <User className="w-4 h-4 text-[#F28C8C]" />
                       <span className="font-lato">
-                        {currentOrder.user.user_histories[0]?.fname}{" "}
-                        {currentOrder.user.user_histories[0]?.lname}
+                        {currentOrder.user.user_histories?.[0]?.fname}{" "}
+                        {currentOrder.user.user_histories?.[0]?.lname}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-700">
                       <Mail className="w-4 h-4 text-[#F28C8C]" />
                       <span className="font-lato">
-                        {currentOrder.user.user_histories[0]?.email}
+                        {currentOrder.user.user_histories?.[0]?.email}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-700">
                       <Phone className="w-4 h-4 text-[#F28C8C]" />
                       <span className="font-lato">
-                        {currentOrder.user.user_histories[0]?.mobile}
+                        {currentOrder.user.user_histories?.[0]?.mobile}
                       </span>
                     </div>
                   </div>
                 </div>
               )}
 
-              {currentOrder.order_status.toLowerCase() === "open" && (
+              {currentOrder.order_status?.toLowerCase() === "open" && (
                 <button
                   onClick={() => setShowCancelModal(true)}
                   className="w-full px-6 py-3 bg-red-500 text-white rounded-full font-lato font-semibold hover:bg-red-600 transition-all duration-300">

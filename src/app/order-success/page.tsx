@@ -2,10 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAppSelector, useAppDispatch } from "@/store/hook";
+import { useAppDispatch } from "@/store/hook";
 import { clearCurrentOrder } from "@/store/slices/orderSlice";
 import { motion } from "framer-motion";
-import { CheckCircle, Package, Home, ShoppingBag } from "lucide-react";
+import { CheckCircle, Package, Home, ShoppingBag, Eye } from "lucide-react";
+
+interface OrderItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 export default function OrderSuccessPage() {
   const router = useRouter();
@@ -13,9 +20,9 @@ export default function OrderSuccessPage() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const [showConfetti, setShowConfetti] = useState(true);
-  
-  // Get order data from Redux persist
-  const orderData = useAppSelector((state) => state.orders.currentOrder);
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [orderTotal, setOrderTotal] = useState(0);
+  const [orderType, setOrderType] = useState("online-delivery");
 
   useEffect(() => {
     if (!orderId) {
@@ -23,9 +30,17 @@ export default function OrderSuccessPage() {
       return;
     }
     
+    // Retrieve order data from sessionStorage
+    const items = sessionStorage.getItem('orderItems');
+    const total = sessionStorage.getItem('orderTotal');
+    const type = sessionStorage.getItem('orderType');
+    
+    if (items) setOrderItems(JSON.parse(items));
+    if (total) setOrderTotal(parseFloat(total));
+    if (type) setOrderType(type);
+    
     setTimeout(() => setShowConfetti(false), 5000);
     
-    // Clear order details after 5 minutes
     const clearTimer = setTimeout(() => {
       dispatch(clearCurrentOrder());
     }, 300000);
@@ -97,22 +112,34 @@ export default function OrderSuccessPage() {
               </div>
               <Package className="w-12 h-12 text-[#F28C8C]" />
             </div>
-            {orderData && (
-              <div className="border-t-2 border-[#F28C8C]/20 pt-4 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 font-lato">Items:</span>
-                  <span className="font-semibold text-[#B11C5F]">{orderData.sales_order_items?.length || 0} products</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600 font-lato">Delivery Type:</span>
-                  <span className="font-semibold text-[#B11C5F] capitalize">{orderData.order_type?.replace('-', ' ')}</span>
-                </div>
-                <div className="flex justify-between text-lg font-bold">
-                  <span className="text-[#B11C5F] font-playfair">Total:</span>
-                  <span className="text-[#C59D5F] font-playfair">₹{orderData.total?.toFixed(2)}</span>
-                </div>
+            
+            <div className="border-t-2 border-[#F28C8C]/20 pt-4 space-y-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600 font-lato">Items:</span>
+                <span className="font-semibold text-[#B11C5F]">{orderItems.length} product{orderItems.length !== 1 ? 's' : ''}</span>
               </div>
-            )}
+              
+              {orderItems.length > 0 && (
+                <div className="bg-white rounded-lg p-3 space-y-2">
+                  {orderItems.map((item) => (
+                    <div key={item.id} className="flex justify-between text-sm">
+                      <span className="text-gray-600">{item.name} x{item.quantity}</span>
+                      <span className="font-semibold text-[#B11C5F]">₹{(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600 font-lato">Delivery Type:</span>
+                <span className="font-semibold text-[#B11C5F] capitalize">{orderType.replace('-', ' ')}</span>
+              </div>
+              
+              <div className="flex justify-between text-lg font-bold border-t pt-2">
+                <span className="text-[#B11C5F] font-playfair">Total:</span>
+                <span className="text-[#C59D5F] font-playfair">₹{orderTotal.toFixed(2)}</span>
+              </div>
+            </div>
           </motion.div>
         )}
 
@@ -165,17 +192,28 @@ export default function OrderSuccessPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
-          className="flex flex-col sm:flex-row gap-4">
+          className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => router.push("/shop")}
             className="flex-1 py-4 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white rounded-xl font-lato font-bold hover:shadow-lg transition-all">
             Continue Shopping
           </button>
           <button
+            onClick={() => orderId && router.push(`/orders/${orderId}`)}
+            className="flex-1 py-4 border-2 border-[#F28C8C] text-[#B11C5F] rounded-xl font-lato font-semibold hover:bg-[#FFF6F8] transition-all flex items-center justify-center gap-2">
+            <Eye className="w-5 h-5" />
+            View Order
+          </button>
+          <button
+            onClick={() => router.push("/orders")}
+            className="flex-1 py-4 border-2 border-[#F28C8C] text-[#B11C5F] rounded-xl font-lato font-semibold hover:bg-[#FFF6F8] transition-all flex items-center justify-center gap-2">
+            My Orders
+          </button>
+          <button
             onClick={() => router.push("/")}
             className="flex-1 py-4 border-2 border-[#F28C8C] text-[#B11C5F] rounded-xl font-lato font-semibold hover:bg-[#FFF6F8] transition-all flex items-center justify-center gap-2">
             <Home className="w-5 h-5" />
-            Back to Home
+            Home
           </button>
         </motion.div>
       </motion.div>

@@ -76,15 +76,16 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       
       console.log('Order API Response:', result);
       
-      // Check if order was actually successful
       if (!result || (result.status === false)) {
         throw new Error(result?.message || 'Order creation failed');
       }
       
-      // Extract order ID from response (handle different response structures)
-      const orderId = result?.order_uuid || result?.data?.order_uuid || result?.id || result?.ref_no || 'unknown';
+      const orderId = result?.data?.sales_order_uuid || result?.sales_order_uuid || result?.order_uuid || result?.id || 'unknown';
       
-      // Order created successfully - data is already in Redux state via createOrder.fulfilled
+      // Store cart items in sessionStorage for success page
+      sessionStorage.setItem('orderItems', JSON.stringify(products));
+      sessionStorage.setItem('orderTotal', total.toString());
+      sessionStorage.setItem('orderType', orderType);
       
       toastSuccess("Order placed successfully!");
       dispatch(clearProducts());
@@ -94,7 +95,6 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       const errorMessage = typeof error === 'string' ? error : error?.message || "Failed to place order. Please try again.";
       setOrderError(errorMessage);
       toastError(errorMessage);
-      // Don't redirect, stay on checkout page
     }
   };
 
