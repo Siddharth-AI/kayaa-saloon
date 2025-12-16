@@ -11,6 +11,7 @@ import AddressStep from "./components/AddressStep";
 import CheckoutStep from "./components/CheckoutStep";
 import { openModal } from "@/store/slices/modalSlice";
 import { toastError } from "@/components/common/toastService";
+import { initializeCartWithAuth } from "@/store/slices/cartSlice";
 import shopHeader from "@/assets/shop/shop_header.jpg";
 
 const steps = [
@@ -24,16 +25,19 @@ export default function CheckoutPage() {
   const dispatch = useAppDispatch();
   const [currentStep, setCurrentStep] = useState(1);
   const [checkoutLocationUuid, setCheckoutLocationUuid] = useState<string | null>(null);
+  const [hasCheckedCart, setHasCheckedCart] = useState(false);
   
   const { products } = useAppSelector((state) => state.cart);
   const { user } = useAppSelector((state) => state.auth);
   const { selectedLocationUuid } = useAppSelector((state) => state.services);
+  const { isHydrated } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
     if (selectedLocationUuid && !checkoutLocationUuid) {
       setCheckoutLocationUuid(selectedLocationUuid);
+      dispatch(initializeCartWithAuth(selectedLocationUuid));
     }
-  }, [selectedLocationUuid, checkoutLocationUuid]);
+  }, [selectedLocationUuid, checkoutLocationUuid, dispatch]);
 
   useEffect(() => {
     if (checkoutLocationUuid && selectedLocationUuid && checkoutLocationUuid !== selectedLocationUuid) {
@@ -49,12 +53,17 @@ export default function CheckoutPage() {
       router.push("/");
       return;
     }
+  }, [user, router, dispatch]);
 
-    if (products.length === 0 && currentStep === 1) {
-      toastError("Your cart is empty");
-      router.push("/shop");
+  useEffect(() => {
+    if (isHydrated && !hasCheckedCart) {
+      setHasCheckedCart(true);
+      if (products.length === 0) {
+        toastError("Your cart is empty");
+        router.push("/shop");
+      }
     }
-  }, [user, products, router, dispatch, currentStep]);
+  }, [isHydrated, products.length, router, hasCheckedCart]);
 
   if (!user) {
     return (
@@ -64,7 +73,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (products.length === 0 && currentStep === 1) {
+  if (!isHydrated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FFF6F8] to-pink-50">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F28C8C]"></div>
@@ -74,8 +83,8 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-orange-50">
-      {/* Header Banner */}
-      <div className="w-full relative py-20 pl-11 pt-24 overflow-hidden group">
+      {/* Header Section */}
+      <div className="w-full relative py-28 pl-11 pt-32 overflow-hidden group">
         <div className="absolute inset-0">
           <Image
             src={shopHeader}
@@ -92,37 +101,70 @@ export default function CheckoutPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent z-[3]" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent z-[4]" />
 
-        <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <div className="absolute top-16 right-24 w-5 h-5 bg-[#FFF6F8]/30 rounded-full animate-bounce-slow blur-sm" />
+        <div className="absolute top-40 right-16 w-3 h-3 bg-[#F28C8C]/50 rounded-full animate-pulse delay-1000 blur-sm" />
+        <div className="absolute bottom-32 right-40 w-4 h-4 bg-white/20 rounded-full animate-bounce-slow delay-2000 blur-sm" />
+        <div className="absolute top-1/2 right-8 w-2 h-2 bg-[#C59D5F]/60 rounded-full animate-pulse delay-1500 blur-sm" />
+
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#FFF6F8]/60 to-transparent animate-shimmer" />
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#F28C8C]/80 to-transparent animate-shimmer delay-1000" />
+
+        <div className="absolute left-0 top-1/4 w-1 h-32 bg-gradient-to-b from-transparent via-[#FFF6F8]/40 to-transparent animate-shimmer delay-500" />
+        <div className="absolute right-0 bottom-1/4 w-1 h-24 bg-gradient-to-t from-transparent via-[#F28C8C]/50 to-transparent animate-shimmer delay-1500" />
+
+        <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out">
           <div className="relative">
             <div className="absolute -inset-6 bg-gradient-to-r from-[#FFF6F8]/10 via-white/5 to-[#F28C8C]/15 blur-2xl rounded-3xl animate-pulse-glow" />
 
-            <h1 className="text-3xl lg:text-4xl pt-6 font-playfair font-bold tracking-wide relative z-20">
+            <h1 className="text-4xl lg:text-5xl pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
               <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-sm">
                 CHECKOUT
               </span>
               <div className="absolute -bottom-1 left-0 w-0 h-1 bg-gradient-to-r from-[#FFF6F8] via-[white] to-[#FFF6F8] animate-expand-width shadow-lg" />
+              <div className="absolute -bottom-3 left-0 w-0 h-0.5 bg-gradient-to-r from-transparent via-[#C59D5F]/60 to-transparent animate-expand-width delay-500" />
             </h1>
 
-            <p className="dancing-script text-lg lg:text-xl text-[#FFF6F8] mt-3 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+            <p className="dancing-script text-xl lg:text-2xl text-[#FFF6F8] mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
               ✨ Complete your purchase securely
             </p>
+
+            <p className="font-lato text-sm text-[#FFF6F8]/80 mt-2 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase">
+              Secure Payment • Fast Delivery • 100% Satisfaction
+            </p>
+
+            <div className="absolute -top-4 -left-4 w-10 h-10 border-2 border-[#FFF6F8]/30 rounded-full animate-spin-slow" />
+            <div className="absolute -bottom-4 -right-4 w-8 h-8 border-2 border-[#F28C8C]/40 rounded-full animate-spin-slow-reverse" />
+
+            <div className="absolute top-0 left-0 w-12 h-12 border-l-2 border-t-2 border-[#FFF6F8]/20 rounded-tl-2xl animate-pulse" />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-r-2 border-b-2 border-[#F28C8C]/30 rounded-br-2xl animate-pulse delay-1000" />
           </div>
+        </div>
+
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
+          <div className="absolute top-1/5 left-1/5 w-1 h-1 bg-[#FFF6F8]/70 rounded-full animate-float" />
+          <div className="absolute top-1/4 right-1/3 w-1.5 h-1.5 bg-[#F28C8C]/60 rounded-full animate-float-delay-1" />
+          <div className="absolute bottom-1/4 left-1/2 w-1 h-1 bg-[#C59D5F]/50 rounded-full animate-float-delay-2" />
+          <div className="absolute top-2/3 right-1/5 w-1 h-1 bg-white/60 rounded-full animate-float-delay-3" />
+          <div className="absolute bottom-1/3 left-1/4 w-0.5 h-0.5 bg-[#FFF6F8]/80 rounded-full animate-float delay-2000" />
+          <div className="absolute top-1/2 right-1/2 w-1 h-1 bg-[#F28C8C]/40 rounded-full animate-float-delay-1 delay-1000" />
         </div>
 
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
-          <div className="absolute top-16 left-16 text-[#FFF6F8]/40 animate-pulse delay-1000 text-xl">
-            🛍️
+          <div className="absolute top-20 left-20 text-[#FFF6F8]/40 animate-pulse delay-1000">
+            ✨
           </div>
-          <div className="absolute top-24 right-24 text-[#F28C8C]/50 animate-bounce-slow delay-2000 text-lg">
-            💳
+          <div className="absolute top-32 right-32 text-[#F28C8C]/50 animate-bounce-slow delay-2000">
+            💫
           </div>
-          <div className="absolute bottom-32 left-32 text-white/30 animate-pulse delay-1500 text-xl">
-            ✓
+          <div className="absolute bottom-40 left-40 text-white/30 animate-pulse delay-1500">
+            ⭐
           </div>
-          <div className="absolute bottom-16 right-16 text-[#C59D5F]/40 animate-bounce-slow delay-500 text-lg">
-            🎁
+          <div className="absolute bottom-20 right-20 text-[#C59D5F]/40 animate-bounce-slow delay-500">
+            ✨
           </div>
         </div>
+
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-[#FFF6F8]/5 to-transparent z-[1] animate-pulse-slow delay-2000" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
