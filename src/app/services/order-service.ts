@@ -31,7 +31,7 @@ export async function createOrder(
       po_date: data.po_date,
       merchant_customer_id: data.merchant_customer_id,
       total_qty: data.total_qty,
-      items: data.items,
+      products: data.items,
       billing_address_id: data.billing_address_id,
       shipping_address_id: data.shipping_address_id,
       remark: data.remark || ''
