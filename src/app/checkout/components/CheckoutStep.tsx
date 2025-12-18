@@ -6,7 +6,15 @@ import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { createOrder } from "@/store/slices/orderSlice";
 import { clearProducts } from "@/store/slices/cartSlice";
 import { getPaymentCards, setSelectedCard } from "@/store/slices/paymentSlice";
-import { ArrowLeft, Check, Loader2, IndianRupee, Package, Truck, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Check,
+  Loader2,
+  IndianRupee,
+  Package,
+  Truck,
+  AlertCircle,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { toastSuccess, toastError } from "@/components/common/toastService";
 import PaymentFormModal from "@/components/payment/PaymentFormModal";
@@ -21,11 +29,20 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
 
   const { products } = useAppSelector((state) => state.cart);
   const { selectedLocationUuid } = useAppSelector((state) => state.services);
-  const { selectedBillingId, selectedShippingId, billingAddresses, shippingAddresses } = useAppSelector((state) => state.address);
+  const {
+    selectedBillingId,
+    selectedShippingId,
+    billingAddresses,
+    shippingAddresses,
+  } = useAppSelector((state) => state.address);
   const { loading } = useAppSelector((state) => state.orders);
-  const { paymentCards, selectedCardId } = useAppSelector((state) => state.payment);
+  const { paymentCards, selectedCardId } = useAppSelector(
+    (state) => state.payment
+  );
 
-  const [orderType, setOrderType] = useState<"online-delivery" | "online-pickup">("online-delivery");
+  const [orderType, setOrderType] = useState<
+    "online-delivery" | "online-pickup"
+  >("online-delivery");
   const [remark, setRemark] = useState("");
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
@@ -36,13 +53,23 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
     }
   }, [selectedLocationUuid, dispatch]);
 
-  const subtotal = products.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
+  const subtotal = products.reduce(
+    (sum: number, item: any) => sum + item.price * item.quantity,
+    0
+  );
   const tax = subtotal * 0.18;
   const total = subtotal + tax;
-  const totalQty = products.reduce((sum: number, item: any) => sum + item.quantity, 0);
+  const totalQty = products.reduce(
+    (sum: number, item: any) => sum + item.quantity,
+    0
+  );
 
-  const billingAddress = billingAddresses.find((a: any) => a.id === selectedBillingId);
-  const shippingAddress = shippingAddresses.find((a: any) => a.id === selectedShippingId);
+  const billingAddress = billingAddresses.find(
+    (a: any) => a.id === selectedBillingId
+  );
+  const shippingAddress = shippingAddresses.find(
+    (a: any) => a.id === selectedShippingId
+  );
 
   const handlePlaceOrder = async () => {
     if (!selectedCardId) {
@@ -60,39 +87,47 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       order_type: orderType,
       billing_address_id: selectedBillingId,
       shipping_address_id: selectedShippingId,
-      items: products.map((p: any) => ({
+      products: products.map((p: any) => ({
         product_id: p.id,
         ord_qty: p.quantity,
       })),
       total_qty: totalQty,
-      merchant_customer_id: 822,
+      merchant_customer_id: selectedCardId,
       remark: remark || undefined,
     };
 
     setOrderError(null);
-    
+
     try {
       const result = await dispatch(createOrder(orderPayload)).unwrap();
-      
-      console.log('Order API Response:', result);
-      
-      if (!result || (result.status === false)) {
-        throw new Error(result?.message || 'Order creation failed');
+
+      console.log("Order API Response:", result);
+
+      if (!result || result.status === false) {
+        throw new Error(result?.message || "Order creation failed");
       }
-      
-      const orderId = result?.data?.sales_order_uuid || result?.sales_order_uuid || result?.order_uuid || result?.id || 'unknown';
-      
+
+      const orderId =
+        result?.data?.sales_order_uuid ||
+        result?.sales_order_uuid ||
+        result?.order_uuid ||
+        result?.id ||
+        "unknown";
+
       // Store cart items in sessionStorage for success page
-      sessionStorage.setItem('orderItems', JSON.stringify(products));
-      sessionStorage.setItem('orderTotal', total.toString());
-      sessionStorage.setItem('orderType', orderType);
-      
+      sessionStorage.setItem("orderItems", JSON.stringify(products));
+      sessionStorage.setItem("orderTotal", total.toString());
+      sessionStorage.setItem("orderType", orderType);
+
       toastSuccess("Order placed successfully!");
       dispatch(clearProducts());
       router.push(`/order-success?orderId=${orderId}`);
     } catch (error: any) {
-      console.error('Order creation failed:', error);
-      const errorMessage = typeof error === 'string' ? error : error?.message || "Failed to place order. Please try again.";
+      console.error("Order creation failed:", error);
+      const errorMessage =
+        typeof error === "string"
+          ? error
+          : error?.message || "Failed to place order. Please try again.";
       setOrderError(errorMessage);
       toastError(errorMessage);
     }
@@ -118,7 +153,9 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
                     : "border-gray-200 hover:border-[#F28C8C]/50"
                 }`}>
                 <Truck className="w-6 h-6 mx-auto mb-2 text-[#B11C5F]" />
-                <p className="font-lato font-semibold text-[#B11C5F]">Home Delivery</p>
+                <p className="font-lato font-semibold text-[#B11C5F]">
+                  Home Delivery
+                </p>
               </button>
               <button
                 onClick={() => setOrderType("online-pickup")}
@@ -128,7 +165,9 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
                     : "border-gray-200 hover:border-[#F28C8C]/50"
                 }`}>
                 <Package className="w-6 h-6 mx-auto mb-2 text-[#B11C5F]" />
-                <p className="font-lato font-semibold text-[#B11C5F]">Store Pickup</p>
+                <p className="font-lato font-semibold text-[#B11C5F]">
+                  Store Pickup
+                </p>
               </button>
             </div>
           </div>
@@ -258,7 +297,9 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
               <div className="mb-4 p-4 bg-red-50 border-2 border-red-200 rounded-xl flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-semibold text-red-700 mb-1">Order Failed</p>
+                  <p className="text-sm font-semibold text-red-700 mb-1">
+                    Order Failed
+                  </p>
                   <p className="text-sm text-red-600">{String(orderError)}</p>
                 </div>
               </div>

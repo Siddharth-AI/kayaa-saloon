@@ -5,13 +5,15 @@ import { getAuthToken } from './authSlice';
 interface CreateOrderPayload {
   vendor_location_uuid: string;
   order_type: 'online-pickup' | 'online-delivery';
-  sales_order_date: string;
+
   billing_address_id: number;
   shipping_address_id: number;
   products: Array<{
     product_id: number;
     ord_qty: number;
   }>;
+  total_qty: number,
+  merchant_customer_id: number,
   remark?: string;
 }
 
