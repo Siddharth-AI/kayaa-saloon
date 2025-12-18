@@ -87,7 +87,7 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       order_type: orderType,
       billing_address_id: selectedBillingId,
       shipping_address_id: selectedShippingId,
-      products: products.map((p: any) => ({
+      items: products.map((p: any) => ({
         product_id: p.id,
         ord_qty: p.quantity,
       })),

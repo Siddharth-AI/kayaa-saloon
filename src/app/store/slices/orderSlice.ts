@@ -8,7 +8,7 @@ interface CreateOrderPayload {
 
   billing_address_id: number;
   shipping_address_id: number;
-  products: Array<{
+  items: Array<{
     product_id: number;
     ord_qty: number;
   }>;
