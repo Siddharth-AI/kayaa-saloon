@@ -35,8 +35,9 @@ import {
 // Import the new action
 import { addProductToCart } from "@/store/slices/cartSlice";
 import { toastSuccess } from "@/components/common/toastService";
-import ProductsCart from "@/components/leftPanel/ProductsCart";
+// import ProductsCart from "@/components/leftPanel/ProductsCart";
 import ShopBottomCart from "../ShopBottomCart";
+import ProductsBottomCart from "@/components/leftPanel/ProductsBottomCart";
 interface Product {
   id: number;
   name: string;
@@ -726,9 +727,9 @@ export default function ShopClient() {
               </ul>
             </div>
 
-            <div className="hidden md:block">
+            {/* <div className="hidden md:block">
               <ProductsCart />
-            </div>
+            </div> */}
           </aside>
 
           {/* Right Content Area */}
@@ -992,10 +993,10 @@ export default function ShopClient() {
           </div>
         </div>
       </div>
-
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
+      <ProductsBottomCart />
+      {/* <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
         <ShopBottomCart />
-      </div>
+      </div> */}
     </div>
   );
 }

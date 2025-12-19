@@ -9,7 +9,9 @@ import {
   initializeCartWithAuth,
 } from "@/store/slices/cartSlice";
 import Image, { StaticImageData } from "next/image";
-import LeftPanel from "@/components/leftPanel/LeftPanel";
+// import LeftPanel from "@/components/leftPanel/LeftPanel";
+import ServicesBottomCart from "@/components/leftPanel/ServicesBottomCart";
+
 import BookingBottomBar from "@/saloon-services/BookingBottomBar";
 import { setSelectedSlot } from "@/store/slices/uiSlice";
 import serviceImage from "@/assets/kayaa-home/Kaya-Beauty.png";
@@ -539,9 +541,9 @@ export default function Services() {
                 </ul>
               </div>
 
-              <div className="sticky top-0 hidden md:block mt-6">
+              {/* <div className="sticky top-0 hidden md:block mt-6">
                 <LeftPanel content={"summary"} />
-              </div>
+              </div> */}
             </aside>
 
             <div className="flex-1">
@@ -797,6 +799,7 @@ export default function Services() {
           </div>
         )}
       </div>
+      <ServicesBottomCart />
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
         <BookingBottomBar />
       </div>
