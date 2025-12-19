@@ -1,7 +1,7 @@
 // components/leftPanel/ServicesBottomCart.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { removeServiceFromCart } from "@/store/slices/cartSlice";
@@ -24,20 +24,16 @@ const ServicesBottomCart = () => {
   const { services: cartServices } = useAppSelector((state) => state.cart);
   const { selectedLocationByName } = useAppSelector((state) => state.services);
 
-  // Calculate totals
-  const servicesTotal = cartServices.reduce(
-    (sum: number, item: any) => sum + (item.price || 0),
-    0
-  );
+  // Reset expanded state when cart becomes empty
+  useEffect(() => {
+    if (cartServices.length === 0) {
+      setIsExpanded(false);
+    }
+  }, [cartServices.length]);
 
-  const totalDuration = cartServices.reduce(
-    (sum: number, item: any) => sum + (item.duration || 0),
-    0
-  );
-
-  // Handle remove service
-  const handleRemoveService = (serviceId: number) => {
-    dispatch(removeServiceFromCart(serviceId));
+  // Handle remove service - use index
+  const handleRemoveService = (index: number) => {
+    dispatch(removeServiceFromCart(index));
   };
 
   // Navigate to slots page
@@ -77,12 +73,6 @@ const ServicesBottomCart = () => {
                 <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
                   {cartServices.length}
                 </span>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800 text-sm md:text-base">
-                  {cartServices.length} Service
-                  {cartServices.length > 1 ? "s" : ""} Added
-                </p>
               </div>
             </div>
           </div>
@@ -136,9 +126,9 @@ const ServicesBottomCart = () => {
                   </p>
                 </div>
               ) : (
-                cartServices.map((service: any) => (
+                cartServices.map((service: any, index: number) => (
                   <div
-                    key={service.id}
+                    key={index}
                     className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between gap-3">
                       {/* Service Info */}
@@ -177,7 +167,7 @@ const ServicesBottomCart = () => {
 
                       {/* Remove Button */}
                       <button
-                        onClick={() => handleRemoveService(service.id)}
+                        onClick={() => handleRemoveService(index)}
                         className="p-2 hover:bg-red-50 rounded-lg transition-colors group"
                         title="Remove service">
                         <Trash2 className="w-4 h-4 text-gray-400 group-hover:text-red-500 transition-colors" />

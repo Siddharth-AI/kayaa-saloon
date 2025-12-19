@@ -1,7 +1,7 @@
 // components/leftPanel/ProductsBottomCart.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
@@ -30,16 +30,12 @@ const ProductsBottomCart = () => {
   const { products } = useAppSelector((state) => state.cart);
   const { selectedLocationByName } = useAppSelector((state) => state.services);
 
-  // Calculate totals
-  const productsTotal = products.reduce(
-    (sum: number, item: any) => sum + item.price * item.quantity,
-    0
-  );
-
-  const totalItems = products.reduce(
-    (sum: number, item: any) => sum + item.quantity,
-    0
-  );
+  // Reset expanded state when cart becomes empty
+  useEffect(() => {
+    if (products.length === 0) {
+      setIsExpanded(false);
+    }
+  }, [products.length]);
 
   // Handle remove product
   const handleRemoveProduct = (productId: number) => {
@@ -88,11 +84,6 @@ const ProductsBottomCart = () => {
                 <span className="absolute -top-2 -right-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
                   {products.length}
                 </span>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-800 text-sm md:text-base">
-                  Product{products.length > 1 ? "s" : ""} in Cart
-                </p>
               </div>
             </div>
           </div>
