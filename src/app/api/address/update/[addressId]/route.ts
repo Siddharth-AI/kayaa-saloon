@@ -18,7 +18,7 @@ export async function PUT(
     }
 
     // Extract addressId from the dynamic route parameter
-    const { addressId } = context.params;
+    const { addressId } = await context.params;
 
     // Validate addressId
     if (!addressId || addressId.trim() === '') {

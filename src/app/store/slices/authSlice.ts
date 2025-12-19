@@ -1009,15 +1009,16 @@ const authSlice = createSlice({
         state.user = action.payload
         state.error = null
       })
-      .addCase(getUserProfile.rejected, (state, action) => {
+      .addCase(getUserProfile.rejected, (state) => {
         state.isLoadingProfile = false
-        if (!action.payload?.includes("token") && !action.payload?.includes("session expired")) {
-          state.error = action.payload || "Failed to fetch user profile"
-        }
-        if (action.payload?.includes("token") || action.payload?.includes("session expired")) {
-          state.tempToken = null
-          removeAuthToken()
-        }
+        state.user = null
+        state.tempToken = null
+        state.otpSent = false
+        state.otpSentTo = null
+        state.otpContact = null
+        state.alreadyRegistered = false
+        state.skipProfile = false
+        removeAuthToken()
       })
 
     // Send OTP

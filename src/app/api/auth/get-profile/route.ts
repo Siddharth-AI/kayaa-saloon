@@ -5,21 +5,19 @@ import { messages } from '@/lib/messages';
 
 export async function GET(req: NextRequest) {
   try {
-    // Get authorization token from headers (exactly like your backend)
     const token = req.headers.get('authorization');
 
     if (!token) {
-      return errorHandler('Authorization token is required');
+      return errorHandler('Authorization token is required', null, 401);
     }
 
-    // Call the service function
     const result = await getProfile(token);
-
     return responseHandler(messages.user.profile_found, true, result);
   } catch (error: any) {
-    return errorHandler(
-      error.message || 'Failed to fetch profile',
-      error
-    );
+    const status = error.response?.status || 500;
+    const message = error.response?.data?.message || error.message || 'Failed to fetch profile';
+    console.log('=?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', message)
+    console.log('=?>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', status)
+    return errorHandler(message, null, status);
   }
 }

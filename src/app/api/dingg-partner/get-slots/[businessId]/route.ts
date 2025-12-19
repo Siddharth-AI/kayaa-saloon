@@ -11,7 +11,7 @@ export async function POST(
   context: any
 ) {
   try {
-    const { businessId } = context.params;
+    const { businessId } = await context.params;
 
     if (!businessId || businessId.trim() === '') {
       return errorHandler('Business ID is required');

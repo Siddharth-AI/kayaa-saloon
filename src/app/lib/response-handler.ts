@@ -11,7 +11,8 @@ interface ApiResponse {
 export function responseHandler(
   message: string,
   status: boolean = false,
-  data: any = null
+  data: any = null,
+  httpStatus: number = 200
 ): NextResponse<ApiResponse> {
   const resObject: ApiResponse = {
     status: status,
@@ -28,12 +29,10 @@ export function responseHandler(
     }
   }
 
-  // In Next.js, we always return 200 and let the status field indicate success/failure
-  // This matches your current backend pattern
-  return NextResponse.json(resObject, { status: 200 });
+  return NextResponse.json(resObject, { status: httpStatus });
 }
 
-export function errorHandler(message: string, error?: any): NextResponse<ApiResponse> {
+export function errorHandler(message: string, error?: any, httpStatus: number = 500): NextResponse<ApiResponse> {
   console.error('API Error:', error);
-  return responseHandler(message, false);
+  return responseHandler(message, false, null, httpStatus);
 }

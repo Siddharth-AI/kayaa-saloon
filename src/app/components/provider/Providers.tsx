@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/store/store";
-import { initializeAuth } from "@/store/slices/authSlice";
+import { initializeAuth, getUserProfile } from "@/store/slices/authSlice";
 import { initializeCart } from "@/store/slices/cartSlice";
 
 export const Loader = () => {
@@ -13,21 +13,25 @@ export const Loader = () => {
   );
 };
 
-// 🔹 Hydration component
 function HydrateAuth({ children }: { children: any }) {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // console.log("Providers: Starting initialization");
-
-    // Initialize auth + cart
     store.dispatch(initializeAuth());
     store.dispatch(initializeCart());
 
-    // ⏳ Force at least 2 sec loader
     const timer = setTimeout(() => {
+      const state = store.getState() as any;
+      const token = state.auth.tempToken;
+      
+      if (token) {
+        console.log("🔍 Token found, validating...");
+        store.dispatch(getUserProfile()).then((result: any) => {
+          console.log("📊 Profile validation:", result.type);
+        });
+      }
+      
       setIsHydrated(true);
-      // console.log("Providers: Initialization complete (after delay)");
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -46,7 +50,6 @@ function HydrateAuth({ children }: { children: any }) {
   );
 }
 
-// 🔹 Error boundary
 class AuthErrorBoundary extends React.Component<
   { children: any },
   { hasError: boolean }
@@ -77,7 +80,6 @@ class AuthErrorBoundary extends React.Component<
   }
 }
 
-// 🔹 Final Providers wrapper
 export default function Providers({ children }: { children: any }) {
   return (
     <Provider store={store}>
