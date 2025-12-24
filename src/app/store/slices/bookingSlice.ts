@@ -7,6 +7,7 @@ export interface BookingService {
   service_name: string
   start_time: number
   end_time: number
+  employee_id?: number
 }
 
 export interface CreateBookingPayload {
@@ -16,7 +17,16 @@ export interface CreateBookingPayload {
   booking_status: string
   merge_services_of_same_staff: boolean
   total: number
+  deposit_amount: number
   services: BookingService[]
+  policy_acceptance?: {
+    terms_accepted: boolean
+    acceptance_geo_location: {
+      latitude: number | null
+      longitude: number | null
+    }
+    acceptance_screenshot: string
+  }
 }
 
 export interface BookingResponse {
@@ -58,21 +68,29 @@ export const createBooking = createAsyncThunk<BookingResponse, CreateBookingPayl
         body: JSON.stringify(payload),
       })
 
+      // Read response body once
+      const data: any = await response.json()
+      console.log(data, "booking response data=================")
+
+      // Check if HTTP error (4xx, 5xx)
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        console.log(errorData, "error data response=================")
-        return rejectWithValue(errorData.message || `HTTP error! status: ${response.status}`)
+        const errorMessage = data.message || data.data?.message || `HTTP error! status: ${response.status}`
+        console.log("HTTP error:", errorMessage)
+        return rejectWithValue(errorMessage)
       }
 
-      const data: BookingResponse = await response.json()
-
-      if (!data.status) {
+      // Check if API returned status: false (even with 200 OK)
+      // This handles cases like: {status: false, message: "No operator available..."}
+      if (data.status === false || data.status === "false") {
         console.log(data, "booking data response with error=================-----------------------")
-        console.log("Booking creation failed:==============", data.data?.message, data.status || "Unknown error")
-        return rejectWithValue(data.data?.message || "Booking creation failed")
+        // Extract error message from response
+        const errorMessage = data.message || data.data?.message || "Booking creation failed"
+        console.log("Booking creation failed:==============", errorMessage)
+        return rejectWithValue(errorMessage)
       }
-      console.log(data, "booking data response=================")
 
+      // Success case - status is true
+      console.log(data, "booking data response (success)=================")
       return data
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : "An unknown error occurred")

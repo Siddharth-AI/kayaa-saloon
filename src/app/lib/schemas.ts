@@ -194,6 +194,7 @@ export const createBookingSchema = Joi.object({
   merchant_customer_id: Joi.number().integer().required().label('merchant_customer_id'),
   merge_services_of_same_staff: Joi.boolean().required().label('Merge Services of Same Staff'),
   total: Joi.number().positive().required().label('Total'),
+  deposit_amount: Joi.number().positive().required().label('Deposit Amount'),
   services: Joi.array().items(
     Joi.object({
       service_id: Joi.number().integer().required().label('Service ID'),
@@ -201,7 +202,15 @@ export const createBookingSchema = Joi.object({
       start_time: Joi.number().integer().required().label('Start Time'),
       end_time: Joi.number().integer().required().label('End Time')
     })
-  ).min(1).required().label('Services')
+  ).min(1).required().label('Services'),
+  policy_acceptance: Joi.object({
+    terms_accepted: Joi.boolean().required().label('Terms Accepted'),
+    acceptance_geo_location: Joi.object({
+      latitude: Joi.number().allow(null).required().label('Latitude'),
+      longitude: Joi.number().allow(null).required().label('Longitude')
+    }).required().label('Acceptance Geo Location'),
+    acceptance_screenshot: Joi.string().allow('').optional().label('Acceptance Screenshot')
+  }).optional().label('Policy Acceptance')
 });
 
 // ---------------------- get-user-booking-schema ----------------------

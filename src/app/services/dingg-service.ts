@@ -3,6 +3,75 @@ import { getValidToken, generateToken } from './token-service';
 import { CancelBookingRequest, CreateBookingRequest, GetSlotsRequest, GetUserBookingsRequest } from '../lib/types';
 import { getCustomerUuid, getHeaders } from '@/lib/user-helper';
 
+export interface CalculateBookingSummaryRequest {
+  vendor_location_uuid: string;
+  booking_date: string;
+  booking_comment?: string;
+  booking_status: string;
+  merge_services_of_same_staff: boolean;
+  services: Array<{
+    service_id: number;
+    service_name: string;
+    start_time: number;
+    end_time: number;
+    employee_id?: number;
+  }>;
+  coupon_code?: string;
+}
+
+export interface CalculateBookingSummaryResponse {
+  message: string;
+  code: number;
+  data: {
+    policy_applied: boolean;
+    policy_summary: {
+      policy_name: string;
+      customer_type: string;
+      policy_description: string;
+    };
+    financial_summary: {
+      booking: {
+        tax_total: number;
+        discount_amount: number;
+        discount_uuid: string | null;
+        discount_type: string | null;
+        discount_value: number | null;
+        service_total: number;
+        total_payable: number;
+      };
+      deposit: {
+        amount: number;
+      };
+      fees: {
+        cancellation: {
+          amount: number;
+          type: string;
+          applicable_till: number;
+          reason_required: boolean;
+        };
+        no_show: {
+          amount: number;
+          type: string;
+        };
+      };
+    };
+    policy_conditions: {
+      eligibility: {
+        min_no_show_count: number;
+        min_booking_amount: number;
+        min_wallet_balance: number;
+      };
+      customer_status: {
+        current_visits: number;
+        no_show_count: number;
+        is_member: boolean;
+      };
+    };
+    acceptance_required: boolean;
+    acceptance_message: string;
+  };
+}
+
 export async function getLocations() {
 	const url = `${process.env.DINGG_API_URL}/tech-partner/locations`;
 
@@ -155,11 +224,41 @@ export async function getSlots(businessId: string, params: GetSlotsRequest) {
 	}
 }
 
+export async function calculateBookingSummary(params: CalculateBookingSummaryRequest, userToken: string): Promise<CalculateBookingSummaryResponse> {
+	try {
+		const customerUuid = await getCustomerUuid(userToken);
+		const url = `${process.env.DINGG_API_URL}/user/calculate-summary`;
+
+		const payload = {
+			vendor_location_uuid: params.vendor_location_uuid,
+			booking_date: params.booking_date,
+			booking_comment: params.booking_comment || '',
+			booking_status: params.booking_status,
+			merge_services_of_same_staff: params.merge_services_of_same_staff,
+			services: params.services,
+			coupon_code: params.coupon_code || ''
+		};
+
+		const headers = {
+			'customer_uuid': customerUuid,
+			'vendor_location_uuid': params.vendor_location_uuid,
+			'Authorization': userToken,
+			'Content-Type': 'application/json'
+		};
+
+		const response = await axios.post(url, payload, { headers });
+		return response.data;
+	} catch (error: any) {
+		console.error("calculateBookingSummary error:", error.response?.data || error.message);
+		throw error;
+	}
+}
+
 export async function createBooking(params: CreateBookingRequest, userToken: string): Promise<any> {
 	try {
 
 		const customerUuid = await getCustomerUuid(userToken);
-
+		console.log("customerUuid", customerUuid);
 		const url = `${process.env.DINGG_API_URL}/user/booking`;
 
 		// Build payload
@@ -171,7 +270,9 @@ export async function createBooking(params: CreateBookingRequest, userToken: str
 			merchant_customer_id: params.merchant_customer_id,
 			merge_services_of_same_staff: params.merge_services_of_same_staff,
 			total: params.total,
-			services: params.services
+			deposit_amount: params.deposit_amount,
+			services: params.services,
+			...(params.policy_acceptance && { policy_acceptance: params.policy_acceptance })
 		};
 
 		// Build headers with user UUID
@@ -184,7 +285,7 @@ export async function createBooking(params: CreateBookingRequest, userToken: str
 
 		const response = await axios.post(url, payload, { headers });
 
-		// console.log("Booking created successfully:", response.data);
+		console.log("Booking response", response.data);
 		return response.data;
 	} catch (error: any) {
 		console.error("createBooking error:", error.response?.data || error.message);

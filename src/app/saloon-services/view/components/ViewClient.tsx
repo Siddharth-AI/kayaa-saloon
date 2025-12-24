@@ -13,6 +13,10 @@ import {
   type BookingService,
 } from "@/store/slices/bookingSlice";
 import {
+  calculateBookingSummary,
+  clearBookingSummary,
+} from "@/store/slices/bookingSummarySlice";
+import {
   setBookingComment,
   resetBookingComment,
   setSelectedSlot,
@@ -35,6 +39,7 @@ const View = () => {
   );
   const servicesState = useAppSelector((state) => state.services);
   const bookingState = useAppSelector((state) => state.booking);
+  const bookingSummaryState = useAppSelector((state) => state.bookingSummary);
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -44,6 +49,13 @@ const View = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponApplied, setCouponApplied] = useState(false);
+  const [showPolicyModal, setShowPolicyModal] = useState(false);
+  const [policyAccepted, setPolicyAccepted] = useState(false);
+  const [userLocation, setUserLocation] = useState<{ latitude: number | null; longitude: number | null }>({
+    latitude: null,
+    longitude: null,
+  });
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
 
   const {
     paymentCards = [],
@@ -105,6 +117,91 @@ const View = () => {
       }
     }
   }, [services, items, cart, selectedSlot, selectedDate, dispatch, router]);
+
+  // Calculate booking summary when component mounts or when cart/date/slot changes
+  useEffect(() => {
+    if (
+      cart.length === 0 ||
+      !selectedDate ||
+      !selectedSlot ||
+      !servicesState.selectedLocationUuid ||
+      (!tempToken && !user)
+    ) {
+      return;
+    }
+
+    const fetchSummary = async () => {
+      try {
+        // Prepare services data for API
+        let nextAvailableTimeInMinutes = timeSlotToMinutes(selectedSlot);
+        const servicesForAPI = cart.map((item: any) => {
+          const startTime = nextAvailableTimeInMinutes;
+          const endTime = startTime + (item.duration || 30);
+          nextAvailableTimeInMinutes = endTime;
+
+          // Get employee_id from operator - handle different possible structures
+          let employeeId: number | undefined = undefined;
+          if (item.operator) {
+            // Operator could be an object with id, or a number, or have different property names
+            if (typeof item.operator === 'object' && item.operator !== null) {
+              employeeId = item.operator.id || item.operator.operator_id || item.operator.employee_id;
+            } else if (typeof item.operator === 'number') {
+              employeeId = item.operator;
+            } else if (typeof item.operator === 'string') {
+              // Try to parse if it's a string representation of a number
+              const parsed = parseInt(item.operator, 10);
+              if (!isNaN(parsed)) {
+                employeeId = parsed;
+              }
+            }
+          }
+
+          const serviceObj: any = {
+            service_id: item.id,
+            service_name: item.name,
+            start_time: startTime,
+            end_time: endTime,
+          };
+
+          // Only include employee_id if it exists and is a valid number
+          if (employeeId && typeof employeeId === 'number' && !isNaN(employeeId)) {
+            serviceObj.employee_id = employeeId;
+            console.log(`✅ Added employee_id ${employeeId} for service ${item.name}`);
+          } else {
+            console.log(`⚠️ No employee_id found for service ${item.name}, operator:`, item.operator);
+          }
+
+          return serviceObj;
+        });
+
+        const summaryPayload = {
+          vendor_location_uuid: servicesState.selectedLocationUuid,
+          booking_date: formatDateForAPI(selectedDate),
+          booking_comment: bookingComment || "",
+          booking_status: "tentative",
+          merge_services_of_same_staff: true,
+          services: servicesForAPI,
+          coupon_code: couponCode || "",
+        };
+
+        await dispatch(calculateBookingSummary(summaryPayload));
+      } catch (error) {
+        console.error("Error calculating booking summary:", error);
+      }
+    };
+
+    fetchSummary();
+  }, [
+    cart,
+    selectedDate,
+    selectedSlot,
+    servicesState.selectedLocationUuid,
+    tempToken,
+    user,
+    bookingComment,
+    couponCode,
+    dispatch,
+  ]);
 
   useEffect(() => {
     if (
@@ -173,6 +270,14 @@ const View = () => {
     }
   }, [bookingState.loading]);
 
+  // Watch for booking errors and show toast
+  useEffect(() => {
+    if (bookingState.error) {
+      toastError(bookingState.error);
+      console.log("Booking error detected:", bookingState.error);
+    }
+  }, [bookingState.error]);
+
   // The function returned by useEffect is a "cleanup" function.
   useEffect(() => {
     // It runs when this component unmounts (e.g., when you go to another page).
@@ -198,6 +303,210 @@ const View = () => {
   const handleAccept = () => {
     setAccepted(true);
     setShowModal(false);
+  };
+
+  // Get user display name
+  const getUserDisplayName = () => {
+    if (user?.display_name && user.display_name.trim()) {
+      return user.display_name;
+    }
+    const firstName = user?.fname || "";
+    const lastName = user?.lname || "";
+    if (firstName || lastName) {
+      return `${firstName} ${lastName}`.trim();
+    }
+    if (user?.email) {
+      return user.email.split("@")[0];
+    }
+    return "User";
+  };
+
+  // Get user location
+  const getUserLocation = (): Promise<{ latitude: number | null; longitude: number | null }> => {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) {
+        console.log("Geolocation is not supported by this browser.");
+        resolve({ latitude: null, longitude: null });
+        return;
+      }
+
+      setIsGettingLocation(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setIsGettingLocation(false);
+          const location = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          setUserLocation(location);
+          resolve(location);
+        },
+        (error) => {
+          console.log("Error getting location:", error);
+          setIsGettingLocation(false);
+          const location = { latitude: null, longitude: null };
+          setUserLocation(location);
+          resolve(location);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    });
+  };
+
+  // Handle policy acceptance
+  const handlePolicyAccept = async () => {
+    console.log("Policy accepted, getting location...");
+    setPolicyAccepted(true);
+    setShowPolicyModal(false);
+    
+    // Request location permission (this will show browser permission dialog)
+    setIsGettingLocation(true);
+    const location = await getUserLocation();
+    console.log("Location received:", location);
+    setUserLocation(location);
+    setIsGettingLocation(false);
+    
+    // Now proceed with booking
+    await proceedWithBooking(location);
+  };
+
+  // Proceed with booking after policy acceptance
+  const proceedWithBooking = async (location: { latitude: number | null; longitude: number | null }) => {
+    if (!selectedCardId) {
+      toastError("Please select a payment card to proceed.");
+      return;
+    }
+
+    if (!selectedDate || !selectedSlot) {
+      toastError("Please select a date and time slot.");
+      return;
+    }
+
+    if (services.length === 0 && items.length === 0) {
+      toastError(
+        "No services selected for booking. Please add services first."
+      );
+      return;
+    }
+
+    if (cart.length === 0) {
+      toastError("Your cart is empty. Please add services before booking.");
+      return;
+    }
+
+    console.log(cart, "cart=>>>>>>>>>>>>>>data when i booking");
+
+    if (!servicesState.selectedLocationUuid) {
+      toastError("Location information is missing. Please try again.");
+      return;
+    }
+
+    if (!tempToken && !user) {
+      toastError("You must be logged in to book an appointment.");
+      dispatch(openModal("login"));
+      return;
+    }
+
+    try {
+      // 1. Set the starting point for the very first service
+      let nextAvailableTimeInMinutes = timeSlotToMinutes(selectedSlot);
+      
+      // 2. Map over the cart to create services with chained times
+      const services: BookingService[] = cart.map((item: any) => {
+        const startTime = nextAvailableTimeInMinutes;
+        const endTime = startTime + (item.duration || 30);
+
+        // 3. IMPORTANT: Update the starting time for the *next* service in the loop
+        nextAvailableTimeInMinutes = endTime;
+
+        // Get employee_id from operator - handle different possible structures
+        let employeeId: number | undefined = undefined;
+        if (item.operator) {
+          if (typeof item.operator === 'object' && item.operator !== null) {
+            employeeId = item.operator.id || item.operator.operator_id || item.operator.employee_id;
+          } else if (typeof item.operator === 'number') {
+            employeeId = item.operator;
+          } else if (typeof item.operator === 'string') {
+            const parsed = parseInt(item.operator, 10);
+            if (!isNaN(parsed)) {
+              employeeId = parsed;
+            }
+          }
+        }
+
+        const serviceObj: any = {
+          service_id: item.id,
+          service_name: item.name,
+          start_time: startTime,
+          end_time: endTime,
+        };
+
+        // Only include employee_id if it exists and is a valid number
+        if (employeeId && typeof employeeId === 'number' && !isNaN(employeeId)) {
+          serviceObj.employee_id = employeeId;
+        }
+
+        return serviceObj;
+      });
+
+      // Use booking summary data if available, otherwise calculate
+      let total = 0;
+      let depositAmount = 0;
+
+      if (bookingSummaryState.data?.financial_summary) {
+        total = bookingSummaryState.data.financial_summary.booking?.total_payable || 0;
+        depositAmount = bookingSummaryState.data.financial_summary.deposit?.amount || 0;
+      } else {
+        // Fallback calculation if summary not available
+        const serviceTotal = cart.reduce(
+          (acc: number, cur: any) => acc + (cur.price || 0),
+          0
+        );
+        const tax = 19.07;
+        total = serviceTotal + tax;
+        depositAmount = total / 2;
+      }
+
+      // Prepare booking payload with comment from Redux state and policy acceptance
+      const bookingPayload = {
+        vendor_location_uuid: servicesState.selectedLocationUuid,
+        booking_date: formatDateForAPI(selectedDate),
+        booking_comment: bookingComment || "",
+        booking_status: "tentative",
+        merchant_customer_id: selectedCardId,
+        merge_services_of_same_staff: true,
+        total: Math.round(total * 100) / 100,
+        deposit_amount: Math.round(depositAmount * 100) / 100,
+        services,
+        policy_acceptance: {
+          terms_accepted: true,
+          acceptance_geo_location: {
+            latitude: location.latitude,
+            longitude: location.longitude,
+          },
+          acceptance_screenshot: "",
+        },
+      };
+
+      // Dispatch the booking creation
+      const result = await dispatch(createBooking(bookingPayload));
+
+      // Check if booking was rejected
+      // Note: Error toast will be shown by useEffect watching bookingState.error
+      if (createBooking.rejected.match(result)) {
+        console.log("Booking failed:", result.payload);
+        return; // Exit early on error - toast will be shown by useEffect
+      }
+    } catch (error) {
+      console.log("Booking error in catch block", error);
+      toastError(
+        "We've run into a temporary glitch. Please refresh the page and try again."
+      );
+    }
   };
 
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,6 +546,7 @@ const View = () => {
   };
 
   const handleConfirmation = async () => {
+    // First check basic validations
     if (!selectedCardId) {
       toastError("Please select a payment card to proceed.");
       return;
@@ -263,8 +573,6 @@ const View = () => {
       return;
     }
 
-    console.log(cart, "cart=>>>>>>>>>>>>>>data when i booking");
-
     if (!servicesState.selectedLocationUuid) {
       toastError("Location information is missing. Please try again.");
       return;
@@ -276,94 +584,23 @@ const View = () => {
       return;
     }
 
-    try {
-      // 1. Set the starting point for the very first service
-      let nextAvailableTimeInMinutes = timeSlotToMinutes(selectedSlot);
-      // Prepare services data for API
-      // const services: BookingService[] = cart.map((item: any) => {
-      //   console.log(cart, "my timeslot=>>>>>>>>>>>>>>>>>>>>>>>>>");
-      //   console.log(cart.timeSlot, "my timeslot=>>>>>>>>>>>>>>>>>>>>>>>>>");
-      //   console.log(selectedSlot, "selectedslot=>>>>>>>>>>>>>>>>>>>>>>>>>");
-      //   const startTime = timeSlotToMinutes(selectedSlot);
-      //   const endTime = startTime + (item.duration || 30);
-
-      //   return {
-      //     service_id: item.id,
-      //     service_name: item.name,
-      //     start_time: startTime,
-      //     end_time: endTime,
-      //   };
-      // });
-
-      // 2. Map over the cart to create services with chained times
-      const services: BookingService[] = cart.map((item: any) => {
-        const startTime = nextAvailableTimeInMinutes;
-        const endTime = startTime + (item.duration || 30);
-
-        // 3. IMPORTANT: Update the starting time for the *next* service in the loop
-        nextAvailableTimeInMinutes = endTime;
-
-        return {
-          service_id: item.id,
-          service_name: item.name,
-          start_time: startTime,
-          end_time: endTime,
-        };
-      });
-
-      // Calculate total
-      const serviceTotal = cart.reduce(
-        (acc: number, cur: any) => acc + (cur.price || 0),
-        0
-      );
-      const tax = 19.07;
-      const total = serviceTotal + tax;
-
-      // Prepare booking payload with comment from Redux state
-      const bookingPayload = {
-        vendor_location_uuid: servicesState.selectedLocationUuid,
-        booking_date: formatDateForAPI(selectedDate),
-        booking_comment: bookingComment || "", // Use comment from Redux state
-        booking_status: "tentative",
-        merchant_customer_id: selectedCardId,
-        merge_services_of_same_staff: true,
-        total: Math.round(total * 100) / 100,
-        services,
-      };
-
-      // console.log("Creating booking with payload:", bookingPayload);
-
-      // Dispatch the booking creation
-      const result = await dispatch(createBooking(bookingPayload));
-      // console.log(result, "result from create booking");
-
-      if (createBooking.rejected.match(result)) {
-        // The error message is in result.payload
-        const errorMessage =
-          typeof result.payload === "string"
-            ? result.payload
-            : "An unknown booking error occurred.";
-
-        // toastError(errorMessage);
-        toastError("Booking failed: Time slot is unavailable.");
-        console.log("Booking failed:", errorMessage);
-      }
-      if (bookingState.error) {
-        toastError("Booking failed: Time slot is unavailable.");
-        // toastError(
-        //   "The selected time slot may have just become unavailable. Please try selecting a different slot or time."
-        // );
-        console.log("Booking error:", bookingState.error);
-      }
-      if (createBooking.rejected.match(result)) {
-        console.log(`Booking failed: ${result.payload}`);
-      }
-    } catch (error) {
-      console.log("Booking error in catch block", error);
-      toastError(
-        "We've run into a temporary glitch. Please refresh the page and try again."
-      );
+    // Show policy acceptance modal first (if not already accepted)
+    if (!policyAccepted) {
+      console.log("Showing policy acceptance modal");
+      setShowPolicyModal(true);
+      return;
     }
+
+    // If policy already accepted but location not fetched, get it now
+    if (policyAccepted && userLocation.latitude === null && userLocation.longitude === null) {
+      const location = await getUserLocation();
+      setUserLocation(location);
+      await proceedWithBooking(location);
+      return;
+    }
+
+    // If policy already accepted and location exists, proceed with booking
+    await proceedWithBooking(userLocation);
   };
 
   const handlePayment = () => {
@@ -882,11 +1119,24 @@ const View = () => {
                 <label
                   htmlFor="policyCheck"
                   className="text-sm text-[#444444] font-lato">
+                  I have read and accept{" "}
                   <button
+                    type="button"
                     onClick={handleOpenModal}
                     className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors">
-                    Read and accept all policies
+                    all policies
                   </button>
+                  {" "}and{" "}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowPolicyModal(true);
+                    }}
+                    className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors">
+                    cancellation policy
+                  </button>
+                  .
                 </label>
               </div>
 
@@ -984,6 +1234,7 @@ const View = () => {
           accepted={accepted}
           handleCheckboxChange={() => setAccepted(!accepted)}
           handleOpenPolicyModal={() => setShowModal(true)}
+          handleOpenCancellationPolicyModal={() => setShowPolicyModal(true)}
           handleBookAppointment={handleConfirmation}
         />
       </div>
@@ -994,6 +1245,146 @@ const View = () => {
         onClose={handleClosePaymentModal}
         merchantUuid={servicesState.selectedLocationUuid || ""}
       />
+
+      {/* Policy Acceptance Modal */}
+      {showPolicyModal && (
+        <>
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]" />
+          <div className="fixed inset-0 flex items-center justify-center z-[101] p-4">
+            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl border-2 border-[#F28C8C]/30">
+              <div className="p-6 pb-3 border-b-2 border-[#F28C8C]/20 flex items-center justify-between">
+                <h5 className="text-xl font-playfair font-bold text-[#B11C5F]">
+                  Cancellation Policy
+                </h5>
+                <button
+                  onClick={() => setShowPolicyModal(false)}
+                  className="text-gray-500 hover:text-[#B11C5F] transition-colors">
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="p-6 max-h-96 overflow-y-auto">
+                {bookingSummaryState.loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#F28C8C] border-t-transparent mr-2"></div>
+                    <span className="font-lato text-gray-600">Loading policy details...</span>
+                  </div>
+                ) : bookingSummaryState.data ? (
+                  <div className="space-y-4 text-[#444444] font-lato whitespace-pre-line">
+                    {bookingSummaryState.data.acceptance_message || (
+                      <>
+                        <p className="text-lg font-semibold">
+                          Dear {getUserDisplayName()},
+                        </p>
+
+                        {bookingSummaryState.data.financial_summary && (
+                          <>
+                            <div className="space-y-2">
+                              <p className="font-semibold text-[#B11C5F]">Services:</p>
+                              {cart.map((item: any, index: number) => {
+                                const serviceTotal = bookingSummaryState.data!.financial_summary?.booking?.service_total || 0;
+                                const taxTotal = bookingSummaryState.data!.financial_summary?.booking?.tax_total || 0;
+                                const itemPrice = item.price || 0;
+                                const itemTax = serviceTotal > 0 ? (itemPrice / serviceTotal) * taxTotal : 0;
+                                const itemTotal = itemPrice + itemTax;
+                                return (
+                                  <p key={index} className="pl-4">
+                                    {item.name}: {itemTotal.toFixed(2)} (including tax)
+                                  </p>
+                                );
+                              })}
+                            </div>
+
+                            <div className="pt-2">
+                              <p className="font-semibold">
+                                Total Booking Amount:{" "}
+                                {bookingSummaryState.data.financial_summary.booking?.total_payable?.toFixed(2) || "0.00"}{" "}
+                                (including tax)
+                              </p>
+                            </div>
+                          </>
+                        )}
+
+                        <p className="pt-4">
+                          By proceeding with the booking, you agree to the{" "}
+                          {bookingSummaryState.data.policy_summary?.policy_name || "policy"} policy which includes:
+                        </p>
+
+                        {bookingSummaryState.data.financial_summary && (
+                          <ol className="list-decimal pl-6 space-y-2">
+                            <li>
+                              Deposit Amount:{" "}
+                              {bookingSummaryState.data.financial_summary.deposit?.amount?.toFixed(2) || "0.00"}
+                            </li>
+                            <li>
+                              Cancellation Fee:{" "}
+                              {bookingSummaryState.data.financial_summary.fees?.cancellation?.amount?.toFixed(2) || "0.00"}{" "}
+                              {bookingSummaryState.data.financial_summary.fees?.cancellation?.applicable_till && (
+                                <>applicable till {bookingSummaryState.data.financial_summary.fees.cancellation.applicable_till} minutes before appointment</>
+                              )}
+                            </li>
+                            <li>
+                              No-Show Fee:{" "}
+                              {bookingSummaryState.data.financial_summary.fees?.no_show?.amount?.toFixed(2) || "0.00"}
+                            </li>
+                          </ol>
+                        )}
+
+                        {bookingSummaryState.data.financial_summary?.fees?.cancellation?.reason_required && (
+                          <p className="pt-2 text-sm text-gray-600">
+                            Please note that cancellation reason is required for cancellations.
+                          </p>
+                        )}
+                      </>
+                    )}
+                  </div>
+                ) : bookingSummaryState.error ? (
+                  <div className="text-center py-8">
+                    <p className="text-red-600 font-lato">{bookingSummaryState.error}</p>
+                    <p className="text-sm text-gray-500 mt-2">Please try again later.</p>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-600 font-lato">No policy information available.</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6 border-t-2 border-[#F28C8C]/20 bg-[#FFF6F8] flex justify-end space-x-3">
+                <button
+                  className="px-6 py-2 border-2 border-[#F28C8C]/30 rounded-xl text-[#B11C5F] hover:bg-[#F28C8C]/10 transition-colors font-lato font-medium"
+                  onClick={() => setShowPolicyModal(false)}>
+                  Cancel
+                </button>
+                <button
+                  className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={handlePolicyAccept}
+                  disabled={isGettingLocation}>
+                  {isGettingLocation ? (
+                    <div className="flex items-center justify-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white mr-2"></div>
+                      Getting Location...
+                    </div>
+                  ) : (
+                    "Accept"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

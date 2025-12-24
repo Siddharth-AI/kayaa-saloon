@@ -108,7 +108,7 @@ const Slots: React.FC = () => {
       price?: number;
       category?: string;
       tags?: string[];
-      operator?: string;
+      operator?: string | { id: number; name: string; [key: string]: any };
       selectedDate?: string;
       selectedDay?: string;
       timeSlot?: string;
@@ -263,8 +263,13 @@ const Slots: React.FC = () => {
     dispatch(setSelectedSlot(slotTime));
 
     // 2. Immediately calculate the sequential times for the cart
-    const operatorName =
-      displayOperators[selectedOperator]?.name || "No Preference";
+    const selectedOperatorObj = displayOperators[selectedOperator];
+    const operatorName = selectedOperatorObj?.name || "No Preference";
+    // Store operator object with id for later use in API calls
+    // Store operator object with id for later use in API calls (if operator is selected, not "No Preference")
+    const operatorObj = selectedOperatorObj && selectedOperatorObj.id && selectedOperator !== 0
+      ? { id: selectedOperatorObj.id, name: operatorName, ...selectedOperatorObj }
+      : operatorName;
     const currentStartTime = parseTimeStringToDate(slotTime, selectedDateObj);
 
     // NEW: Update both services and legacy items
@@ -274,7 +279,7 @@ const Slots: React.FC = () => {
 
       const updatedItem = {
         ...item,
-        operator: operatorName,
+        operator: operatorObj, // Store operator object with id for API calls
         selectedDate: selectedDateObj.toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",

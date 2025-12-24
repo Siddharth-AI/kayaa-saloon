@@ -1,10 +1,7 @@
 import { NextRequest } from 'next/server';
-import { createBooking } from '@/services/dingg-service';
+import { calculateBookingSummary } from '@/services/dingg-service';
 import { responseHandler, errorHandler } from '@/lib/response-handler';
 import { messages } from '@/lib/messages';
-import { validateJSON } from '@/lib/validate';
-import { createBookingSchema } from '@/lib/schemas';
-import { CreateBookingRequest } from '@/lib/types';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,21 +11,22 @@ export async function POST(req: NextRequest) {
       return errorHandler('Authorization token is required');
     }
 
-    // Validate request body
-    const body = await validateJSON<CreateBookingRequest>(req, createBookingSchema);
+    // Parse request body
+    const body = await req.json();
 
     // Call the service function
-    const result = await createBooking(body, userToken);
+    const result = await calculateBookingSummary(body, userToken);
 
-    return responseHandler(messages.record_created, true, result);
+    return responseHandler(messages.record_found || 'Booking summary calculated successfully', true, result);
   } catch (error: any) {
     // Handle validation errors (thrown as Response objects)
     if (error instanceof Response) return error;
 
     // Handle axios errors with full response data
-    const errorMessage = error.response?.data?.message || error.message || 'Failed to create booking';
+    const errorMessage = error.response?.data?.message || error.message || 'Failed to calculate booking summary';
     const errorData = error.response?.data || null;
 
     return errorHandler(errorMessage, errorData);
   }
 }
+

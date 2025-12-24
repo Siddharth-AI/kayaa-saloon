@@ -117,7 +117,7 @@ const ServicesCart: React.FC<ServicesCartProps> = ({ content }) => {
                         </p>
                         {service.timeSlot && service.operator ? (
                           <p className="text-xs text-[#F28C8C] font-medium">
-                            With {service.operator} at {service.timeSlot}
+                            With {typeof service.operator === 'object' && service.operator !== null ? service.operator.name : service.operator} at {service.timeSlot}
                           </p>
                         ) : (
                           <p className="text-xs text-gray-400 italic">
@@ -156,7 +156,7 @@ const ServicesCart: React.FC<ServicesCartProps> = ({ content }) => {
                         </p>
                         {item.timeSlot && item.operator ? (
                           <p className="text-xs text-[#F28C8C] font-medium">
-                            With {item.operator} at {item.timeSlot}
+                            With {typeof item.operator === 'object' && item.operator !== null ? item.operator.name : item.operator} at {item.timeSlot}
                           </p>
                         ) : (
                           <p className="text-xs text-gray-400 italic">
@@ -215,7 +215,7 @@ const ServicesCart: React.FC<ServicesCartProps> = ({ content }) => {
                       </p>
                       {service.timeSlot && service.operator ? (
                         <p className="text-xs text-[#F28C8C] mt-1 font-medium">
-                          With {service.operator} at {service.timeSlot}
+                          With {typeof service.operator === 'object' && service.operator !== null ? service.operator.name : service.operator} at {service.timeSlot}
                         </p>
                       ) : (
                         <p className="text-xs text-gray-400 mt-1 italic">

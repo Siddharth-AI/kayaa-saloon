@@ -254,12 +254,21 @@ export interface CreateBookingRequest {
   merchant_customer_id: number,
   merge_services_of_same_staff: boolean;
   total: number;
+  deposit_amount: number;
   services: Array<{
     service_id: number;
     service_name: string;
     start_time: number;
     end_time: number;
   }>;
+  policy_acceptance?: {
+    terms_accepted: boolean;
+    acceptance_geo_location: {
+      latitude: number | null;
+      longitude: number | null;
+    };
+    acceptance_screenshot: string;
+  };
 }
 
 export interface GetUserBookingsRequest {

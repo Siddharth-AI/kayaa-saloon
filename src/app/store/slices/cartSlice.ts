@@ -12,7 +12,7 @@ export interface ServiceCartItem {
   price: number
   category: string
   tags: string[]
-  operator?: string
+  operator?: string | { id: number; name: string; [key: string]: any }
   selectedDate?: string
   selectedDay?: string
   timeSlot?: string
@@ -43,7 +43,7 @@ export interface CartItem {
   price: number
   category: string
   tags: string[]
-  operator?: string
+  operator?: string | { id: number; name: string; [key: string]: any }
   selectedDate?: string
   selectedDay?: string
   timeSlot?: string

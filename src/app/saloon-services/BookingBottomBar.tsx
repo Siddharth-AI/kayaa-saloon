@@ -16,7 +16,8 @@ interface BookingBottomBarProps {
   accepted?: boolean;
   handleCheckboxChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleOpenPolicyModal?: () => void;
-  handleBookAppointment?: () => void;
+  handleOpenCancellationPolicyModal?: () => void;
+  handleBookAppointment?: () => void | Promise<void>;
 }
 
 // --- MAIN COMPONENT ---
@@ -24,6 +25,7 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
   accepted,
   handleCheckboxChange,
   handleOpenPolicyModal,
+  handleOpenCancellationPolicyModal,
   handleBookAppointment,
 }) => {
   const router = useRouter();
@@ -165,49 +167,63 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
 
   const renderViewContent = () => (
     <div>
-      <div className="flex items-start space-x-3 mb-4">
+      <div className="flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4">
         <input
           type="checkbox"
           id="policyCheck"
           checked={accepted}
           onChange={handleCheckboxChange}
-          className="mt-1 w-4 h-4 accent-[#B11C5F] bg-white border-[#F28C8C]/30 rounded focus:ring-[#B11C5F] focus:ring-2"
+          className="mt-0.5 sm:mt-1 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 accent-[#B11C5F] bg-white border-[#F28C8C]/30 rounded focus:ring-[#B11C5F] focus:ring-2"
         />
         <label
           htmlFor="policyCheck"
-          className="text-sm text-[#444444] font-lato">
-          I have read and accept{" "}
+          className="text-[10px] xs:text-xs sm:text-sm text-[#444444] font-lato leading-tight sm:leading-relaxed flex-1">
+          <span className="inline">I have read and accept{" "}</span>
           <button
+            type="button"
             onClick={handleOpenPolicyModal}
-            className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors font-semibold">
+            className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors font-semibold inline break-words">
             all policies
+          </button>
+          {" "}
+          <span className="inline">and{" "}</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              if (handleOpenCancellationPolicyModal) {
+                handleOpenCancellationPolicyModal();
+              }
+            }}
+            className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors font-semibold inline break-words">
+            cancellation policy
           </button>
           .
         </label>
       </div>
       <button
-        className={`w-full py-2 rounded-2xl font-lato font-bold sm:text-lg transition-all duration-300 ${
+        className={`w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-lato font-bold text-sm sm:text-base md:text-lg transition-all duration-300 ${
           accepted && !bookingState.loading
-            ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] hover:scale-105"
+            ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] active:scale-95 sm:hover:scale-105"
             : "bg-gray-200 text-gray-500 cursor-not-allowed"
         }`}
         disabled={!accepted || bookingState.loading}
         onClick={handleBookAppointment}>
         {bookingState.loading ? (
           <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white mr-2"></div>
-            Creating Booking...
+            <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-2 border-white/30 border-t-white mr-2"></div>
+            <span className="text-xs sm:text-sm md:text-base">Creating Booking...</span>
           </div>
         ) : (
-          "Book Appointment"
+          <span className="text-xs sm:text-sm md:text-base">Book Appointment</span>
         )}
       </button>
     </div>
   );
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 w-full p-2 sm:p-4 bg-gradient-to-t from-[#B11C5F]/80 via-[#F28C8C]/60 to-transparent z-30 md:hidden">
-      <div className="max-w-3xl mx-auto bg-white/95 backdrop-blur-sm border-2 border-[#F28C8C]/30 rounded-2xl shadow-2xl p-4 transition-all duration-300">
+    <div className="sticky bottom-0 left-0 right-0 w-full p-2 sm:p-3 md:p-4 bg-gradient-to-t from-[#B11C5F]/80 via-[#F28C8C]/60 to-transparent z-30 md:hidden">
+      <div className="max-w-3xl mx-auto bg-white/95 backdrop-blur-sm border-2 border-[#F28C8C]/30 rounded-xl sm:rounded-2xl shadow-2xl p-3 sm:p-4 transition-all duration-300">
         {pageType === "saloon-services" && renderServicesContent()}
         {pageType === "slots" && renderSlotsContent()}
         {pageType === "view" && renderViewContent()}

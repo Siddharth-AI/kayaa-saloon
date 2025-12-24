@@ -156,7 +156,7 @@ const ServicesBottomCart = () => {
                         {/* Time Slot Info (if available) */}
                         {service.operator && service.timeSlot ? (
                           <p className="text-xs text-green-600 mt-2">
-                            ✓ With {service.operator} at {service.timeSlot}
+                            ✓ With {typeof service.operator === 'object' && service.operator !== null ? service.operator.name : service.operator} at {service.timeSlot}
                           </p>
                         ) : (
                           <p className="text-xs text-amber-600 mt-2">

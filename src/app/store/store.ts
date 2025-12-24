@@ -8,6 +8,7 @@ import locationsReducer from "./slices/locationsSlice"
 import businessHoursReducer from "./slices/businessHoursSlice"
 import timeSlotsReducer from "./slices/timeSlotsSlice"
 import bookingReducer from "./slices/bookingSlice"
+import bookingSummaryReducer from "./slices/bookingSummarySlice"
 import appointmentsReducer from "./slices/appointmentsSlice";
 import changePasswordReducer from "./slices/changePasswordSlice"
 import { persistReducer, persistStore } from "redux-persist"
@@ -23,7 +24,7 @@ import ordersReducer from './slices/orderSlice';
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["cart", "auth", "products", "address", "order"], // add slices you want to persist
+  whitelist: ["cart", "auth", "products", "address", "order", "bookingSummary"], // add slices you want to persist
 }
 
 const rootReducer = {
@@ -37,6 +38,7 @@ const rootReducer = {
   businessHours: businessHoursReducer,
   timeSlots: timeSlotsReducer,
   booking: bookingReducer,
+  bookingSummary: bookingSummaryReducer,
   changePassword: changePasswordReducer,
   modal: modalReducer,
   cancelBooking: cancelBookingReducer,
