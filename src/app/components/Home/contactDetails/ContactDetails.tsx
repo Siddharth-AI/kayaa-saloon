@@ -23,10 +23,61 @@ interface ContactDetailsProps {
 
 const ContactDetails: React.FC<ContactDetailsProps> = ({ bookButton }) => {
   const Router = useRouter();
-  const { selectedLocationByName } = useAppSelector((state) => state.services);
+  const { selectedLocationByName, selectedLocationUuid } = useAppSelector((state) => state.services);
+  const { currentBusinessInfo, locations } = useAppSelector((state) => state.locations);
   const { hours, loading, error } = useAppSelector(
     (state) => state.businessHours
   );
+
+  // Get business name from business info, fallback to default
+  const businessName = currentBusinessInfo?.business_info?.name || "Kaya Beauty Salon";
+  
+  // Parse selectedLocationByName to extract location name (same logic as LeftPanel)
+  // Format: "Name (Locality)" or just "Name"
+  const parseLocationName = (locationString: string | null) => {
+    if (!locationString) return { name: '', locality: '' };
+    
+    const bracketMatch = locationString.match(/^(.+?)\s*\((.+?)\)$/);
+    if (bracketMatch) {
+      return {
+        name: bracketMatch[1].trim(),
+        locality: bracketMatch[2].trim()
+      };
+    }
+    
+    return {
+      name: locationString.trim(),
+      locality: ''
+    };
+  };
+
+  const { name: locationName } = parseLocationName(selectedLocationByName);
+  
+  // Use location name if available, otherwise use business name (same as LeftPanel)
+  const displayName = locationName || businessName;
+
+  // Get address from selected location or business info (same logic as LeftPanel)
+  const selectedLocation = locations.find(
+    (loc: any) => loc.vendor_location_uuid === selectedLocationUuid
+  );
+  const address = selectedLocation?.address || currentBusinessInfo?.business_info?.address || '';
+  
+  // Get phone number from business info
+  const phoneNumber = currentBusinessInfo?.business_info?.contact_number || "5712494457";
+  
+  // Generate Google Maps directions URL using address
+  const getGoogleMapsUrl = (address: string, locationName: string) => {
+    if (address && address.trim() !== '') {
+      return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+    }
+    // Fallback to location name if address not available
+    if (locationName) {
+      return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locationName)}`;
+    }
+    return '#';
+  };
+  
+  const googleMapsUrl = getGoogleMapsUrl(address, selectedLocationByName || '');
 
   const [showOpeningTimes, setShowOpeningTimes] = useState(false);
   const [isCurrentlyOpen, setIsCurrentlyOpen] = useState(false);
@@ -77,7 +128,7 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ bookButton }) => {
       <div className="card flex flex-row justify-between flex-wrap items-center gap-3 rounded-2xl p-6 bg-white/95 backdrop-blur-sm shadow-sm">
         <div className="">
           <h2 className="mb-3 text-xl font-playfair font-bold text-[#B11C5F]">
-            The Kaya Beauty Salon
+            {displayName}
           </h2>
           {/* The ref is placed here to contain both the button and the popup */}
           <div className="flex flex-col text-[#C59D5F]" ref={containerRef}>
@@ -87,20 +138,29 @@ const ContactDetails: React.FC<ContactDetailsProps> = ({ bookButton }) => {
               <span className="font-lato font-medium">
                 {selectedLocationByName || "Select a Location"}
               </span>
-              <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=${selectedLocationByName}`}
-                target="_blank"
-                className="btn flex h-[30px] w-[30px] items-center justify-center rounded-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white transition-all duration-300 hover:scale-110 hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-lg"
-                title="Location link">
-                <PiArrowBendDoubleUpRightBold className="text-[16px] text-white" />
-              </a>
+              {googleMapsUrl !== '#' && (
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn flex h-[30px] w-[30px] items-center justify-center rounded-full bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white transition-all duration-300 hover:scale-110 hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-lg"
+                  title="Get Directions">
+                  <PiArrowBendDoubleUpRightBold className="text-[16px] text-white" />
+                </a>
+              )}
             </div>
 
             {/* Telephone */}
-            <div className="mb-2 flex items-center gap-2">
-              <IoCall className="text-[#B11C5F]" />
-              <span className="font-lato font-medium">5712494457</span>
-            </div>
+            {phoneNumber && (
+              <div className="mb-2 flex items-center gap-2">
+                <IoCall className="text-[#B11C5F]" />
+                <a 
+                  href={`tel:${phoneNumber}`}
+                  className="font-lato font-medium hover:text-[#B11C5F] transition-colors">
+                  {phoneNumber}
+                </a>
+              </div>
+            )}
 
             {/* Timings */}
             <div className="flex items-center gap-2">
