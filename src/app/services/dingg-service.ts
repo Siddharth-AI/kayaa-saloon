@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { getValidToken, generateToken } from './token-service';
 import { CancelBookingRequest, CreateBookingRequest, GetSlotsRequest, GetUserBookingsRequest } from '../lib/types';
 import { getCustomerUuid, getHeaders } from '@/lib/user-helper';
 
@@ -108,12 +107,10 @@ export async function getLocations(bookingPage: string = 'stylo-hadapsar') {
 }
 
 export async function getServices(businessId: string) {
-	const token = await getValidToken();
 	const url = `${process.env.CUSTOMER_BOOKING_URL}/client/business/${businessId}/services`;
 
 	const headers = {
 		'Content-Type': 'application/json',
-		'Authorization': token
 	};
 
 	try {
@@ -123,12 +120,11 @@ export async function getServices(businessId: string) {
 		if (error.response?.status === 401) {
 			// Token might be expired or invalid — regenerate and retry once
 			console.warn("Token expired or unauthorized in getServices. Regenerating...");
-			const newToken = await generateToken();
-
+		
 			const retryResponse = await axios.get(url, {
 				headers: {
 					'Content-Type': 'application/json',
-					'Authorization': newToken,
+					
 				}
 			});
 
@@ -142,12 +138,10 @@ export async function getServices(businessId: string) {
 
 export async function getOperators(businessId: string) {
 	// Get a cached / still-valid token
-	const token = await getValidToken();
 	const url = `${process.env.CUSTOMER_BOOKING_URL}/client/business/${businessId}/operators`;
 
 	const headers = {
 		'Content-Type': 'application/json',
-		'Authorization': token
 	};
 
 	try {
@@ -158,12 +152,12 @@ export async function getOperators(businessId: string) {
 		// If token was invalid/expired, regenerate once and retry
 		if (error.response?.status === 401) {
 			console.warn("Token expired or unauthorized in getOperators. Regenerating...");
-			const newToken = await generateToken();
+		
 
 			const retryResponse = await axios.get(url, {
 				headers: {
 					'Content-Type': 'application/json',
-					'Authorization': newToken
+				
 				}
 			});
 

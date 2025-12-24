@@ -283,16 +283,6 @@ export interface CancelBookingRequest {
   id: string; // Booking ID to cancel
 }
 
-export interface CreateCustomerParams {
-  fname: string;
-  lname: string;
-  mobile: string;
-  sms_trans?: boolean;
-  sms_promo?: boolean;
-  email_trans?: boolean;
-  email_promo?: boolean;
-}
-
 export interface GetPaymentFormRequest {
   merchant_uuid: string;
 }
