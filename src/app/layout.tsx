@@ -377,7 +377,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <title>Belle Femme - The Hair Salon</title>
         {/* ===== JSON-LD STRUCTURED DATA ===== */}

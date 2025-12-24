@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { FiMapPin, FiX, FiSearch } from "react-icons/fi";
 import { LocationSelectorSkeleton, Skeleton } from "@/components/common/Skeleton";
 import { useAppSelector, useAppDispatch } from "@/store/hook";
-import { fetchLocations } from "@/store/slices/locationsSlice";
+import { fetchLocations, fetchBusinessInfoByBookingPage } from "@/store/slices/locationsSlice";
 import {
   fetchServicesByLocation,
   setSelectedLocation,
@@ -34,7 +34,8 @@ export default function LocationSelectorPanel({
   const locationPanelRef = useRef<HTMLDivElement>(null);
 
   const handleRetryFetch = () => {
-    dispatch(fetchLocations());
+    const storedBookingPage = localStorage.getItem("selectedBookingPage") || 'stylo-hadapsar';
+    dispatch(fetchLocations(storedBookingPage));
   };
 
   // keep redux/localstorage sync
@@ -45,31 +46,51 @@ export default function LocationSelectorPanel({
   }, [selectedLocationByName, selectedLocationName]);
 
   const setLocationContext = useCallback(
-    (location: any) => {
+    async (location: any) => {
       if (!location) return;
 
       const locationUuid = location.vendor_location_uuid;
-      const locationName = location.locality;
+      const locationName = location.name || location.locality;
+      const locality = location.locality || '';
+      // Format: "Name (Locality)" or just "Name" if no locality
+      const displayName = locality && locationName !== locality 
+        ? `${locationName} (${locality})` 
+        : locationName;
+      const bookingPage = location.booking_page;
 
-      setSelectedLocationName(locationName);
+      setSelectedLocationName(displayName);
+      
+      // Fetch business info for the selected location using booking_page
+      if (bookingPage) {
+        try {
+          await dispatch(fetchBusinessInfoByBookingPage(bookingPage)).unwrap();
+        } catch (error) {
+          console.error("Failed to fetch business info:", error);
+        }
+      }
+
       dispatch(fetchBusinessHours(locationUuid));
       dispatch(setSelectedLocation(locationUuid));
-      dispatch(setSelectedLocationByName(locationName));
+      dispatch(setSelectedLocationByName(displayName));
       dispatch(fetchServicesByLocation(locationUuid));
       dispatch(fetchOperatorsByLocation(locationUuid));
       dispatch(initializeCartWithAuth(locationUuid)); // Initialize cart for this location
 
-      onLocationChange?.(locationUuid, locationName);
+      onLocationChange?.(locationUuid, displayName);
 
       localStorage.setItem("selectedLocationUuid", locationUuid);
-      localStorage.setItem("selectedLocationName", locationName);
+      localStorage.setItem("selectedLocationName", displayName);
+      if (bookingPage) {
+        localStorage.setItem("selectedBookingPage", bookingPage);
+      }
     },
     [dispatch, onLocationChange]
   );
 
   useEffect(() => {
     if (locationsState.locations.length === 0) {
-      dispatch(fetchLocations());
+      const storedBookingPage = localStorage.getItem("selectedBookingPage") || 'stylo-hadapsar';
+      dispatch(fetchLocations(storedBookingPage));
     }
   }, [dispatch, locationsState.locations.length]);
 
@@ -87,6 +108,7 @@ export default function LocationSelectorPanel({
       if (!locationToSet) {
         const storedLocationUuid = localStorage.getItem("selectedLocationUuid");
         const storedLocationName = localStorage.getItem("selectedLocationName");
+        const storedBookingPage = localStorage.getItem("selectedBookingPage");
 
         if (storedLocationUuid && storedLocationName) {
           locationToSet = locationsState.locations.find(
@@ -95,6 +117,11 @@ export default function LocationSelectorPanel({
           if (locationToSet) {
             setSelectedLocationName(storedLocationName);
           }
+        }
+
+        // If still not found and we have booking_page, try to fetch locations for that booking_page
+        if (!locationToSet && storedBookingPage) {
+          dispatch(fetchLocations(storedBookingPage));
         }
       }
 
@@ -157,16 +184,19 @@ export default function LocationSelectorPanel({
     };
   }, [showLocationPanel]);
 
-  const handleLocationSelect = (location: any) => {
-    setLocationContext(location);
+  const handleLocationSelect = async (location: any) => {
+    await setLocationContext(location);
     setShowLocationPanel(false);
     setSearchTerm("");
     // dispatch(clearCart()); // Commented out - now using location-based cart storage
   };
 
-  const filteredLocations = locationsState.locations.filter((location: any) =>
-    location.locality.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredLocations = locationsState.locations.filter((location: any) => {
+    const searchLower = searchTerm.toLowerCase();
+    const name = (location.name || location.locality || '').toLowerCase();
+    const locality = (location.locality || '').toLowerCase();
+    return name.includes(searchLower) || locality.includes(searchLower);
+  });
 
   return (
     <>
@@ -250,8 +280,15 @@ export default function LocationSelectorPanel({
               ) : (
                 <div className="space-y-2">
                   {filteredLocations.map((location: any, index: any) => {
+                    const locationName = location.name || location.locality;
+                    const locality = location.locality || '';
+                    // Format: "Name (Locality)" or just "Name" if no locality or if name and locality are same
+                    const locationDisplayName = locality && locationName !== locality 
+                      ? `${locationName} (${locality})` 
+                      : locationName;
                     const isSelected =
-                      selectedLocationName === location.locality;
+                      selectedLocationName === locationDisplayName || 
+                      selectedLocationName === locationName;
                     return (
                       <button
                         key={index}
@@ -276,7 +313,7 @@ export default function LocationSelectorPanel({
                                 ? "text-[#B11C5F] font-semibold"
                                 : "text-[#444444] group-hover:text-[#B11C5F]"
                             }`}>
-                            {location.locality}
+                            {locationDisplayName}
                           </span>
                         </div>
                       </button>

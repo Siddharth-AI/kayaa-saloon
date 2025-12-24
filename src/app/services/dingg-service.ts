@@ -72,30 +72,36 @@ export interface CalculateBookingSummaryResponse {
   };
 }
 
-export async function getLocations() {
-	const url = `${process.env.DINGG_API_URL}/tech-partner/locations`;
-
-	const token = await getValidToken();
+export async function getBusinessInfo(bookingPage: string = 'stylo-hadapsar') {
+	const url = `https://qf9u42zvrh.execute-api.ap-south-1.amazonaws.com/stage/business/${bookingPage}`;
 
 	try {
 		const response = await axios.get(url, {
-			headers: getHeaders(token),
+			headers: {
+				'Content-Type': 'application/json'
+			}
 		});
 
 		return response.data;
 	} catch (error: any) {
-		// If token is expired or unauthorized, regenerate and retry
-		if (error.response?.status === 401) {
-			console.warn("Token expired or unauthorized. Regenerating...");
-			const newToken = await generateToken();
+		console.error("Error in getBusinessInfo:", error.response?.data || error.message);
+		throw error;
+	}
+}
 
-			const retryResponse = await axios.get(url, {
-				headers: getHeaders(newToken),
-			});
-
-			return retryResponse.data;
-		}
-
+export async function getLocations(bookingPage: string = 'stylo-hadapsar') {
+	try {
+		const businessInfo = await getBusinessInfo(bookingPage);
+		
+		// Extract locations array from response
+		// The API returns: { message, error, data: { locations: [...] } }
+		// We need to return: { business_locations: [...] } for the responseHandler
+		const locations = businessInfo?.data?.locations || [];
+		
+		return {
+			business_locations: locations
+		};
+	} catch (error: any) {
 		console.error("Error in getLocations:", error.response?.data || error.message);
 		throw error;
 	}
