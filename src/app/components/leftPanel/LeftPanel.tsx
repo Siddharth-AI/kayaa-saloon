@@ -17,11 +17,47 @@ interface ServicesCartProps {
 const ServicesCart: React.FC<ServicesCartProps> = ({ content }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { selectedLocationByName } = useAppSelector((state) => state.services);
+  const { selectedLocationByName, selectedLocationUuid } = useAppSelector((state) => state.services);
+  const { currentBusinessInfo, locations } = useAppSelector((state) => state.locations);
 
   // Get services cart data
   const { services, items } = useAppSelector((state) => state.cart);
   const { selectedDate } = useAppSelector((state) => state.ui);
+
+  // Get business name from business info, fallback to default
+  const businessName = currentBusinessInfo?.business_info?.name || 'Kaya Beauty Salon';
+
+  // Parse selectedLocationByName to extract location name and locality
+  // Format: "Name (Locality)" or just "Name"
+  const parseLocationName = (locationString: string | null) => {
+    if (!locationString) return { name: '', locality: '' };
+    
+    const bracketMatch = locationString.match(/^(.+?)\s*\((.+?)\)$/);
+    if (bracketMatch) {
+      return {
+        name: bracketMatch[1].trim(),
+        locality: bracketMatch[2].trim()
+      };
+    }
+    
+    return {
+      name: locationString.trim(),
+      locality: ''
+    };
+  };
+
+  const { name: locationName, locality } = parseLocationName(selectedLocationByName);
+
+  // Get address from selected location or business info
+  const selectedLocation = locations.find(
+    (loc: any) => loc.vendor_location_uuid === selectedLocationUuid
+  );
+  const address = selectedLocation?.address || currentBusinessInfo?.business_info?.address || '';
+  
+  // Debug: Uncomment to check address
+  // console.log('Selected Location:', selectedLocation);
+  // console.log('Address:', address);
+  // console.log('Business Info:', currentBusinessInfo);
 
   const dateObj =
     typeof selectedDate === "string" ? new Date(selectedDate) : selectedDate;
@@ -58,10 +94,19 @@ const ServicesCart: React.FC<ServicesCartProps> = ({ content }) => {
           </h2>
         ) : (
           <>
-            <h2 className="text-xl font-bold font-lato">Kaya Beauty Salon</h2>
-            <p className="text-sm text-white/90 mt-1">
-              {selectedLocationByName}
-            </p>
+            <h2 className="text-xl font-bold font-lato">
+              {locationName || businessName}
+            </h2>
+            {locality && (
+              <p className="text-sm text-white/90 mt-1">
+                {locality}
+              </p>
+            )}
+            {address && (
+              <p className="text-xs text-white/80 mt-1 line-clamp-2">
+                {address}
+              </p>
+            )}
           </>
         )}
       </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   FaFacebookF,
   FaInstagram,
@@ -6,8 +8,60 @@ import {
 } from "react-icons/fa";
 import { FiMapPin, FiMail, FiPhone, FiClock, FiHeart } from "react-icons/fi";
 import React from "react";
+import { useAppSelector } from "@/store/hook";
 
 const Footer: React.FC = () => {
+  const { currentBusinessInfo, locations } = useAppSelector((state) => state.locations);
+  const { selectedLocationByName, selectedLocationUuid } = useAppSelector((state) => state.services);
+  
+  // Get business name from business info, fallback to default
+  const businessName = currentBusinessInfo?.business_info?.name || "Kaya Beauty Spa";
+  
+  // Parse selectedLocationByName to extract location name (same logic as LeftPanel)
+  // Format: "Name (Locality)" or just "Name"
+  const parseLocationName = (locationString: string | null) => {
+    if (!locationString) return { name: '', locality: '' };
+    
+    const bracketMatch = locationString.match(/^(.+?)\s*\((.+?)\)$/);
+    if (bracketMatch) {
+      return {
+        name: bracketMatch[1].trim(),
+        locality: bracketMatch[2].trim()
+      };
+    }
+    
+    return {
+      name: locationString.trim(),
+      locality: ''
+    };
+  };
+
+  const { name: locationName } = parseLocationName(selectedLocationByName);
+  
+  // Use location name if available, otherwise use business name (same as LeftPanel)
+  const displayName = locationName || businessName;
+
+  // Get address from selected location or business info (same logic as LeftPanel)
+  const selectedLocation = locations.find(
+    (loc: any) => loc.vendor_location_uuid === selectedLocationUuid
+  );
+  const address = selectedLocation?.address || currentBusinessInfo?.business_info?.address || '';
+  
+  // Format address for display (split by newline or comma)
+  const addressLines = address ? address.split(/\n|, /).filter((line: string) => line.trim()) : [];
+
+  // Generate Google Maps embed URL from address (works without API key)
+  const getGoogleMapUrl = (address: string) => {
+    if (!address || address.trim() === '') {
+      return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2948.1234567890!2d-71.0975327!3d42.3875968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e370a5cb30cc5f%3A0x1234567890abcdef!2s92%20Highland%20Ave%2C%20Somerville%2C%20MA%2002143!5e0!3m2!1sen!2sus!4v1683899234567!5m2!1sen!2sus";
+    }
+    // URL encode the address and use Google Maps search embed (no API key needed)
+    const encodedAddress = encodeURIComponent(address);
+    return `https://www.google.com/maps?q=${encodedAddress}&output=embed&zoom=15`;
+  };
+
+  const googleMapUrl = getGoogleMapUrl(address);
+
   return (
     <footer className="bg-gradient-to-br from-[#FFF6F8] via-[#FFEEF2] to-[#FFF6F8] relative overflow-hidden pb-20 lg:pb-0">
       {/* Decorative Elements - Responsive */}
@@ -28,7 +82,7 @@ const Footer: React.FC = () => {
           <div className="sm:col-span-2 lg:col-span-1 space-y-4 sm:space-y-6 group text-center sm:text-left">
             <div className="transform transition-all duration-500 group-hover:scale-105">
               <h1 className="font-playfair text-2xl sm:text-3xl lg:text-4xl font-bold text-[#B11C5F] mb-2 tracking-wide">
-                Kaya Beauty Spa
+                {displayName}
               </h1>
               <p className="font-cormorant text-[#C59D5F] italic text-base sm:text-lg mb-3 sm:mb-4">
                 "Enhancing Your Beauty"
@@ -76,18 +130,23 @@ const Footer: React.FC = () => {
             </h3>
 
             <div className="space-y-3 sm:space-y-4">
-              <div className="flex items-start space-x-2 sm:space-x-3 group/contact hover:transform hover:translate-x-2 transition-all duration-300">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center shadow-sm group-hover/contact:shadow-md transition-all duration-300 flex-shrink-0 mt-0.5">
-                  <FiMapPin className="text-white text-xs sm:text-sm" />
+              {address && (
+                <div className="flex items-start space-x-2 sm:space-x-3 group/contact hover:transform hover:translate-x-2 transition-all duration-300">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center shadow-sm group-hover/contact:shadow-md transition-all duration-300 flex-shrink-0 mt-0.5">
+                    <FiMapPin className="text-white text-xs sm:text-sm" />
+                  </div>
+                  <div>
+                    <p className="font-lato text-[#444444] text-sm leading-relaxed">
+                      {addressLines.map((line: string, index: number) => (
+                        <React.Fragment key={index}>
+                          {line}
+                          {index < addressLines.length - 1 && <br />}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-lato text-[#444444] text-sm leading-relaxed">
-                    92 Highland Ave
-                    <br />
-                    Somerville, MA 02143
-                  </p>
-                </div>
-              </div>
+              )}
 
               <div className="flex items-center space-x-2 sm:space-x-3 group/contact hover:transform hover:translate-x-2 transition-all duration-300">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center shadow-sm group-hover/contact:shadow-md transition-all duration-300 flex-shrink-0">
@@ -160,20 +219,31 @@ const Footer: React.FC = () => {
               <div className="absolute -bottom-2 left-0 w-12 h-0.5 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
             </h3>
 
-            <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-500 group/map">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F28C8C]/20 to-[#C59D5F]/20 opacity-0 group-hover/map:opacity-100 transition-opacity duration-500 z-10"></div>
-              <iframe
-                title="Kaya Beauty Spa Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2948.1234567890!2d-71.0975327!3d42.3875968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e370a5cb30cc5f%3A0x1234567890abcdef!2s92%20Highland%20Ave%2C%20Somerville%2C%20MA%2002143!5e0!3m2!1sen!2sus!4v1683899234567!5m2!1sen!2sus"
-                width="100%"
-                height="200"
-                style={{ border: 0, minHeight: "180px" }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="transform group-hover/map:scale-105 transition-transform duration-700 w-full h-40 sm:h-48 lg:h-52"
-              />
-            </div>
+            {address ? (
+              <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-500 group/map">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#F28C8C]/20 to-[#C59D5F]/20 opacity-0 group-hover/map:opacity-100 transition-opacity duration-500 z-10"></div>
+                <iframe
+                  title={`${displayName} Location`}
+                  src={googleMapUrl}
+                  width="100%"
+                  height="200"
+                  style={{ border: 0, minHeight: "180px" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="transform group-hover/map:scale-105 transition-transform duration-700 w-full h-40 sm:h-48 lg:h-52"
+                />
+              </div>
+            ) : (
+              <div className="relative overflow-hidden rounded-2xl shadow-lg bg-gradient-to-br from-[#F28C8C]/10 to-[#C59D5F]/10 p-6">
+                <div className="text-center">
+                  <FiMapPin className="w-8 h-8 sm:w-10 sm:h-10 text-[#B11C5F] mx-auto mb-3" />
+                  <p className="font-lato text-[#444444] text-sm">
+                    Address not available
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -209,7 +279,7 @@ const Footer: React.FC = () => {
         <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-[#F28C8C]/20">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
             <p className="font-lato text-[#444444] text-xs sm:text-sm text-center sm:text-left">
-              &copy; {new Date().getFullYear()} Kaya Beauty Spa. All rights
+              &copy; {new Date().getFullYear()} {displayName}. All rights
               reserved.
             </p>
             <div className="flex flex-wrap justify-center sm:justify-end space-x-4 sm:space-x-6 text-xs sm:text-sm">
