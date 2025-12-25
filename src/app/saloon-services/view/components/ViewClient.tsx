@@ -67,7 +67,6 @@ const View = () => {
   const previousPayloadRef = useRef<string | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isCalculatingRef = useRef(false);
-  const isCalculatingRef = useRef(false);
 
   // Handler to select a card
   const handleSelectCard = (cardId: number) => {
