@@ -100,6 +100,17 @@ const Slots: React.FC = () => {
   const now = new Date();
   const [currentMonthIndex, setCurrentMonthIndex] = useState(now.getMonth());
   const [currentYear, setCurrentYear] = useState(now.getFullYear());
+  // State to track which time slot sections are open/closed
+  const [openSections, setOpenSections] = useState<{
+    morning: boolean;
+    afternoon: boolean;
+    evening: boolean;
+  }>({
+    morning: false, // Will be set by useEffect based on available slots
+    afternoon: false,
+    evening: false,
+  });
+  const [hasSetDefaultSection, setHasSetDefaultSection] = useState(false);
   const cart = useMemo(() => {
     interface ServiceCartItem {
       id: number | string;
@@ -257,6 +268,48 @@ const Slots: React.FC = () => {
     dispatch(clearBookingDetailsFromCart());
   }, [dispatch, selectedOperator, selectedDate, currentMonthIndex]);
 
+  // Set default open section based on available slots (priority: Morning > Evening > Afternoon)
+  useEffect(() => {
+    // Only set default once when slots are loaded and not loading
+    if (timeSlotsState.loading || hasSetDefaultSection) {
+      return;
+    }
+
+    // Check which sections have available slots
+    const morningAvailable = processedSlots.morning.filter((s: any) => s.available).length > 0;
+    const eveningAvailable = processedSlots.evening.filter((s: any) => s.available).length > 0;
+    const afternoonAvailable = processedSlots.afternoon.filter((s: any) => s.available).length > 0;
+
+    // Priority: Morning > Evening > Afternoon
+    if (morningAvailable) {
+      setOpenSections({
+        morning: true,
+        afternoon: false,
+        evening: false,
+      });
+      setHasSetDefaultSection(true);
+    } else if (eveningAvailable) {
+      setOpenSections({
+        morning: false,
+        afternoon: false,
+        evening: true,
+      });
+      setHasSetDefaultSection(true);
+    } else if (afternoonAvailable) {
+      setOpenSections({
+        morning: false,
+        afternoon: true,
+        evening: false,
+      });
+      setHasSetDefaultSection(true);
+    }
+  }, [timeSlotsState.loading, processedSlots, hasSetDefaultSection]);
+
+  // Reset hasSetDefaultSection when date changes so it can set default again
+  useEffect(() => {
+    setHasSetDefaultSection(false);
+  }, [selectedDate]);
+
   // --- NEW: A single handler for when a user clicks a time slot ---
   const handleSlotSelection = (slotTime: string) => {
     // 1. Set the selected slot in the UI (to highlight the button)
@@ -368,18 +421,81 @@ const Slots: React.FC = () => {
     handleSlotBook();
   };
 
+  // Toggle function for collapsible sections (accordion behavior - only one open at a time)
+  const toggleSection = (section: "morning" | "afternoon" | "evening") => {
+    setOpenSections((prev) => {
+      const isCurrentlyOpen = prev[section];
+      
+      // If clicking on an already open section, close it
+      if (isCurrentlyOpen) {
+        return {
+          ...prev,
+          [section]: false,
+        };
+      }
+      
+      // If clicking on a closed section, open it and close all others
+      return {
+        morning: section === "morning",
+        afternoon: section === "afternoon",
+        evening: section === "evening",
+      };
+    });
+  };
+
   function renderSlotSection(title: string, slots: any[], isLoading: boolean) {
+    const sectionKey = title.toLowerCase() as "morning" | "afternoon" | "evening";
+    const isOpen = openSections[sectionKey];
+    const availableSlots = slots.filter((s) => s.available);
+    const availableCount = availableSlots.length;
+
+    // Hide the entire section if no slots are available (and not loading)
+    // Hide if: no slots at all OR all slots are unavailable
+    if (!isLoading && (slots.length === 0 || availableCount === 0)) {
+      return null;
+    }
+
     return (
-      <div className="mb-4">
-        <h4 className="text-center font-playfair font-bold mb-3 text-[#B11C5F]">
-          {title}
-          {!isLoading && (
-            <span className="text-xs font-normal ml-2 text-[#C59D5F] font-lato">
-              ({slots.filter((s) => s.available).length} available)
-            </span>
-          )}
-        </h4>
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+      <div className="mb-4 border-2 border-[#F28C8C]/20 rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm transition-all duration-300 hover:border-[#B11C5F]/30">
+        {/* Clickable Header */}
+        <button
+          onClick={() => toggleSection(sectionKey)}
+          className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 hover:from-[#F28C8C]/20 hover:to-[#C59D5F]/20 transition-all duration-300 group">
+          <h4 className="font-playfair font-bold text-[#B11C5F] text-lg">
+            {title}
+            {!isLoading && (
+              <span className="text-xs font-normal ml-2 text-[#C59D5F] font-lato">
+                ({availableCount} available)
+              </span>
+            )}
+          </h4>
+          {/* Chevron Icon */}
+          <div
+            className={`transform transition-transform duration-300 ${
+              isOpen ? "rotate-180" : "rotate-0"
+            }`}>
+            <svg
+              className="w-5 h-5 text-[#B11C5F] group-hover:text-[#F28C8C] transition-colors"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </div>
+        </button>
+
+        {/* Collapsible Content */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            isOpen ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+          }`}>
+          <div className="p-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
           {isLoading && slots.length === 0 ? (
             <div className="col-span-full flex items-center justify-center h-20">
               <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#F28C8C]/30 border-t-[#B11C5F]"></div>
@@ -425,6 +541,8 @@ const Slots: React.FC = () => {
               );
             })
           )}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -433,7 +551,7 @@ const Slots: React.FC = () => {
   // ... The rest of your JSX return statement remains unchanged ...
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
-      <div className="w-full py-28 pl-11 pt-32 relative overflow-hidden group">
+        <div className="w-full relative py-14 pl-4 sm:pl-6 md:pl-8 lg:pl-11 pt-8 md:pt-20 lg:pt-24 xl:pt-32 overflow-hidden group">
         {/* Animated Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -478,13 +596,13 @@ const Slots: React.FC = () => {
         </div>
 
         {/* Content Container with Enhanced Animation */}
-        <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out">
-          <div className="relative">
+        <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out h-full flex items-end lg:pb-4">
+          <div className="relative w-full mt-16 md:mt-12">
             {/* Glowing Background for Title */}
             <div className="absolute -inset-6 blur-2xl rounded-3xl animate-pulse-glow" />
 
             {/* Main Title with Multiple Animations */}
-            <h1 className="text-4xl lg:text-5xl pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl pt-4 sm:pt-6 md:pt-8 lg:pt-8 xl:pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
               {/* Gradient Text Effect */}
               <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-sm">
                 SELECT A TIME & OPERATOR
@@ -498,12 +616,12 @@ const Slots: React.FC = () => {
             </h1>
 
             {/* Subtitle with Staggered Animation */}
-            <p className="dancing-script text-xl lg:text-2xl text-[#FFF6F8] mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+            <p className="dancing-script text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-[#FFF6F8] mt-2 sm:mt-3 md:mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md px-2">
               ⏰ Choose your perfect appointment slot
             </p>
 
             {/* Additional Tagline */}
-            <p className="font-lato text-sm text-[#FFF6F8]/80 mt-2 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase">
+            <p className="font-lato text-xs sm:text-xs md:text-sm lg:text-sm text-[#FFF6F8]/80 mt-1.5 sm:mt-2 md:mt-2.5 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase px-2 hidden sm:block">
               Available Times • Expert Staff • Easy Booking
             </p>
 

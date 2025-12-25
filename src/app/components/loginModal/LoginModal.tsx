@@ -98,12 +98,12 @@ export default function LoginModal({
   const [countryCode] = useState(91);
   const [showSuccessFor3Sec, setShowSuccessFor3Sec] = useState(false);
   const [fetchedUserAfterOTP, setFetchedUserAfterOTP] = useState(false);
+  const [isInitialOpen, setIsInitialOpen] = useState(true);
 
   useEffect(() => {
     if (!show) {
       return;
     }
-    console.log(error, "error occured==================");
     if (error) {
       if (screen === "password") {
         if (tab === "mobile") {
@@ -167,16 +167,26 @@ export default function LoginModal({
       dispatch(resetOTPState());
       dispatch(resetForgotPasswordState());
 
+      // Only set to password on initial modal open when screen is "login"
+      // Don't interfere if user explicitly navigated to a different screen
+      if (isInitialOpen && screen === "login") {
+        setScreen("password");
+        setIsInitialOpen(false);
+      } else if (isInitialOpen) {
+        setIsInitialOpen(false);
+      }
+
       // Prevent scrolling when modal is open
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
+      setIsInitialOpen(true); // Reset when modal closes
     }
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [show, dispatch]);
+  }, [show, dispatch]); // Removed screen and isInitialOpen from dependencies to prevent interference with user navigation
 
   // Handle successful login (when user is already registered and skip profile)
   useEffect(() => {
@@ -603,20 +613,20 @@ export default function LoginModal({
   const renderLoginScreen = () => (
     <>
       {/* Close Button - keeping original functionality */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-2 sm:mb-3">
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-all duration-300 hover:scale-110"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-all duration-300 hover:scale-110"
           onClick={onClose}>
-          <X size={18} />
+          <X size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
       </div>
 
       {/* Header with Kaya spa styling */}
-      <div className="mb-6 text-center">
-        <h3 className="font-playfair font-bold text-2xl mb-2 text-[#B11C5F]">
+      <div className="mb-4 sm:mb-6 text-center">
+        <h3 className="font-playfair font-bold text-xl sm:text-2xl mb-1 sm:mb-2 text-[#B11C5F]">
           Login or sign up
         </h3>
-        <p className="font-cormorant italic text-sm text-[#C59D5F]">
+        <p className="font-cormorant italic text-xs sm:text-sm text-[#C59D5F] px-2">
           Login or sign up using your mobile number or email address
         </p>
       </div>
@@ -626,19 +636,19 @@ export default function LoginModal({
 
       {/* Mobile/Email Input with Kaya spa theme */}
       {tab === "mobile" ? (
-        <div className="mb-5">
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+        <div className="mb-4 sm:mb-5">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Mobile Number*
           </label>
-          <div className="flex rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] focus-within:ring-2 focus-within:ring-[#F28C8C]/20 transition-all duration-300">
+          <div className="flex rounded-xl sm:rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] focus-within:ring-2 focus-within:ring-[#F28C8C]/20 transition-all duration-300">
             <button
-              className="px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-sm border-r border-[#F28C8C]/20"
+              className="px-3 sm:px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-xs sm:text-sm border-r border-[#F28C8C]/20 flex-shrink-0"
               type="button">
               +{countryCode}
             </button>
             <input
               type="tel"
-              className="flex-1 bg-transparent text-[#444444] placeholder-[#C59D5F] px-4 py-3 focus:outline-none font-lato"
+              className="flex-1 bg-transparent text-[#444444] placeholder-[#C59D5F] px-3 sm:px-4 py-2.5 sm:py-3 focus:outline-none font-lato text-sm sm:text-base min-w-0"
               placeholder="9977004451"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
@@ -646,13 +656,13 @@ export default function LoginModal({
           </div>
         </div>
       ) : (
-        <div className="mb-5">
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+        <div className="mb-4 sm:mb-5">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Email Address*
           </label>
           <input
             type="email"
-            className="w-full rounded-2xl bg-white/80 border-2 border-[#F28C8C]/30 text-[#444444] placeholder-[#C59D5F] px-4 py-3 focus:outline-none focus:border-[#B11C5F] focus:ring-2 focus:ring-[#F28C8C]/20 transition-all duration-300 font-lato"
+            className="w-full rounded-xl sm:rounded-2xl bg-white/80 border-2 border-[#F28C8C]/30 text-[#444444] placeholder-[#C59D5F] px-3 sm:px-4 py-2.5 sm:py-3 focus:outline-none focus:border-[#B11C5F] focus:ring-2 focus:ring-[#F28C8C]/20 transition-all duration-300 font-lato text-sm sm:text-base"
             placeholder="example@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -662,7 +672,7 @@ export default function LoginModal({
 
       {/* Primary Button with Kaya spa styling */}
       <button
-        className="group relative w-full py-3 mb-4 rounded-2xl bg-[#F28C8C] text-white font-lato font-semibold shadow-lg hover:shadow-xl transform  transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden"
+        className="group relative w-full py-2.5 sm:py-3 mb-3 sm:mb-4 rounded-xl sm:rounded-2xl bg-[#F28C8C] text-white font-lato font-semibold text-sm sm:text-base shadow-lg hover:shadow-xl transform  transition-all duration-300 hover:from-[#B11C5F] hover:to-[#F28C8C] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 overflow-hidden"
         onClick={handleSendOTP}
         disabled={
           isLoading ||
@@ -676,21 +686,21 @@ export default function LoginModal({
           {isLoading ? (
             <>
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              Sending...
+              <span className="text-xs sm:text-sm">Sending...</span>
             </>
           ) : (
             <>
-              <Send className="w-4 h-4 mr-2" />
-              Send Verification Code
+              <Send className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
+              <span className="text-xs sm:text-sm">Send Verification Code</span>
             </>
           )}
         </span>
       </button>
 
       {/* Divider with Kaya spa styling */}
-      <div className="flex items-center my-6">
+      <div className="flex items-center my-4 sm:my-6">
         <span className="flex-1 h-px bg-gradient-to-r from-transparent via-[#F28C8C]/30 to-transparent"></span>
-        <span className="mx-4 text-[#C59D5F] font-cormorant italic text-sm">
+        <span className="mx-3 sm:mx-4 text-[#C59D5F] font-cormorant italic text-xs sm:text-sm">
           Or
         </span>
         <span className="flex-1 h-px bg-gradient-to-r from-transparent via-[#F28C8C]/30 to-transparent"></span>
@@ -698,46 +708,46 @@ export default function LoginModal({
 
       {/* Secondary Button with Kaya spa styling */}
       <button
-        className="w-full py-3 rounded-2xl border-2 border-[#F28C8C]/30 text-[#B11C5F] font-lato font-medium hover:bg-[#FFF6F8] hover:border-[#B11C5F] transition-all duration-300"
+        className="w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border-2 border-[#F28C8C]/30 text-[#B11C5F] font-lato font-medium text-sm sm:text-base hover:bg-[#FFF6F8] hover:border-[#B11C5F] transition-all duration-300"
         onClick={() => setScreen("password")}>
-        <Lock className="w-4 h-4 inline-block mr-2" />
-        Login with password
+        <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline-block mr-1.5 sm:mr-2" />
+        <span className="text-xs sm:text-sm">Login with password</span>
       </button>
     </>
   );
 
   const renderOTPScreen = () => (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-3 sm:mb-4">
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={() => setScreen("login")}>
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={onClose}>
-          <X size={18} />
+          <X size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-center font-playfair font-bold text-2xl mb-2 text-[#B11C5F]">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-center font-playfair font-bold text-xl sm:text-2xl mb-1.5 sm:mb-2 text-[#B11C5F]">
           Verify OTP
         </h3>
-        <p className="text-center font-cormorant italic text-sm text-[#C59D5F]">
+        <p className="text-center font-cormorant italic text-xs sm:text-sm text-[#C59D5F] px-2">
           We&apos;ve sent a verification code to your{" "}
           <span className="text-[#B11C5F] font-semibold">{otpContact}</span>
         </p>
       </div>
 
-      <div className="mb-5">
-        <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+      <div className="mb-4 sm:mb-5">
+        <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
           Enter OTP*
         </label>
         <input
           type="text"
-          className="w-full rounded-2xl px-4 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 text-center tracking-widest font-lato"
+          className="w-full rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 text-center tracking-widest font-lato text-base sm:text-lg"
           placeholder="0000"
           maxLength={4}
           value={otp}
@@ -746,25 +756,25 @@ export default function LoginModal({
       </div>
 
       <button
-        className="w-full py-3 mb-4 rounded-2xl font-lato font-semibold bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-full py-2.5 sm:py-3 mb-3 sm:mb-4 rounded-xl sm:rounded-2xl font-lato font-semibold text-sm sm:text-base bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         onClick={handleVerifyOTP}
         disabled={isVerifying || otp.length !== 4}>
         {isVerifying ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Verifying...
+            <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
+            <span className="text-xs sm:text-sm">Verifying...</span>
           </>
         ) : (
-          "Verify OTP"
+          <span className="text-xs sm:text-sm">Verify OTP</span>
         )}
       </button>
 
       <div className="text-center">
         <button
-          className="text-[#C59D5F] hover:text-[#B11C5F] font-lato font-medium text-sm transition-colors duration-300 disabled:opacity-50"
+          className="text-[#C59D5F] hover:text-[#B11C5F] font-lato font-medium text-xs sm:text-sm transition-colors duration-300 disabled:opacity-50"
           onClick={handleSendOTP}
           disabled={isLoading}>
-          {isLoading ? "Sending..." : "Resend OTP"}
+          <span className="text-xs sm:text-sm">{isLoading ? "Sending..." : "Resend OTP"}</span>
         </button>
       </div>
     </>
@@ -772,41 +782,42 @@ export default function LoginModal({
 
   const renderSignupScreen = () => (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-3 sm:mb-4">
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={() => setScreen("otp")}>
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={onClose}>
-          <X size={18} />
+          <X size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-center font-playfair font-bold text-2xl mb-2 text-[#B11C5F]">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-center font-playfair font-bold text-xl sm:text-2xl mb-1.5 sm:mb-2 text-[#B11C5F]">
           Complete Your Profile
         </h3>
-        <p className="text-center font-cormorant italic text-sm text-[#C59D5F]">
+        <p className="text-center font-cormorant italic text-xs sm:text-sm text-[#C59D5F] px-2">
           Please fill in your details to create your account
         </p>
       </div>
 
-      <div className="space-y-4 mb-5">
+      <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-5">
         <div>
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Full Name*
           </label>
           <div className="relative">
             <User
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
-              size={16}
+              className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
+              size={14}
+              style={{ width: '14px', height: '14px' }}
             />
             <input
               type="text"
-              className="w-full rounded-2xl pl-10 pr-4 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato"
+              className="w-full rounded-xl sm:rounded-2xl pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato text-sm sm:text-base"
               placeholder="Enter your full name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -816,17 +827,18 @@ export default function LoginModal({
 
         {otpSentTo === "mobile" ? (
           <div>
-            <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+            <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
               Email Address*
             </label>
             <div className="relative">
               <Mail
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
-                size={16}
+                className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
+                size={14}
+                style={{ width: '14px', height: '14px' }}
               />
               <input
                 type="email"
-                className="w-full rounded-2xl pl-10 pr-4 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato"
+                className="w-full rounded-xl sm:rounded-2xl pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato text-sm sm:text-base"
                 placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -836,23 +848,24 @@ export default function LoginModal({
           </div>
         ) : (
           <div>
-            <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+            <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
               Mobile Number*
             </label>
             <div className="relative">
               <Phone
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
-                size={16}
+                className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
+                size={14}
+                style={{ width: '14px', height: '14px' }}
               />
-              <div className="flex rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
+              <div className="flex rounded-xl sm:rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
                 <button
-                  className="px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-sm border-r border-[#F28C8C]/20"
+                  className="px-3 sm:px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-xs sm:text-sm border-r border-[#F28C8C]/20 flex-shrink-0"
                   type="button">
                   +{countryCode}
                 </button>
                 <input
                   type="tel"
-                  className="flex-1 px-4 py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato"
+                  className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato text-sm sm:text-base min-w-0"
                   placeholder="9977004439"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
@@ -864,57 +877,57 @@ export default function LoginModal({
         )}
 
         <div>
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Password*
           </label>
-          <div className="flex items-center rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
+          <div className="flex items-center rounded-xl sm:rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
             <input
               type={showPassword ? "text" : "password"}
-              className="flex-1 px-4 py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato"
+              className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato text-sm sm:text-base min-w-0"
               placeholder="Create a strong password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
-              className="px-4 py-3 bg-transparent text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300"
+              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-transparent text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300 flex-shrink-0"
               type="button"
               onClick={() => setShowPassword((v) => !v)}>
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <EyeOff size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />}
             </button>
           </div>
         </div>
       </div>
 
       <button
-        className="w-full py-3 mb-4 rounded-2xl font-lato font-semibold bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-full py-2.5 sm:py-3 mb-3 sm:mb-4 rounded-xl sm:rounded-2xl font-lato font-semibold text-sm sm:text-base bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         onClick={handleCompleteSignup}
         disabled={isRegistering || !fullName || !password}>
         {isRegistering ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Creating Account...
+            <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
+            <span className="text-xs sm:text-sm">Creating Account...</span>
           </>
         ) : (
-          "Create Account"
+          <span className="text-xs sm:text-sm">Create Account</span>
         )}
       </button>
     </>
   );
 
   const renderSuccessScreen = () => (
-    <div className="text-center py-8">
-      <div className="mb-6">
-        <div className="w-16 h-16 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-          <Check className="text-white" size={32} />
+    <div className="text-center py-4 sm:py-6 md:py-8">
+      <div className="mb-4 sm:mb-6">
+        <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 animate-bounce">
+          <Check className="text-white w-6 h-6 sm:w-8 sm:h-8" />
         </div>
-        <h3 className="font-playfair font-bold text-2xl mb-2 text-[#B11C5F]">
+        <h3 className="font-playfair font-bold text-lg sm:text-xl md:text-2xl mb-1.5 sm:mb-2 text-[#B11C5F] px-2">
           {screen === "success" && isResettingPassword
             ? "Password Reset Successfully!"
             : alreadyRegistered
             ? "Welcome Back to Kaya Beauty!"
             : "Welcome to Kaya Beauty!"}
         </h3>
-        <p className="font-cormorant italic text-sm text-[#C59D5F]">
+        <p className="font-cormorant italic text-xs sm:text-sm text-[#C59D5F] px-2">
           {screen === "success" && isResettingPassword
             ? "Your password has been reset successfully. You can now login with your new password."
             : alreadyRegistered
@@ -924,25 +937,25 @@ export default function LoginModal({
       </div>
 
       {user && !isResettingPassword && (
-        <div className="bg-white/80 rounded-2xl p-4 mb-6 border border-[#F28C8C]/20">
-          <p className="font-lato font-semibold text-[#B11C5F]">
+        <div className="bg-white/80 rounded-xl sm:rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6 border border-[#F28C8C]/20 mx-2 sm:mx-0">
+          <p className="font-lato font-semibold text-sm sm:text-base text-[#B11C5F]">
             Hello,{" "}
             {user?.display_name || `${user?.fname} ${user?.lname}` || fullName}!
           </p>
-          <p className="font-cormorant italic text-sm text-[#C59D5F]">
+          <p className="font-cormorant italic text-xs sm:text-sm text-[#C59D5F]">
             You are now logged in and ready to explore
           </p>
         </div>
       )}
 
       {/* 3-second countdown indicator */}
-      {showSuccessFor3Sec && (
+      {screen === "success" && (
         <div className="mt-4">
           <div className="w-full bg-[#F28C8C]/20 rounded-full h-2 mb-2">
             <div className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] h-2 rounded-full animate-shrink"></div>
           </div>
-          <p className="font-lato text-xs text-[#C59D5F]">
-            {screen === "success" && isResettingPassword
+          <p className="font-lato text-xs sm:text-sm text-[#C59D5F]">
+            {isResettingPassword
               ? "Redirecting to login..."
               : "Redirecting in a moment..."}
           </p>
@@ -968,19 +981,19 @@ export default function LoginModal({
 
   const renderPasswordScreen = () => (
     <>
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-2 sm:mb-3">
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={onClose}>
-          <X size={18} />
+          <X size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-center font-playfair font-bold text-2xl mb-2 text-[#B11C5F]">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-center font-playfair font-bold text-xl sm:text-2xl mb-1.5 sm:mb-2 text-[#B11C5F]">
           Get Logged In!
         </h3>
-        <p className="text-center font-cormorant italic text-sm text-[#C59D5F]">
+        <p className="text-center font-cormorant italic text-xs sm:text-sm text-[#C59D5F] px-2">
           Login using your mobile number or email address
         </p>
       </div>
@@ -989,19 +1002,19 @@ export default function LoginModal({
       {renderTabs()}
 
       {tab === "mobile" ? (
-        <div className="mb-4">
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+        <div className="mb-3 sm:mb-4">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Mobile Number*
           </label>
-          <div className="flex rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
+          <div className="flex rounded-xl sm:rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
             <button
-              className="px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-sm border-r border-[#F28C8C]/20"
+              className="px-3 sm:px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-xs sm:text-sm border-r border-[#F28C8C]/20 flex-shrink-0"
               type="button">
               +{countryCode}
             </button>
             <input
               type="tel"
-              className="flex-1 px-4 py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato"
+              className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato text-sm sm:text-base min-w-0"
               placeholder="9977004451"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
@@ -1009,13 +1022,13 @@ export default function LoginModal({
           </div>
         </div>
       ) : (
-        <div className="mb-4">
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+        <div className="mb-3 sm:mb-4">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Email Address*
           </label>
           <input
             type="email"
-            className="w-full rounded-2xl px-4 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato"
+            className="w-full rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato text-sm sm:text-base"
             placeholder="example@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -1023,28 +1036,28 @@ export default function LoginModal({
         </div>
       )}
 
-      <div className="mb-5">
-        <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+      <div className="mb-4 sm:mb-5">
+        <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
           Password*
         </label>
-        <div className="flex items-center rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
+        <div className="flex items-center rounded-xl sm:rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
           <input
             type={showPassword ? "text" : "password"}
-            className="flex-1 px-4 py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato"
+            className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato text-sm sm:text-base min-w-0"
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <button
-            className="px-4 py-3 bg-transparent text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300"
+            className="px-3 sm:px-4 py-2.5 sm:py-3 bg-transparent text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300 flex-shrink-0"
             type="button"
             onClick={() => setShowPassword((v) => !v)}>
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            {showPassword ? <EyeOff size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />}
           </button>
         </div>
-        <div className="text-right mt-2">
+        <div className="text-right mt-1.5 sm:mt-2">
           <button
-            className="text-[#C59D5F] hover:text-[#B11C5F] font-lato font-medium text-sm transition-colors duration-300"
+            className="text-[#C59D5F] hover:text-[#B11C5F] font-lato font-medium text-xs sm:text-sm transition-colors duration-300"
             onClick={() => setScreen("forgot")}>
             Forgot Password?
           </button>
@@ -1052,7 +1065,7 @@ export default function LoginModal({
       </div>
 
       <button
-        className="w-full py-3 mb-4 rounded-2xl font-lato font-semibold bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-full py-2.5 sm:py-3 mb-3 sm:mb-4 rounded-xl sm:rounded-2xl font-lato font-semibold text-sm sm:text-base bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         onClick={handlePasswordLogin}
         disabled={
           isLoading ||
@@ -1062,22 +1075,22 @@ export default function LoginModal({
         }>
         {isLoading ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Logging in...
+            <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
+            <span className="text-xs sm:text-sm">Logging in...</span>
           </>
         ) : (
-          "Login"
+          <span className="text-xs sm:text-sm">Login</span>
         )}
       </button>
 
-      <div className="flex items-center my-4">
+      <div className="flex items-center my-3 sm:my-4">
         <span className="flex-1 h-px bg-[#F28C8C]/30"></span>
-        <span className="mx-3 text-[#C59D5F] font-lato text-xs">Or</span>
+        <span className="mx-2 sm:mx-3 text-[#C59D5F] font-lato text-[10px] sm:text-xs">Or</span>
         <span className="flex-1 h-px bg-[#F28C8C]/30"></span>
       </div>
 
       <button
-        className="w-full py-3 rounded-2xl font-lato font-medium border-2 border-[#F28C8C]/30 text-[#B11C5F] hover:bg-[#F28C8C]/10 hover:border-[#B11C5F] transition-all duration-300"
+        className="w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-lato font-medium text-xs sm:text-sm border-2 border-[#F28C8C]/30 text-[#B11C5F] hover:bg-[#F28C8C]/10 hover:border-[#B11C5F] transition-all duration-300"
         onClick={() => setScreen("login")}>
         Sign up or login with Verification Code
       </button>
@@ -1086,24 +1099,24 @@ export default function LoginModal({
 
   const renderForgotPasswordScreen = () => (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-3 sm:mb-4">
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={() => setScreen("password")}>
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={onClose}>
-          <X size={18} />
+          <X size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-center font-playfair font-bold text-2xl mb-2 text-[#B11C5F]">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-center font-playfair font-bold text-xl sm:text-2xl mb-1.5 sm:mb-2 text-[#B11C5F]">
           Forgot Password
         </h3>
-        <p className="text-center font-cormorant italic text-sm text-[#C59D5F]">
+        <p className="text-center font-cormorant italic text-xs sm:text-sm text-[#C59D5F] px-2">
           Please enter your registered email/mobile number to reset your
           password.
         </p>
@@ -1113,19 +1126,19 @@ export default function LoginModal({
       {renderTabs()}
 
       {tab === "mobile" ? (
-        <div className="mb-5">
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+        <div className="mb-4 sm:mb-5">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Mobile Number*
           </label>
-          <div className="flex rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
+          <div className="flex rounded-xl sm:rounded-2xl overflow-hidden bg-white/80 border-2 border-[#F28C8C]/30 focus-within:border-[#B11C5F] transition-all duration-300">
             <button
-              className="px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-sm border-r border-[#F28C8C]/20"
+              className="px-3 sm:px-4 bg-gradient-to-r from-[#F28C8C]/10 to-[#C59D5F]/10 text-[#B11C5F] font-semibold text-xs sm:text-sm border-r border-[#F28C8C]/20 flex-shrink-0"
               type="button">
               +{countryCode}
             </button>
             <input
               type="tel"
-              className="flex-1 px-4 py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato"
+              className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 bg-transparent text-[#444444] placeholder-[#C59D5F] focus:outline-none font-lato text-sm sm:text-base min-w-0"
               placeholder="9977004451"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
@@ -1133,13 +1146,13 @@ export default function LoginModal({
           </div>
         </div>
       ) : (
-        <div className="mb-5">
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+        <div className="mb-4 sm:mb-5">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Email Address*
           </label>
           <input
             type="email"
-            className="w-full rounded-2xl px-4 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato"
+            className="w-full rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato text-sm sm:text-base"
             placeholder="example@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -1148,7 +1161,7 @@ export default function LoginModal({
       )}
 
       <button
-        className="w-full py-3 mb-4 rounded-2xl font-lato font-semibold bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-full py-2.5 sm:py-3 mb-3 sm:mb-4 rounded-xl sm:rounded-2xl font-lato font-semibold text-sm sm:text-base bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         onClick={handleSendForgotPasswordOTP}
         disabled={
           isLoading ||
@@ -1157,11 +1170,11 @@ export default function LoginModal({
         }>
         {isLoading ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Sending...
+            <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
+            <span className="text-xs sm:text-sm">Sending...</span>
           </>
         ) : (
-          "Send Code"
+          <span className="text-xs sm:text-sm">Send Code</span>
         )}
       </button>
     </>
@@ -1169,24 +1182,24 @@ export default function LoginModal({
 
   const renderResetPasswordScreen = () => (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-3 sm:mb-4">
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={() => setScreen("forgot")}>
-          <ArrowLeft size={18} />
+          <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
         <button
-          className="p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
+          className="p-1.5 sm:p-2 rounded-full hover:bg-white/50 text-[#B11C5F] hover:text-[#F28C8C] transition-colors duration-300"
           onClick={onClose}>
-          <X size={18} />
+          <X size={16} className="sm:w-[18px] sm:h-[18px]" />
         </button>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-center font-playfair font-bold text-2xl mb-2 text-[#B11C5F]">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-center font-playfair font-bold text-xl sm:text-2xl mb-1.5 sm:mb-2 text-[#B11C5F]">
           Set New Password
         </h3>
-        <p className="text-center font-cormorant italic text-sm text-[#C59D5F]">
+        <p className="text-center font-cormorant italic text-xs sm:text-sm text-[#C59D5F] px-2">
           We&apos;ve sent a verification code to your{" "}
           <span className="text-[#B11C5F] font-semibold">
             {forgotPasswordContact}
@@ -1196,19 +1209,20 @@ export default function LoginModal({
 
       {/* {renderErrors()} */}
 
-      <div className="space-y-4 mb-5">
+      <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-5">
         <div>
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Verification Code*
           </label>
           <div className="relative">
             <Shield
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
-              size={16}
+              className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
+              size={14}
+              style={{ width: '14px', height: '14px' }}
             />
             <input
               type="text"
-              className="w-full rounded-2xl pl-10 pr-4 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 text-center tracking-widest font-lato"
+              className="w-full rounded-xl sm:rounded-2xl pl-8 sm:pl-10 pr-3 sm:pr-4 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 text-center tracking-widest font-lato text-base sm:text-lg"
               placeholder="0000"
               maxLength={4}
               value={resetOtp}
@@ -1218,58 +1232,60 @@ export default function LoginModal({
         </div>
 
         <div>
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             New Password*
           </label>
           <div className="relative">
             <Lock
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
-              size={16}
+              className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
+              size={14}
+              style={{ width: '14px', height: '14px' }}
             />
             <input
               type={showPassword ? "text" : "password"}
-              className="w-full rounded-2xl pl-10 pr-12 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato"
+              className="w-full rounded-xl sm:rounded-2xl pl-8 sm:pl-10 pr-10 sm:pr-12 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato text-sm sm:text-base"
               placeholder="Enter new password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300"
+              className="absolute right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300"
               type="button"
               onClick={() => setShowPassword((v) => !v)}>
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <EyeOff size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />}
             </button>
           </div>
         </div>
 
         <div>
-          <label className="block font-lato font-medium text-sm text-[#B11C5F] mb-2">
+          <label className="block font-lato font-medium text-xs sm:text-sm text-[#B11C5F] mb-1.5 sm:mb-2">
             Confirm Password*
           </label>
           <div className="relative">
             <Lock
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
-              size={16}
+              className="absolute left-2.5 sm:left-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F]"
+              size={14}
+              style={{ width: '14px', height: '14px' }}
             />
             <input
               type={showConfirmPassword ? "text" : "password"}
-              className="w-full rounded-2xl pl-10 pr-12 py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato"
+              className="w-full rounded-xl sm:rounded-2xl pl-8 sm:pl-10 pr-10 sm:pr-12 py-2.5 sm:py-3 bg-white/80 border-2 border-[#F28C8C]/30 focus:border-[#B11C5F] text-[#444444] placeholder-[#C59D5F] focus:outline-none transition-all duration-300 font-lato text-sm sm:text-base"
               placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <button
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300"
+              className="absolute right-2.5 sm:right-3 top-1/2 transform -translate-y-1/2 text-[#C59D5F] hover:text-[#B11C5F] transition-colors duration-300"
               type="button"
               onClick={() => setShowConfirmPassword((v) => !v)}>
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showConfirmPassword ? <EyeOff size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />}
             </button>
           </div>
         </div>
       </div>
 
       <button
-        className="w-full py-3 mb-4 rounded-2xl font-lato font-semibold bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+        className="w-full py-2.5 sm:py-3 mb-3 sm:mb-4 rounded-xl sm:rounded-2xl font-lato font-semibold text-sm sm:text-base bg-[#F28C8C] text-white hover:shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300 transform hover:bg-[#F28C8C]/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
         onClick={handleResetPassword}
         disabled={
           isResettingPassword ||
@@ -1281,29 +1297,29 @@ export default function LoginModal({
         }>
         {isResettingPassword ? (
           <>
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Changing Password...
+            <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2 animate-spin" />
+            <span className="text-xs sm:text-sm">Changing Password...</span>
           </>
         ) : (
-          "Change Password"
+          <span className="text-xs sm:text-sm">Change Password</span>
         )}
       </button>
 
       <div className="text-center">
         <button
-          className="text-[#C59D5F] hover:text-[#B11C5F] font-lato font-medium text-sm transition-colors duration-300 disabled:opacity-50"
+          className="text-[#C59D5F] hover:text-[#B11C5F] font-lato font-medium text-xs sm:text-sm transition-colors duration-300 disabled:opacity-50"
           onClick={handleSendForgotPasswordOTP}
           disabled={isLoading}>
-          {isLoading ? "Sending..." : "Resend OTP"}
+          <span className="text-xs sm:text-sm">{isLoading ? "Sending..." : "Resend OTP"}</span>
         </button>
       </div>
     </>
   );
 
   return (
-    <div className="fixed inset-0 z-[1050] flex items-center justify-center bg-gradient-to-br from-black/30 via-black/30 to-black/30 backdrop-blur-xs animate-fadeIn">
-      <div className="w-full max-w-md mx-auto animate-scaleIn">
-        <div className="relative rounded-3xl overflow-hidden">
+    <div className="fixed inset-0 z-[1050] flex items-center justify-center bg-gradient-to-br from-black/30 via-black/30 to-black/30 backdrop-blur-xs animate-fadeIn p-2 sm:p-4 overflow-y-auto">
+      <div className="w-full max-w-md mx-auto animate-scaleIn my-auto py-4 sm:py-8">
+        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden max-h-[95vh] sm:max-h-[90vh] flex flex-col">
           {/* Animated Kaya spa gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-[#FFF6F8] to-[#FFEEF2] animate-gradientShift" />
 
@@ -1331,7 +1347,7 @@ export default function LoginModal({
           <div className="h-2 bg-gradient-to-r from-[#F28C8C] via-[#C59D5F] to-[#B11C5F]"></div>
 
           {/* Modal content with Kaya spa theme */}
-          <div className="relative p-6 sm:p-8 bg-gradient-to-b from-white to-[#FFF6F8]">
+          <div className="relative p-4 sm:p-6 md:p-8 bg-gradient-to-b from-white to-[#FFF6F8] overflow-y-auto max-h-[calc(95vh-2rem)] sm:max-h-[calc(90vh-2rem)]">
             {/* Show loading state when fetching profile */}
             {isLoadingProfile ? (
               <div className="text-center py-8">

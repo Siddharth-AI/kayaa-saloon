@@ -48,7 +48,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       // SCENARIO 2: The modal is not open.
       // This means the user just landed on the protected page. Open the modal for them.
       else if (!isModalOpen) {
-        dispatch(openModal("login"));
+        dispatch(openModal("password"));
       }
     }
   }, [

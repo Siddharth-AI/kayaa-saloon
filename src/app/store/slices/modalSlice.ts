@@ -19,7 +19,7 @@ interface ModalState {
 
 const initialState: ModalState = {
   isOpen: false,
-  screen: "login", // Default screen when opening
+  screen: "password", // Default screen when opening - always show password login
 };
 
 const modalSlice = createSlice({
@@ -31,13 +31,16 @@ const modalSlice = createSlice({
       state.isOpen = true;
       if (action.payload) {
         state.screen = action.payload;
+      } else {
+        // Default to password screen if no screen specified
+        state.screen = "password";
       }
     },
     // Action to close the modal
     closeModal: (state) => {
       state.isOpen = false;
       // Optional: Reset screen to default on close
-      state.screen = "login";
+      state.screen = "password";
     },
     // Action to change the screen while the modal is open (e.g., from login to forgot password)
     setModalScreen: (state, action: PayloadAction<ScreenType>) => {

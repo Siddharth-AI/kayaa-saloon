@@ -31,8 +31,9 @@ import PaymentFormModal from "@/components/payment/PaymentFormModal";
 import { Check } from "lucide-react";
 
 const View = () => {
-  const { user, tempToken } = useAppSelector((state) => state.auth);
+  const { user, tempToken, isInitialized, isLoadingProfile } = useAppSelector((state) => state.auth);
   const { services, items } = useAppSelector((state) => state.cart);
+  const { isOpen: isModalOpen } = useAppSelector((state) => state.modal);
 
   const { selectedDate, selectedSlot, bookingComment } = useAppSelector(
     (state) => state.ui
@@ -67,6 +68,35 @@ const View = () => {
   const previousPayloadRef = useRef<string | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isCalculatingRef = useRef(false);
+  const wasModalOpenRef = useRef(false);
+
+  // Protect page - check if user is logged in
+  useEffect(() => {
+    // Wait for auth to initialize
+    if (!isInitialized || isLoadingProfile) {
+      return;
+    }
+
+    const isAuthenticated = !!user || !!tempToken;
+
+    // Track previous modal state
+    const wasModalOpen = wasModalOpenRef.current;
+    wasModalOpenRef.current = isModalOpen;
+
+    // If user is not logged in
+    if (!isAuthenticated) {
+      // SCENARIO 1: Modal was open but is now closed - user closed without logging in
+      if (wasModalOpen && !isModalOpen) {
+        router.push("/"); // Redirect to home
+        return;
+      }
+
+      // SCENARIO 2: Modal is not open - user just landed on protected page
+      if (!isModalOpen) {
+        dispatch(openModal("password"));
+      }
+    }
+  }, [user, tempToken, isInitialized, isLoadingProfile, isModalOpen, dispatch, router]);
 
   // Handler to select a card
   const handleSelectCard = (cardId: number) => {
@@ -354,6 +384,13 @@ const View = () => {
   const handleAccept = () => {
     setAccepted(true);
     setShowModal(false);
+    // After accepting terms, check if policy modal should be shown
+    if (!policyAccepted) {
+      // Small delay to ensure state updates
+      setTimeout(() => {
+        setShowPolicyModal(true);
+      }, 100);
+    }
   };
 
   // Get user display name
@@ -410,16 +447,13 @@ const View = () => {
 
   // Handle policy acceptance
   const handlePolicyAccept = async () => {
-    console.log("Policy accepted, getting location...");
+    console.log("Policy accepted");
     setPolicyAccepted(true);
     setShowPolicyModal(false);
     
-    // Request location permission (this will show browser permission dialog)
-    setIsGettingLocation(true);
-    const location = await getUserLocation();
-    console.log("Location received:", location);
+    // Set location to null by default (no location required)
+    const location = { latitude: null, longitude: null };
     setUserLocation(location);
-    setIsGettingLocation(false);
     
     // Now proceed with booking
     await proceedWithBooking(location);
@@ -536,8 +570,8 @@ const View = () => {
         policy_acceptance: {
           terms_accepted: true,
           acceptance_geo_location: {
-            latitude: location.latitude,
-            longitude: location.longitude,
+            latitude: null,
+            longitude: null,
           },
           acceptance_screenshot: "",
         },
@@ -602,8 +636,10 @@ const View = () => {
       toastError("Please select a payment card to proceed.");
       return;
     }
+
+    // If terms not accepted, show terms modal
     if (!accepted) {
-      toastError("Please accept the terms and conditions to proceed.");
+      setShowModal(true);
       return;
     }
 
@@ -642,16 +678,9 @@ const View = () => {
       return;
     }
 
-    // If policy already accepted but location not fetched, get it now
-    if (policyAccepted && userLocation.latitude === null && userLocation.longitude === null) {
-      const location = await getUserLocation();
-      setUserLocation(location);
-      await proceedWithBooking(location);
-      return;
-    }
-
-    // If policy already accepted and location exists, proceed with booking
-    await proceedWithBooking(userLocation);
+    // Proceed with booking (location is null by default)
+    const location = { latitude: null, longitude: null };
+    await proceedWithBooking(location);
   };
 
   const handlePayment = () => {
@@ -719,7 +748,7 @@ const View = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#FFF6F8] to-[#FEFAF4]">
-      <div className="w-full py-24 lg:py-32 pl-11 relative group overflow-hidden">
+      <div className="w-full relative py-14 pl-4 sm:pl-6 md:pl-8 lg:pl-11 pt-12 sm:pt-16 md:pt-20 lg:pt-20 xl:pt-28 overflow-hidden group">
         {/* Animated Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -767,13 +796,13 @@ const View = () => {
         </div>
 
         {/* Content Container with Enhanced Animation */}
-        <div className="max-w-7xl mx-auto sm:px-4 relative z-10 transform transition-all duration-1000 ease-out">
-          <div className="relative">
+        <div className="max-w-7xl mx-auto sm:px-4 relative z-10 transform transition-all duration-1000 ease-out h-full flex items-end lg:pb-4">
+          <div className="relative w-full mt-16 md:mt-12">
             {/* Enhanced Glowing Background for Title */}
             <div className="absolute -inset-6 bg-gradient-to-r from-[#F28C8C]/25 via-white/15 to-[#C59D5F]/25 blur-2xl rounded-3xl animate-pulse-glow" />
 
             {/* Main Title with Multiple Animations */}
-            <h1 className="text-4xl lg:text-5xl pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl pt-4 sm:pt-6 md:pt-8 lg:pt-8 xl:pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
               {/* Enhanced Gradient Text Effect */}
               <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-lg">
                 APPOINTMENT BOOKING
@@ -787,12 +816,12 @@ const View = () => {
             </h1>
 
             {/* Enhanced Subtitle with Staggered Animation */}
-            <p className="dancing-script text-xl lg:text-2xl text-white mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+            <p className="dancing-script text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-white mt-2 sm:mt-3 md:mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md px-2">
               ✨ Schedule your perfect wellness moment
             </p>
 
             {/* Additional Booking-Focused Tagline */}
-            <p className="font-lato text-sm text-white/90 mt-2 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase">
+            <p className="font-lato text-xs sm:text-xs md:text-sm lg:text-sm text-white/90 mt-1.5 sm:mt-2 md:mt-2.5 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase px-2 hidden sm:block">
               Quick Booking • Instant Confirmation • Premium Experience
             </p>
 
@@ -1194,11 +1223,11 @@ const View = () => {
               <button
                 className={`
                 group/btn relative overflow-hidden shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] w-full py-4 rounded-2xl font-bold text-lg transition-all font-lato ${
-                  accepted && !bookingState.loading
+                  !bookingState.loading
                     ? "bg-[#F28C8C] text-white shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
                     : "bg-gray-200 text-gray-500 cursor-not-allowed opacity-70"
                 }`}
-                disabled={!accepted || bookingState.loading}
+                disabled={bookingState.loading}
                 onClick={handleConfirmation}>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
                 {bookingState.loading ? (
@@ -1419,17 +1448,9 @@ const View = () => {
                   Cancel
                 </button>
                 <button
-                  className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato disabled:opacity-50 disabled:cursor-not-allowed"
-                  onClick={handlePolicyAccept}
-                  disabled={isGettingLocation}>
-                  {isGettingLocation ? (
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white mr-2"></div>
-                      Getting Location...
-                    </div>
-                  ) : (
-                    "Accept"
-                  )}
+                  className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato"
+                  onClick={handlePolicyAccept}>
+                  Accept
                 </button>
               </div>
             </div>

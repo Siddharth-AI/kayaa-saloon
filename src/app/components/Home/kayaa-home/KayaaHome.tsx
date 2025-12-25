@@ -10,6 +10,7 @@ import "swiper/css/effect-fade";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Image from "next/image";
+import OwnerImg from "@/assets/kayaa-home/team.png"; // Update this path to your actual image
 
 // Image imports
 import ultrasonic_facial from "@/assets/landing_page/ultrasonic_facial.jpg";
@@ -353,7 +354,7 @@ export default function Page() {
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 h-full flex items-center justify-center">
+                <div className="relative z-10 h-full flex items-end justify-center pb-12 sm:pb-20 md:pb-24 lg:pb-32">
                   <div className="container mx-auto px-4">
                     <div className="max-w-4xl mx-auto text-center text-white">
                       <AnimatePresence mode="wait">
@@ -825,48 +826,39 @@ export default function Page() {
         </section>
 
         {/* Team Section */}
-        <section className="pt-10 pb-20 bg-gradient-to-br from-[#fefaf4] to-pink-50 relative overflow-hidden">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-12">
-              <h2 className="md:text-5xl text-4xl font-playfair font-bold text-[#B11C5F] mb-4">
+        <section className="relative pb-36 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
+          <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-14 items-center justify-between px-6">
+            {/* RIGHT: Text Content */}
+            <div>
+              <h1 className="md:text-xl text-lg font-semibold text-[#C59D5F] mb-2">
+                EXPERIENCED BEAUTY EXPERTS
+              </h1>
+              <h2 className="md:text-6xl text-4xl font-playfair font-semibold text-[#B11C5F] mb-6 relative">
                 Experienced Beauty Experts
               </h2>
-              <div className="w-20 h-1 bg-gradient-to-r from-[#F28C8c] to-[#C59D5F] mx-auto mb-6 rounded-full"></div>
-              <p className="font-lato md:text-lg text-[#444] max-w-2xl mx-auto">
+
+              <p className="text-gray-600 leading-relaxed mb-4 md:text-lg">
                 Our skilled Experts specialize in Ultrasonic and Hydra facials,
                 Keratin Treatments, Threading, and Henna for Hair using AVEDA®,
                 GlyMed Plus®, and Dermalogica® products.
               </p>
             </div>
-
-            <div className="grid lg:grid-cols-4 gap-8">
-              {team.map((member, index) => (
-                <motion.div
-                  key={`team-member-${index}`}
-                  initial={{ y: 50, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="text-center group border-2 border-gray-200 rounded-lg shadow-lg pb-2">
-                  <div className="relative mb-4 overflow-hidden rounded-t-lg">
-                    <SafeImage
-                      src={member.image}
-                      alt={member.name}
-                      width={300}
-                      height={300}
-                      className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#C59D5F]/30 to-transparent"></div>
-                  </div>
-                  <h4 className="cormorant text-xl font-semibold text-[#B11C5F] tracking-wide leading-tight">
-                    {member.name}
-                  </h4>
-                  <p className="font-lato text-gray-500 leading-relaxed mb-3">
-                    {member.role}
-                  </p>
-                </motion.div>
-              ))}
+            {/* LEFT: Profile Specialist Image */}
+            <div className="relative w-full h-[550px] overflow-hidden">
+              <div className="relative w-full h-full rounded-lg shadow-xl group">
+                <SafeImage
+                  src={OwnerImg}
+                  alt="Profile Specialist"
+                  fill
+                  className="object-cover object-top rounded-lg group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={90}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#C59D5F]/30 to-transparent"></div>
+              </div>
             </div>
+
+           
           </div>
         </section>
 

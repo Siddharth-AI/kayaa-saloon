@@ -77,7 +77,7 @@ export default function MobileMenu() {
       {/* Enhanced Full Screen Mobile Menu */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-[60] lg:hidden"
+          className="fixed inset-0 z-[9999] lg:hidden"
           style={{ height: "100dvh" }}>
           <div className="absolute inset-0 bg-gradient-to-br from-[#FFF6F8] via-[#FFEEF2] to-[#FFF6F8]">
             {/* Decorative Elements - Responsive */}
@@ -173,7 +173,7 @@ export default function MobileMenu() {
                     </div>
                     <button
                       onClick={() => {
-                        dispatch(openModal("login"));
+                        dispatch(openModal("password"));
                         setMobileMenuOpen(false);
                       }}
                       className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-lato font-medium py-2.5 sm:py-3 rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300">

@@ -7,7 +7,7 @@ const ToastContainerConfig = () => {
   return (
     <ToastContainer
       position="top-right"
-      autoClose={5000} // Close after 5 seconds
+      autoClose={600} 
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick

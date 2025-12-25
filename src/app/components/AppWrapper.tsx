@@ -2,6 +2,8 @@
 
 "use client";
 // import Footer from "./Footer/Footer_old";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import LoginHandler from "./auth/login-handler";
 import LoginModal from "./loginModal/LoginModal";
 
@@ -15,6 +17,16 @@ import BlissFooter from "./Footer/Footer";
 function ClientLogicWrapper({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const { isOpen, screen } = useAppSelector((state) => state.modal);
+  const pathname = usePathname();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant", // Use "instant" for immediate scroll, or "smooth" for smooth scroll
+    });
+  }, [pathname]);
 
   return (
     <>

@@ -203,11 +203,11 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
       </div>
       <button
         className={`w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-lato font-bold text-sm sm:text-base md:text-lg transition-all duration-300 ${
-          accepted && !bookingState.loading
+          !bookingState.loading
             ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-lg hover:from-[#B11C5F] hover:to-[#F28C8C] active:scale-95 sm:hover:scale-105"
             : "bg-gray-200 text-gray-500 cursor-not-allowed"
         }`}
-        disabled={!accepted || bookingState.loading}
+        disabled={bookingState.loading}
         onClick={handleBookAppointment}>
         {bookingState.loading ? (
           <div className="flex items-center justify-center">

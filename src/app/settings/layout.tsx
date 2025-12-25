@@ -11,7 +11,7 @@ export default function SettingsLayout({
 }) {
   return (
     <AuthGuard>
-      <div className="w-full py-24 pl-11 relative overflow-hidden group">
+      <div className="w-full relative py-14 pl-4 sm:pl-6 md:pl-8 lg:pl-11 pt-8 md:pt-20 lg:pt-20 xl:pt-24 overflow-hidden group">
         {/* Animated Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -57,13 +57,13 @@ export default function SettingsLayout({
         </div>
 
         {/* Content Container with Enhanced Animation */}
-        <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out">
-          <div className="relative">
+        <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out h-full flex items-end lg:pb-4">
+          <div className="relative w-full mt-16 md:mt-12">
             {/* Enhanced Glowing Background for Title */}
             <div className="absolute -inset-6 bg-gradient-to-r from-[#B11C5F]/25 via-white/15 to-[#F28C8C]/25 blur-2xl rounded-3xl animate-pulse-glow" />
 
             {/* Main Title with Multiple Animations */}
-            <h1 className="text-4xl lg:text-5xl pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl pt-4 sm:pt-6 md:pt-8 lg:pt-8 xl:pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
               {/* Enhanced Gradient Text Effect */}
               <span className="text-white drop-shadow-lg text-shadow-lg">
                 SETTINGS
@@ -77,12 +77,12 @@ export default function SettingsLayout({
             </h1>
 
             {/* Settings-Focused Subtitle */}
-            <p className="dancing-script text-xl lg:text-2xl text-[#fff] mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+            <p className="dancing-script text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-[#fff] mt-2 sm:mt-3 md:mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md px-2">
               ⚙️ Customize your account preferences
             </p>
 
             {/* Additional Settings Tagline */}
-            <p className="font-lato text-sm text-[#fff]/80 mt-2 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase">
+            <p className="font-lato text-xs sm:text-xs md:text-sm lg:text-sm text-[#fff]/80 mt-1.5 sm:mt-2 md:mt-2.5 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase px-2 hidden sm:block">
               Account Settings • Privacy Controls • Preferences
             </p>
 

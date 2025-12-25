@@ -51,14 +51,14 @@ export default function OrdersPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-gradient-to-br from-[#fefaf4] to-pink-50 pt-28 pb-20">
+      <div className="min-h-screen bg-gradient-to-br from-[#fefaf4] to-pink-50 pt-16 sm:pt-20 md:pt-24 lg:pt-28 pb-12 sm:pb-16 md:pb-20">
         <div className="max-w-7xl mx-auto px-4">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-playfair font-bold text-[#B11C5F] mb-2">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-playfair font-bold text-[#B11C5F] mb-1 sm:mb-2">
               My Orders
             </h1>
-            <p className="text-gray-600 font-lato">
+            <p className="text-sm sm:text-base text-gray-600 font-lato">
               Track and manage your product orders
             </p>
           </div>

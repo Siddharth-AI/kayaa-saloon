@@ -399,7 +399,7 @@ export default function ProductPage() {
       <ProductStructuredData product={product} />
       <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-orange-50">
         {/* Header Section */}
-        <div className="w-full relative py-28 pl-11 pt-32 overflow-hidden group">
+        <div className="w-full relative py-14 pl-4 sm:pl-6 md:pl-8 lg:pl-11 pt-8 md:pt-20 lg:pt-24 xl:pt-32 overflow-hidden group">
           <div className="absolute inset-0">
             <Image
               src={shopHeader}
@@ -429,11 +429,11 @@ export default function ProductPage() {
           <div className="absolute left-0 top-1/4 w-1 h-32 bg-gradient-to-b from-transparent via-[#FFF6F8]/40 to-transparent animate-shimmer delay-500" />
           <div className="absolute right-0 bottom-1/4 w-1 h-24 bg-gradient-to-t from-transparent via-[#F28C8C]/50 to-transparent animate-shimmer delay-1500" />
 
-          <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out">
-            <div className="relative">
+          <div className="max-w-7xl mx-auto px-4 relative z-10 transform transition-all duration-1000 ease-out h-full flex items-end lg:pb-4">
+            <div className="relative w-full mt-16 md:mt-12">
               <div className="absolute -inset-6 bg-gradient-to-r from-[#FFF6F8]/10 via-white/5 to-[#F28C8C]/15 blur-2xl rounded-3xl animate-pulse-glow" />
 
-              <h1 className="text-4xl lg:text-5xl pt-10 font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-playfair font-bold tracking-wide relative z-20 transform transition-all duration-1000 ease-out animate-slide-up">
                 <span className="text-white animate-gradient-x drop-shadow-lg text-shadow-sm">
                   PRODUCT DETAILS
                 </span>
@@ -441,11 +441,11 @@ export default function ProductPage() {
                 <div className="absolute -bottom-3 left-0 w-0 h-0.5 bg-gradient-to-r from-transparent via-[#C59D5F]/60 to-transparent animate-expand-width delay-500" />
               </h1>
 
-              <p className="dancing-script text-xl lg:text-2xl text-[#FFF6F8] mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md">
+              <p className="dancing-script text-sm sm:text-base md:text-lg lg:text-lg xl:text-xl text-[#FFF6F8] mt-2 sm:mt-3 md:mt-4 italic relative z-20 animate-fade-in-up delay-500 opacity-0 drop-shadow-md px-2">
                 ✨ Discover premium beauty excellence
               </p>
 
-              <p className="font-lato text-sm text-[#FFF6F8]/80 mt-2 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase">
+              <p className="font-lato text-xs sm:text-xs md:text-sm lg:text-sm text-[#FFF6F8]/80 mt-1.5 sm:mt-2 md:mt-2.5 relative z-20 animate-fade-in-up delay-700 opacity-0 tracking-wider uppercase px-2 hidden sm:block">
                 Luxury • Quality • Elegance
               </p>
 

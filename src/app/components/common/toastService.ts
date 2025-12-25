@@ -3,7 +3,7 @@ import { toast, type ToastOptions } from "react-toastify";
 // Default options that can be applied to all toasts
 const defaultOptions: ToastOptions = {
   position: "top-right",
-  autoClose: 5000,
+  autoClose: 600,
   hideProgressBar: false,
   closeOnClick: true,
   pauseOnHover: true,
