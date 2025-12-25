@@ -11,12 +11,3 @@ export async function getCustomerUuid(token: string): Promise<string> {
 
   return customer_uuid;
 }
-
-export function getHeaders(token: string): DinggHeaders {
-  return {
-    'access_code': process.env.DINGG_ACCESS_CODE!,
-    'api_key': process.env.DINGG_API_KEY!,
-    'Content-Type': 'application/json',
-    'Authorization': token
-  };
-}

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CancelBookingRequest, CreateBookingRequest, GetSlotsRequest, GetUserBookingsRequest } from '../lib/types';
-import { getCustomerUuid, getHeaders } from '@/lib/user-helper';
+import { getCustomerUuid} from '@/lib/user-helper';
 
 export interface CalculateBookingSummaryRequest {
   vendor_location_uuid: string;
