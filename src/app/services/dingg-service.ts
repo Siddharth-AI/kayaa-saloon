@@ -226,30 +226,90 @@ export async function getSlots(businessId: string, params: GetSlotsRequest) {
 
 export async function calculateBookingSummary(params: CalculateBookingSummaryRequest, userToken: string): Promise<CalculateBookingSummaryResponse> {
 	try {
-		const customerUuid = await getCustomerUuid(userToken);
+		// Remove 'Bearer ' prefix if present
+		const cleanToken = userToken.replace(/^Bearer\s+/i, '');
+		
+		const customerUuid = await getCustomerUuid(cleanToken);
 		const url = `${process.env.DINGG_API_URL}/user/calculate-summary`;
+
+		// Ensure services array is properly formatted
+		const services = params.services.map((service: any) => {
+			// Ensure all required fields are present and properly typed
+			const formattedService: any = {
+				service_id: service.service_id,
+				service_name: service.service_name || '',
+				start_time: Number(service.start_time),
+				end_time: Number(service.end_time)
+			};
+
+			// Only include employee_id if it exists and is a valid number
+			if (service.employee_id !== undefined && service.employee_id !== null) {
+				const employeeId = Number(service.employee_id);
+				if (!isNaN(employeeId) && employeeId > 0) {
+					formattedService.employee_id = employeeId;
+				}
+			}
+
+			return formattedService;
+		});
 
 		const payload = {
 			vendor_location_uuid: params.vendor_location_uuid,
 			booking_date: params.booking_date,
 			booking_comment: params.booking_comment || '',
-			booking_status: params.booking_status,
-			merge_services_of_same_staff: params.merge_services_of_same_staff,
-			services: params.services,
+			booking_status: params.booking_status || 'tentative',
+			merge_services_of_same_staff: params.merge_services_of_same_staff !== undefined ? params.merge_services_of_same_staff : true,
+			services: services,
 			coupon_code: params.coupon_code || ''
 		};
 
 		const headers = {
 			'customer_uuid': customerUuid,
 			'vendor_location_uuid': params.vendor_location_uuid,
-			'Authorization': userToken,
+			'Authorization': `Bearer ${cleanToken}`,
 			'Content-Type': 'application/json'
 		};
 
-		const response = await axios.post(url, payload, { headers });
+		console.log('Dingg API calculate-summary request:', {
+			url,
+			payload: {
+				...payload,
+				services: services.map((s: any) => ({
+					service_id: s.service_id,
+					start_time: s.start_time,
+					end_time: s.end_time,
+					employee_id: s.employee_id
+				}))
+			}
+		});
+
+		const response = await axios.post(url, payload, { 
+			headers,
+			timeout: 30000 // 30 second timeout
+		});
+		
 		return response.data;
 	} catch (error: any) {
-		console.error("calculateBookingSummary error:", error.response?.data || error.message);
+		console.error("calculateBookingSummary error:", {
+			message: error.message,
+			response: error.response?.data,
+			status: error.response?.status,
+			statusText: error.response?.statusText,
+			config: {
+				url: error.config?.url,
+				method: error.config?.method,
+				data: error.config?.data
+			}
+		});
+		
+		// Throw a more descriptive error
+		if (error.response?.data?.message) {
+			const errorMsg = error.response.data.message;
+			const newError = new Error(errorMsg);
+			(newError as any).response = error.response;
+			throw newError;
+		}
+		
 		throw error;
 	}
 }
