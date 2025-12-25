@@ -64,6 +64,10 @@ const View = () => {
   } = useAppSelector((state) => state.payment);
 
   const hasHandledBookingSuccess = useRef(false);
+  const previousPayloadRef = useRef<string | null>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isCalculatingRef = useRef(false);
+  const isCalculatingRef = useRef(false);
 
   // Handler to select a card
   const handleSelectCard = (cardId: number) => {
@@ -120,17 +124,26 @@ const View = () => {
 
   // Calculate booking summary when component mounts or when cart/date/slot changes
   useEffect(() => {
+    // Clear any existing debounce timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Early return if required data is missing
     if (
       cart.length === 0 ||
       !selectedDate ||
       !selectedSlot ||
       !servicesState.selectedLocationUuid ||
-      (!tempToken && !user)
+      (!tempToken && !user) ||
+      bookingSummaryState.loading ||
+      isCalculatingRef.current
     ) {
       return;
     }
 
-    const fetchSummary = async () => {
+    // Debounce the API call to prevent multiple rapid calls
+    debounceTimerRef.current = setTimeout(async () => {
       try {
         // Prepare services data for API
         let nextAvailableTimeInMinutes = timeSlotToMinutes(selectedSlot);
@@ -166,9 +179,6 @@ const View = () => {
           // Only include employee_id if it exists and is a valid number
           if (employeeId && typeof employeeId === 'number' && !isNaN(employeeId)) {
             serviceObj.employee_id = employeeId;
-            console.log(`✅ Added employee_id ${employeeId} for service ${item.name}`);
-          } else {
-            console.log(`⚠️ No employee_id found for service ${item.name}, operator:`, item.operator);
           }
 
           return serviceObj;
@@ -184,13 +194,47 @@ const View = () => {
           coupon_code: couponCode || "",
         };
 
+        // Create a string representation of the payload to compare
+        const payloadString = JSON.stringify({
+          vendor_location_uuid: summaryPayload.vendor_location_uuid,
+          booking_date: summaryPayload.booking_date,
+          booking_comment: summaryPayload.booking_comment,
+          services: summaryPayload.services.map((s: any) => ({
+            service_id: s.service_id,
+            start_time: s.start_time,
+            end_time: s.end_time,
+            employee_id: s.employee_id
+          })),
+          coupon_code: summaryPayload.coupon_code
+        });
+
+        // Only call API if payload actually changed
+        if (previousPayloadRef.current === payloadString) {
+          return;
+        }
+
+        // Mark as calculating to prevent duplicate calls
+        isCalculatingRef.current = true;
+        previousPayloadRef.current = payloadString;
+
         await dispatch(calculateBookingSummary(summaryPayload));
+        
+        // Reset calculating flag after a short delay
+        setTimeout(() => {
+          isCalculatingRef.current = false;
+        }, 1000);
       } catch (error) {
         console.error("Error calculating booking summary:", error);
+        isCalculatingRef.current = false;
+      }
+    }, 500); // 500ms debounce delay
+
+    // Cleanup function
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
       }
     };
-
-    fetchSummary();
   }, [
     cart,
     selectedDate,
@@ -200,8 +244,16 @@ const View = () => {
     user,
     bookingComment,
     couponCode,
+    bookingSummaryState.loading,
     dispatch,
   ]);
+
+  // Reset calculating flag when booking summary is loaded or error occurs
+  useEffect(() => {
+    if (!bookingSummaryState.loading) {
+      isCalculatingRef.current = false;
+    }
+  }, [bookingSummaryState.loading]);
 
   useEffect(() => {
     if (
