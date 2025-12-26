@@ -14,6 +14,8 @@ import {
   Package,
   Truck,
   AlertCircle,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toastSuccess, toastError } from "@/components/common/toastService";
@@ -46,6 +48,7 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
   const [remark, setRemark] = useState("");
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
+  const [isPaymentMethodExpanded, setIsPaymentMethodExpanded] = useState(true);
 
   useEffect(() => {
     if (selectedLocationUuid) {
@@ -188,12 +191,25 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
           {/* Payment Method */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-[#F28C8C]/20">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-playfair font-bold text-[#B11C5F]">
-                Payment Method
-              </h3>
+              <div className="flex items-center gap-3">
+                <h3 className="text-xl font-playfair font-bold text-[#B11C5F]">
+                  Payment Method
+                </h3>
+                {paymentCards.length > 0 && (
+                  <button
+                    onClick={() => setIsPaymentMethodExpanded(!isPaymentMethodExpanded)}
+                    className="p-1.5 hover:bg-[#FFF6F8] rounded-lg transition-colors">
+                    {isPaymentMethodExpanded ? (
+                      <ChevronUp className="w-5 h-5 text-[#B11C5F]" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-[#B11C5F]" />
+                    )}
+                  </button>
+                )}
+              </div>
               <button
                 onClick={() => setIsPaymentModalOpen(true)}
-                className="px-4 py-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white rounded-lg font-lato font-semibold text-sm">
+                className="px-4 py-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white rounded-lg font-lato font-semibold text-sm hover:from-[#B11C5F] hover:to-[#F28C8C] transition-all duration-300">
                 Add Card
               </button>
             </div>
@@ -204,36 +220,41 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
                 <p className="text-sm">Please add a card to continue</p>
               </div>
             ) : (
-              <div className="space-y-3">
-                {paymentCards.map((card: any) => (
-                  <div
-                    key={card.id}
-                    onClick={() => dispatch(setSelectedCard(card.id))}
-                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      selectedCardId === card.id
-                        ? "border-[#F28C8C] bg-[#FFF6F8]"
-                        : "border-gray-200 hover:border-[#F28C8C]/50"
-                    }`}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-lato font-semibold text-[#B11C5F]">
-                          {card.card_type}
-                        </p>
-                        <p className="text-sm text-gray-600 font-mono">
-                          {card.card_number}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Expires: {card.card_expiry}
-                        </p>
-                      </div>
-                      {selectedCardId === card.id && (
-                        <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                          <Check className="w-4 h-4 text-white" />
+              <div
+                className={`overflow-hidden transition-all duration-300 ${
+                  isPaymentMethodExpanded ? "max-h-[220px] opacity-100" : "max-h-0 opacity-0"
+                }`}>
+                <div className="space-y-3 overflow-y-auto max-h-[220px] pr-2 scrollbar-thin scrollbar-thumb-pink-400 scrollbar-track-gray-100">
+                  {paymentCards.map((card: any) => (
+                    <div
+                      key={card.id}
+                      onClick={() => dispatch(setSelectedCard(card.id))}
+                      className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                        selectedCardId === card.id
+                          ? "border-[#F28C8C] bg-[#FFF6F8]"
+                          : "border-gray-200 hover:border-[#F28C8C]/50"
+                      }`}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-lato font-semibold text-[#B11C5F]">
+                            {card.card_type}
+                          </p>
+                          <p className="text-sm text-gray-600 font-mono">
+                            {card.card_number}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            Expires: {card.card_expiry}
+                          </p>
                         </div>
-                      )}
+                        {selectedCardId === card.id && (
+                          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+                            <Check className="w-4 h-4 text-white" />
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </div>
