@@ -174,26 +174,20 @@ const Slots: React.FC = () => {
   }, [timeSlotsState.error]);
 
   const displayOperators = useMemo(
-    () => [
-      {
-        id: -1,
-        name: "No Preference",
-        img: "/images/user.png",
-      },
-      ...operatorsState.filteredOperators.map((op: any) => ({
+    () =>
+      operatorsState.filteredOperators.map((op: any) => ({
         id: op.id,
         name: op.display_name || op.name,
         img: op.staff_img || "/images/user.png",
       })),
-    ],
     [operatorsState.filteredOperators]
   );
 
-  // NEW: Watch for the specific case where no single operator is available
+  // NEW: Watch for the specific case where no operator is available
   useEffect(() => {
-    if (displayOperators.length === 1 && cart.length > 1) {
+    if (displayOperators.length === 0 && cart.length > 0) {
       toastWarning(
-        "Heads up: No single operator provides all selected services."
+        "No operator available for all selected services. Please modify your cart."
       );
     }
   }, [displayOperators, cart]);
@@ -317,12 +311,12 @@ const Slots: React.FC = () => {
 
     // 2. Immediately calculate the sequential times for the cart
     const selectedOperatorObj = displayOperators[selectedOperator];
-    const operatorName = selectedOperatorObj?.name || "No Preference";
+    const operatorName = selectedOperatorObj?.name || null;
     // Store operator object with id for later use in API calls
-    // Store operator object with id for later use in API calls (if operator is selected, not "No Preference")
-    const operatorObj = selectedOperatorObj && selectedOperatorObj.id && selectedOperator !== 0
+    // Only store operator object if operator is selected and has valid id
+    const operatorObj = selectedOperatorObj && selectedOperatorObj.id
       ? { id: selectedOperatorObj.id, name: operatorName, ...selectedOperatorObj }
-      : operatorName;
+      : null;
     const currentStartTime = parseTimeStringToDate(slotTime, selectedDateObj);
 
     // NEW: Update both services and legacy items
@@ -398,10 +392,9 @@ const Slots: React.FC = () => {
   }
 
   const handleContinueClick = () => {
-    // Check if an operator is selected. "No Preference" is at index 0, so any selection is valid.
-    // Assuming initial state for selectedOperator is null or undefined.
+    // Check if an operator is selected
     const isOperatorSelected =
-      selectedOperator !== null && selectedOperator !== undefined;
+      selectedOperator !== null && selectedOperator !== undefined && selectedOperator >= 0;
 
     if (!isOperatorSelected || !selectedSlot) {
       // Build a specific error message
@@ -714,14 +707,13 @@ const Slots: React.FC = () => {
                 <OperatorsSkeleton />
               ) : (
                 <>
-                  {displayOperators.length === 1 && cart.length > 0 && (
+                  {displayOperators.length === 0 && cart.length > 0 && (
                     <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-3 text-yellow-700 text-sm font-lato">
-                      No single operator provides all selected services. Please
-                      modify your cart or choose &quot;No Preference&quot;.
+                      No operator available for all selected services. Please modify your cart.
                     </div>
                   )}
                   <div className="flex flex-nowrap gap-4 overflow-x-auto pb-3 -mx-4 px-4">
-                    {displayOperators.map((op, idx) => (
+                    {displayOperators.map((op: any, idx: number) => (
                       <div
                         key={idx}
                         className={`flex flex-col items-center justify-start text-center cursor-pointer p-2 transition-all duration-300 rounded-2xl flex-shrink-0 w-24

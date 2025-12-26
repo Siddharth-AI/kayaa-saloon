@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit"
 import axios from "axios"
+import { removeAuthToken } from "./authSlice"
 
 // Updated Service interface to match API response
 export interface Service {
@@ -34,7 +35,12 @@ export const fetchServicesByLocation = createAsyncThunk<Service[], string, { rej
   "services/fetchServicesByLocation",
   async (locationUuid: string, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-services/${locationUuid}`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-services/${locationUuid}`, {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "Pragma": "no-cache",
+        },
+      })
 
       // Transform the nested API response to flat service array
       const serviceCategories = response.data.data.data.rows
@@ -57,6 +63,11 @@ export const fetchServicesByLocation = createAsyncThunk<Service[], string, { rej
 
       return flatServices
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.message || "Failed to fetch services")
     }
   },

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { getAuthToken } from './authSlice';
+import { getAuthToken, removeAuthToken } from './authSlice';
 
 interface CreateOrderPayload {
   vendor_location_uuid: string;
@@ -125,12 +125,21 @@ export const fetchOrders = createAsyncThunk(
             limit: payload.limit || 10,
             page: payload.page || 1,
           },
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
         }
       );
 
       return response.data.data.data;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch orders');
     }
   }
@@ -151,12 +160,21 @@ export const fetchOrderDetail = createAsyncThunk(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/order/${payload.order_uuid}`,
         {
           params: { vendor_location_uuid: payload.vendor_location_uuid },
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
         }
       );
 
       return response.data.data.data;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch order details');
     }
   }
@@ -177,12 +195,21 @@ export const fetchPaymentStatus = createAsyncThunk(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/order/${payload.order_uuid}/payment-status`,
         {
           params: { vendor_location_uuid: payload.vendor_location_uuid },
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
         }
       );
 
       return response.data.data.data.payment_status;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch payment status');
     }
   }
@@ -199,11 +226,22 @@ export const createOrder = createAsyncThunk(
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/order/create`,
         payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
       );
 
       return response.data.data.data;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to create order');
     }
   }
@@ -224,12 +262,21 @@ export const cancelOrder = createAsyncThunk(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/order/${payload.order_uuid}/cancel`,
         {
           params: { vendor_location_uuid: payload.vendor_location_uuid },
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
         }
       );
 
       return payload.order_uuid;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to cancel order');
     }
   }

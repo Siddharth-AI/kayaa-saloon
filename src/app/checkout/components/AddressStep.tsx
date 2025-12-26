@@ -36,8 +36,16 @@ export default function AddressStep({ onNext, onBack }: AddressStepProps) {
 
   useEffect(() => {
     if (selectedLocationUuid) {
-      dispatch(getAddresses({ address_type: "billing", vendor_location_uuid: selectedLocationUuid }));
-      dispatch(getAddresses({ address_type: "shipping", vendor_location_uuid: selectedLocationUuid }));
+      dispatch(getAddresses({ address_type: "billing", vendor_location_uuid: selectedLocationUuid })).catch((error: any) => {
+        if (error?.message?.includes('Authentication session expired') || error?.payload?.includes('Authentication session expired')) {
+          toastError('Your session has expired. Please login again.');
+        }
+      });
+      dispatch(getAddresses({ address_type: "shipping", vendor_location_uuid: selectedLocationUuid })).catch((error: any) => {
+        if (error?.message?.includes('Authentication session expired') || error?.payload?.includes('Authentication session expired')) {
+          toastError('Your session has expired. Please login again.');
+        }
+      });
     }
   }, [selectedLocationUuid, dispatch]);
 

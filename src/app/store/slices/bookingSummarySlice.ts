@@ -93,8 +93,11 @@ export const calculateBookingSummary = createAsyncThunk<
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "Pragma": "no-cache",
         },
         body: JSON.stringify(payload),
+        cache: "no-store",
       })
 
       if (!response.ok) {

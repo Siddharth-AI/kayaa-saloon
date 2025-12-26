@@ -15,6 +15,7 @@ import {
 import {
   calculateBookingSummary,
   clearBookingSummary,
+  clearBookingSummaryError,
 } from "@/store/slices/bookingSummarySlice";
 import {
   setBookingComment,
@@ -28,7 +29,7 @@ import BookingBottomBar from "../../BookingBottomBar";
 import Image from "next/image";
 import { getPaymentCards, setSelectedCard } from "@/store/slices/paymentSlice";
 import PaymentFormModal from "@/components/payment/PaymentFormModal";
-import { Check } from "lucide-react";
+import { Check, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
 
 const View = () => {
   const { user, tempToken, isInitialized, isLoadingProfile } = useAppSelector((state) => state.auth);
@@ -69,6 +70,7 @@ const View = () => {
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const isCalculatingRef = useRef(false);
   const wasModalOpenRef = useRef(false);
+  const previousCartLengthRef = useRef<number>(0);
 
   // Protect page - check if user is logged in
   useEffect(() => {
@@ -125,6 +127,15 @@ const View = () => {
     ];
   }, [services, items]);
 
+  // Check if cart is empty and redirect to services page
+  useEffect(() => {
+    if (isInitialized && !isLoadingProfile && cart.length === 0) {
+      toastError("Please add services first");
+      router.push("/saloon-services");
+      return;
+    }
+  }, [isInitialized, isLoadingProfile, cart.length, router]);
+
   // NEW: Check both services and legacy items
   useEffect(() => {
     if (cart.length === 0) return;
@@ -151,6 +162,17 @@ const View = () => {
     }
   }, [services, items, cart, selectedSlot, selectedDate, dispatch, router]);
 
+  // Clear booking summary when cart changes (new service added/removed)
+  useEffect(() => {
+    if (previousCartLengthRef.current > 0 && cart.length !== previousCartLengthRef.current) {
+      // Cart changed - clear summary to force recalculation
+      dispatch(clearBookingSummary());
+      previousPayloadRef.current = null;
+      isCalculatingRef.current = false;
+    }
+    previousCartLengthRef.current = cart.length;
+  }, [cart.length, dispatch]);
+
   // Calculate booking summary when component mounts or when cart/date/slot changes
   useEffect(() => {
     // Clear any existing debounce timer
@@ -158,18 +180,45 @@ const View = () => {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // Early return if required data is missing
-    if (
-      cart.length === 0 ||
-      !selectedDate ||
-      !selectedSlot ||
-      !servicesState.selectedLocationUuid ||
-      (!tempToken && !user) ||
-      bookingSummaryState.loading ||
-      isCalculatingRef.current
-    ) {
+    // Wait for auth to initialize first
+    if (!isInitialized || isLoadingProfile) {
+      console.log("⏸️ Booking summary calculation skipped: Auth not initialized");
       return;
     }
+
+    // Validate in order: cart -> location -> date/slot -> auth
+    if (cart.length === 0) {
+      console.log("⏸️ Booking summary calculation skipped: Cart is empty");
+      return;
+    }
+
+    if (!servicesState.selectedLocationUuid) {
+      console.log("⏸️ Booking summary calculation skipped: Location not selected");
+      return;
+    }
+
+    if (!selectedDate || !selectedSlot) {
+      console.log("⏸️ Booking summary calculation skipped: Date or slot not selected", {
+        selectedDate: !!selectedDate,
+        selectedSlot: !!selectedSlot,
+      });
+      return;
+    }
+
+    if (!tempToken && !user) {
+      console.log("⏸️ Booking summary calculation skipped: Not authenticated");
+      return;
+    }
+
+    if (bookingSummaryState.loading || isCalculatingRef.current) {
+      console.log("⏸️ Booking summary calculation skipped: Already calculating", {
+        loading: bookingSummaryState.loading,
+        isCalculating: isCalculatingRef.current
+      });
+      return;
+    }
+
+    console.log("🔄 Starting booking summary calculation...");
 
     // Debounce the API call to prevent multiple rapid calls
     debounceTimerRef.current = setTimeout(async () => {
@@ -239,6 +288,7 @@ const View = () => {
 
         // Only call API if payload actually changed
         if (previousPayloadRef.current === payloadString) {
+          isCalculatingRef.current = false;
           return;
         }
 
@@ -246,12 +296,12 @@ const View = () => {
         isCalculatingRef.current = true;
         previousPayloadRef.current = payloadString;
 
-        await dispatch(calculateBookingSummary(summaryPayload));
+        console.log("📤 Calling calculateBookingSummary API with payload:", summaryPayload);
+        const result = await dispatch(calculateBookingSummary(summaryPayload));
+        console.log("✅ Booking summary calculation result:", result.type);
         
-        // Reset calculating flag after a short delay
-        setTimeout(() => {
-          isCalculatingRef.current = false;
-        }, 1000);
+        // Reset calculating flag after API call completes
+        isCalculatingRef.current = false;
       } catch (error) {
         console.error("Error calculating booking summary:", error);
         isCalculatingRef.current = false;
@@ -274,6 +324,8 @@ const View = () => {
     bookingComment,
     couponCode,
     bookingSummaryState.loading,
+    isInitialized,
+    isLoadingProfile,
     dispatch,
   ]);
 
@@ -283,6 +335,34 @@ const View = () => {
       isCalculatingRef.current = false;
     }
   }, [bookingSummaryState.loading]);
+
+  // Retry booking summary calculation function
+  const retryBookingSummary = useCallback(() => {
+    console.log("🔄 Retrying booking summary calculation...");
+    dispatch(clearBookingSummaryError());
+    previousPayloadRef.current = null;
+    isCalculatingRef.current = false;
+    dispatch(clearBookingSummary());
+  }, [dispatch]);
+
+  // Auto-retry booking summary calculation on error
+  useEffect(() => {
+    if (bookingSummaryState.error && cart.length > 0 && selectedDate && selectedSlot && servicesState.selectedLocationUuid) {
+      console.log("🔄 Auto-retrying booking summary calculation due to error...");
+      const retryTimer = setTimeout(() => {
+        retryBookingSummary();
+      }, 2000); // Wait 2 seconds before auto-retry
+      return () => clearTimeout(retryTimer);
+    }
+  }, [bookingSummaryState.error, cart.length, selectedDate, selectedSlot, servicesState.selectedLocationUuid, retryBookingSummary]);
+
+  // Auto-retry when policy modal opens and there's an error
+  useEffect(() => {
+    if (showPolicyModal && bookingSummaryState.error && cart.length > 0 && selectedDate && selectedSlot) {
+      console.log("🔄 Auto-retrying booking summary when policy modal opens...");
+      retryBookingSummary();
+    }
+  }, [showPolicyModal, bookingSummaryState.error, cart.length, selectedDate, selectedSlot, retryBookingSummary]);
 
   useEffect(() => {
     if (
@@ -320,6 +400,9 @@ const View = () => {
         toastError("Couldn't save your booking details");
       }
 
+      // Clear booking summary on success
+      dispatch(clearBookingSummary());
+
       // Navigate FIRST
       router.push(
         `/saloon-services/thank-you?bookingId=${bookingState.bookingId}`
@@ -351,13 +434,17 @@ const View = () => {
     }
   }, [bookingState.loading]);
 
-  // Watch for booking errors and show toast
+  // Watch for booking errors and show toast, clear summary on error
   useEffect(() => {
     if (bookingState.error) {
       toastError(bookingState.error);
       console.log("Booking error detected:", bookingState.error);
+      // Clear booking summary when booking fails so it recalculates with new slot
+      dispatch(clearBookingSummary());
+      // Reset previous payload ref to force recalculation
+      previousPayloadRef.current = null;
     }
-  }, [bookingState.error]);
+  }, [bookingState.error, dispatch]);
 
   // The function returned by useEffect is a "cleanup" function.
   useEffect(() => {
@@ -526,10 +613,13 @@ const View = () => {
       // Use booking summary data if available, otherwise calculate
       let total = 0;
       let depositAmount = 0;
+      let useExactValues = false;
 
       if (bookingSummaryState.data?.financial_summary) {
+        // Use exact values from API response (no rounding)
         total = bookingSummaryState.data.financial_summary.booking?.total_payable || 0;
         depositAmount = bookingSummaryState.data.financial_summary.deposit?.amount || 0;
+        useExactValues = true;
       } else {
         // Fallback calculation if summary not available
         const serviceTotal = cart.reduce(
@@ -539,6 +629,7 @@ const View = () => {
         const tax = 19.07;
         total = serviceTotal + tax;
         depositAmount = total / 2;
+        useExactValues = false;
       }
 
       // Prepare booking payload with comment from Redux state and policy acceptance
@@ -549,8 +640,9 @@ const View = () => {
         booking_status: "tentative",
         merchant_customer_id: selectedCardId,
         merge_services_of_same_staff: true,
-        total: Math.round(total * 100) / 100,
-        deposit_amount: Math.round(depositAmount * 100) / 100,
+        // Use exact values from API if available, otherwise round to 2 decimal places
+        total: useExactValues ? total : parseFloat(total.toFixed(2)),
+        deposit_amount: useExactValues ? depositAmount : parseFloat(depositAmount.toFixed(2)),
         services,
         policy_acceptance: {
           terms_accepted: true,
@@ -567,6 +659,7 @@ const View = () => {
 
       // Check if booking was rejected
       // Note: Error toast will be shown by useEffect watching bookingState.error
+      // Summary will be cleared by useEffect watching bookingState.error
       if (createBooking.rejected.match(result)) {
         console.log("Booking failed:", result.payload);
         return; // Exit early on error - toast will be shown by useEffect
@@ -626,6 +719,14 @@ const View = () => {
       return;
     }
 
+    // If booking summary has error, retry calculation before proceeding
+    if (bookingSummaryState.error) {
+      console.log("🔄 Retrying booking summary calculation before booking...");
+      retryBookingSummary();
+      // Wait a bit for recalculation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
     // Check if all policies checkbox is checked
     if (!accepted) {
       setShowModal(true);
@@ -635,6 +736,10 @@ const View = () => {
     // Check if cancellation policy checkbox is checked
     if (!policyAccepted) {
       setShowPolicyModal(true);
+      // If error exists, retry when opening modal
+      if (bookingSummaryState.error) {
+        retryBookingSummary();
+      }
       return;
     }
 
@@ -1039,9 +1144,11 @@ const View = () => {
             {/* Payment Method Section */}
             <div className="bg-white/90 rounded-2xl p-6 border-2 shadow-lg border-[#F28C8C]/30 mb-4">
               <div className="flex items-center justify-between mb-4">
-                <h4 className="text-xl font-playfair font-bold text-[#B11C5F]">
-                  Payment Method
-                </h4>
+                <div className="flex items-center gap-3">
+                  <h4 className="text-xl font-playfair font-bold text-[#B11C5F]">
+                    Payment Method
+                  </h4>
+                </div>
                 <button
                   onClick={handlePayment}
                   className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-lato font-semibold px-4 py-2 rounded-xl transition-all duration-300">
@@ -1080,8 +1187,10 @@ const View = () => {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {paymentCards.map((card: any) => (
+                <div
+                  className="overflow-hidden max-h-[280px] opacity-100 transition-all duration-30">
+                  <div className="space-y-3 overflow-y-auto max-h-[280px] pr-2 scrollbar-thin scrollbar-thumb-pink-400 scrollbar-track-gray-100">
+                    {paymentCards.map((card: any) => (
                     <div
                       key={card.id}
                       onClick={() => handleSelectCard(card.id)}
@@ -1149,28 +1258,8 @@ const View = () => {
                         </div>
                       )}
                     </div>
-                  ))}
-
-                  {/* Display Selected Card Info */}
-                  {/* {selectedCardId && (
-                    <div className="mt-4 p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border border-pink-200">
-                      <p className="text-sm font-medium text-gray-700">
-                        Selected Payment Method
-                      </p>
-                      <p className="text-xs text-gray-600 mt-1">
-                        Card ID:{" "}
-                        <span className="font-mono font-bold">
-                          {selectedCardId}
-                        </span>
-                      </p>
-                      {selectedCard && (
-                        <p className="text-xs text-gray-600">
-                          {selectedCard.card_type} ending in{" "}
-                          {selectedCard.card_number.slice(-4)}
-                        </p>
-                      )}
-                    </div>
-                  )} */}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -1440,8 +1529,13 @@ const View = () => {
                   </div>
                 ) : bookingSummaryState.error ? (
                   <div className="text-center py-8">
-                    <p className="text-red-600 font-lato text-sm sm:text-base">{bookingSummaryState.error}</p>
-                    <p className="text-xs sm:text-sm text-gray-500 mt-2">Please try again later.</p>
+                    <p className="text-red-600 font-lato text-sm sm:text-base mb-4">{bookingSummaryState.error}</p>
+                    <button
+                      onClick={retryBookingSummary}
+                      className="flex items-center gap-2 mx-auto px-4 py-2 bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-lato font-semibold rounded-xl transition-all duration-300">
+                      <RefreshCw className="w-4 h-4" />
+                      Refresh
+                    </button>
                   </div>
                 ) : (
                   <div className="text-center py-8">

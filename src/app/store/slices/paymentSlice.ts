@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { removeAuthToken } from './authSlice';
 
 // Helper function to validate token format (basic check)
 const isValidTokenFormat = (token: string | null): boolean => {
@@ -60,16 +61,27 @@ export const getPaymentForm = createAsyncThunk(
       throw new Error('Invalid or missing authentication token');
     }
 
-    const response = await axios.post(
-      `/api/payment/cards?merchant_uuid=${merchant_uuid}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const response = await axios.post(
+        `/api/payment/cards?merchant_uuid=${merchant_uuid}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
+      );
+      return response.data.data.data;
+    } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        throw new Error('Authentication session expired. Please login again.');
       }
-    );
-    return response.data.data.data;
+      throw error;
+    }
   }
 );
 
@@ -83,15 +95,26 @@ export const getPaymentCards = createAsyncThunk(
       throw new Error('Invalid or missing authentication token');
     }
 
-    const response = await axios.get(
-      `/api/payment/cards/list?merchant_uuid=${merchant_uuid}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const response = await axios.get(
+        `/api/payment/cards/list?merchant_uuid=${merchant_uuid}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
+      );
+      return response.data.data.data;
+    } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        throw new Error('Authentication session expired. Please login again.');
       }
-    );
-    return response.data.data.data;
+      throw error;
+    }
   }
 );
 

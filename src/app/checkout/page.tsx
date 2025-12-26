@@ -49,6 +49,21 @@ export default function CheckoutPage() {
     }
   }, [user, router, dispatch]);
 
+  // Handle auth errors from API calls
+  useEffect(() => {
+    const handleAuthError = () => {
+      if (!user) {
+        toastError("Your session has expired. Please login again.");
+        dispatch(openModal("login"));
+        router.push("/");
+      }
+    };
+    
+    // Listen for storage events (when token is removed in another tab)
+    window.addEventListener('storage', handleAuthError);
+    return () => window.removeEventListener('storage', handleAuthError);
+  }, [user, router, dispatch]);
+
   useEffect(() => {
     if (isHydrated && !hasCheckedCart) {
       setHasCheckedCart(true);

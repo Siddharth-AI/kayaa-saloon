@@ -124,10 +124,23 @@ export default function CheckoutStep({ onBack }: CheckoutStepProps) {
       router.push(`/order-success?orderId=${orderId}`);
     } catch (error: any) {
       console.error("Order creation failed:", error);
+      
+      // Handle authentication errors
+      if (error?.message?.includes('Authentication session expired') || 
+          error?.payload?.includes('Authentication session expired') ||
+          error?.response?.status === 401 || 
+          error?.response?.status === 403) {
+        toastError('Your session has expired. Please login again.');
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 2000);
+        return;
+      }
+      
       const errorMessage =
         typeof error === "string"
           ? error
-          : error?.message || "Failed to place order. Please try again.";
+          : error?.message || error?.payload || "Failed to place order. Please try again.";
       setOrderError(errorMessage);
       toastError(errorMessage);
     }

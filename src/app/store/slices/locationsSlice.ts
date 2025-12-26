@@ -41,7 +41,13 @@ export const fetchLocations = createAsyncThunk<Location[], string | undefined>(
     try {
       const bookingPageParam = bookingPage || 'stylo-hadapsar';
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-locations?booking_page=${bookingPageParam}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-locations?booking_page=${bookingPageParam}`,
+        {
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
       );
       
       // Response structure: { status, message, data: { business_locations: [...] } }
@@ -74,7 +80,13 @@ export const fetchBusinessInfoByBookingPage = createAsyncThunk<any, string>(
   async (bookingPage, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-business-info?booking_page=${bookingPage}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-business-info?booking_page=${bookingPage}`,
+        {
+          headers: {
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
       );
       return response.data.data;
     } catch (error: any) {

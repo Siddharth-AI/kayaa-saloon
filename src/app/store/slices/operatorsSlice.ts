@@ -48,7 +48,12 @@ export const fetchOperatorsByLocation = createAsyncThunk<Operator[], string, { r
     try {
       // console.log("🔄 Fetching operators for location:", locationUuid)
 
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-operators/${locationUuid}`)
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dingg-partner/get-operators/${locationUuid}`, {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "Pragma": "no-cache",
+        },
+      })
 
       if (!response.data.status) {
         throw new Error(response.data.message || "Failed to fetch operators")

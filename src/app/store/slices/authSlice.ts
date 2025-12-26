@@ -280,7 +280,7 @@ const storeAuthToken = (token: string) => {
 }
 
 // Helper function to remove auth token
-const removeAuthToken = () => {
+export const removeAuthToken = () => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("authToken")
     // Also remove any legacy userData
@@ -450,7 +450,10 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${authToken}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
           },
+          cache: "no-store",
         })
 
         if (!response.ok) {
@@ -506,7 +509,10 @@ export const getUserProfile = createAsyncThunk<User, void, { rejectValue: string
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${authToken}`,
+          "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+          "Pragma": "no-cache",
         },
+        cache: "no-store",
       })
 
       if (!response.ok) {

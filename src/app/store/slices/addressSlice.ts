@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { getAuthToken } from './authSlice';
+import { getAuthToken, removeAuthToken } from './authSlice';
 
 interface Address {
   id: number;
@@ -52,11 +52,22 @@ export const createAddress = createAsyncThunk(
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/create`,
         payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
       );
 
       return response.data.data.data;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to create address');
     }
   }
@@ -76,11 +87,22 @@ export const getAddresses = createAsyncThunk(
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/get-addresses`,
         payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
       );
 
       return { type: payload.address_type, data: response.data.data.data };
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch addresses');
     }
   }
@@ -106,11 +128,22 @@ export const updateAddress = createAsyncThunk(
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/update/${addressId}`,
         body,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+        }
       );
 
       return response.data.data.data;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to update address');
     }
   }
@@ -130,13 +163,22 @@ export const deleteAddress = createAsyncThunk(
       await axios.delete(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/address/delete/${payload.addressId}`,
         {
-          headers: { Authorization: `Bearer ${token}` },
-          data: { vendor_location_uuid: payload.vendor_location_uuid }
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+          },
+          data: { vendor_location_uuid: payload.vendor_location_uuid },
         }
       );
 
       return payload.addressId;
     } catch (error: any) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        removeAuthToken();
+        window.location.href = '/';
+        return rejectWithValue('Authentication session expired. Please login again.');
+      }
       return rejectWithValue(error.response?.data?.message || 'Failed to delete address');
     }
   }
