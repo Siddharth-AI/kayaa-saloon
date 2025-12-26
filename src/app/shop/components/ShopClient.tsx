@@ -36,7 +36,7 @@ import {
 import { addProductToCart } from "@/store/slices/cartSlice";
 import { toastSuccess } from "@/components/common/toastService";
 // import ProductsCart from "@/components/leftPanel/ProductsCart";
-import ShopBottomCart from "../ShopBottomCart";
+
 import ProductsBottomCart from "@/components/leftPanel/ProductsBottomCart";
 interface Product {
   id: number;
@@ -358,6 +358,27 @@ export default function ShopClient() {
       });
     }
 
+    // Get valid image using the same logic as getProductImage
+    let productImageUrl = "";
+    if (
+      product.images &&
+      Array.isArray(product.images) &&
+      product.images.length > 0 &&
+      product.images[0] &&
+      product.images[0] !== "undefined" &&
+      product.images[0] !== "null" &&
+      product.images[0].trim() !== ""
+    ) {
+      productImageUrl = product.images[0];
+    } else if (
+      product.image &&
+      product.image !== "undefined" &&
+      product.image !== "null" &&
+      product.image.trim() !== ""
+    ) {
+      productImageUrl = product.image;
+    }
+
     dispatch(
       addProductToCart({
         id: product.id,
@@ -366,7 +387,7 @@ export default function ShopClient() {
         cost: product.cost,
         brand: product.brand,
         detail: product.detail,
-        image: product.image,
+        image: productImageUrl,
         measurement: product.measurement,
         unit: product.unit,
         stock: product.stock,

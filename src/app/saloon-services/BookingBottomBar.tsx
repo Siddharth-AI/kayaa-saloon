@@ -14,7 +14,9 @@ import ClientOnly from "@/components/common/ClientOnly";
 // Define props for the component, especially for the 'view' page functionality
 interface BookingBottomBarProps {
   accepted?: boolean;
+  policyAccepted?: boolean;
   handleCheckboxChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCancellationPolicyCheckboxChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleOpenPolicyModal?: () => void;
   handleOpenCancellationPolicyModal?: () => void;
   handleBookAppointment?: () => void | Promise<void>;
@@ -23,7 +25,9 @@ interface BookingBottomBarProps {
 // --- MAIN COMPONENT ---
 const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
   accepted,
+  policyAccepted,
   handleCheckboxChange,
+  handleCancellationPolicyCheckboxChange,
   handleOpenPolicyModal,
   handleOpenCancellationPolicyModal,
   handleBookAppointment,
@@ -167,39 +171,57 @@ const BookingBottomBar: React.FC<BookingBottomBarProps> = ({
 
   const renderViewContent = () => (
     <div>
-      <div className="flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4">
-        <input
-          type="checkbox"
-          id="policyCheck"
-          checked={accepted}
-          onChange={handleCheckboxChange}
-          className="mt-0.5 sm:mt-1 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 accent-[#B11C5F] bg-white border-[#F28C8C]/30 rounded focus:ring-[#B11C5F] focus:ring-2"
-        />
-        <label
-          htmlFor="policyCheck"
-          className="text-[10px] xs:text-xs sm:text-sm text-[#444444] font-lato leading-tight sm:leading-relaxed flex-1">
-          <span className="inline">I have read and accept{" "}</span>
-          <button
-            type="button"
-            onClick={handleOpenPolicyModal}
-            className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors font-semibold inline break-words">
-            all policies
-          </button>
-          {" "}
-          <span className="inline">and{" "}</span>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              if (handleOpenCancellationPolicyModal) {
-                handleOpenCancellationPolicyModal();
-              }
-            }}
-            className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors font-semibold inline break-words">
-            cancellation policy
-          </button>
-          .
-        </label>
+      <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
+        {/* First Checkbox - All Policies */}
+        <div className="flex items-start gap-2 sm:gap-3">
+          <input
+            type="checkbox"
+            id="policyCheck"
+            checked={accepted}
+            onChange={handleCheckboxChange}
+            className="mt-0.5 sm:mt-1 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 accent-[#B11C5F] bg-white border-[#F28C8C]/30 rounded focus:ring-[#B11C5F] focus:ring-2"
+          />
+          <label
+            htmlFor="policyCheck"
+            className="text-[10px] xs:text-xs sm:text-sm text-[#444444] font-lato leading-tight sm:leading-relaxed flex-1">
+            <span className="inline">I have read and accept{" "}</span>
+            <button
+              type="button"
+              onClick={handleOpenPolicyModal}
+              className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors font-semibold inline break-words">
+              all policies
+            </button>
+            .
+          </label>
+        </div>
+
+        {/* Second Checkbox - Cancellation Policy */}
+        <div className="flex items-start gap-2 sm:gap-3">
+          <input
+            type="checkbox"
+            id="cancellationPolicyCheck"
+            checked={policyAccepted}
+            onChange={handleCancellationPolicyCheckboxChange}
+            className="mt-0.5 sm:mt-1 w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 accent-[#B11C5F] bg-white border-[#F28C8C]/30 rounded focus:ring-[#B11C5F] focus:ring-2"
+          />
+          <label
+            htmlFor="cancellationPolicyCheck"
+            className="text-[10px] xs:text-xs sm:text-sm text-[#444444] font-lato leading-tight sm:leading-relaxed flex-1">
+            <span className="inline">I have read and accept{" "}</span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                if (handleOpenCancellationPolicyModal) {
+                  handleOpenCancellationPolicyModal();
+                }
+              }}
+              className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors font-semibold inline break-words">
+              cancellation policy
+            </button>
+            .
+          </label>
+        </div>
       </div>
       <button
         className={`w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-lato font-bold text-sm sm:text-base md:text-lg transition-all duration-300 ${

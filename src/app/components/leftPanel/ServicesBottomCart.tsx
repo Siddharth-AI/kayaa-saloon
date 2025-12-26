@@ -88,7 +88,7 @@ const ServicesBottomCart = () => {
     <>
       {/* Bottom Fixed Cart */}
       <div
-        className={`fixed bottom-0 left-0 right-0 bg-white border-t-2 border-pink-400 shadow-2xl z-[60] transition-all duration-300 safe-area-inset-bottom ${
+        className={`fixed bottom-0 left-0 right-0 bg-white border-t-2 border-pink-400 shadow-2xl z-40 transition-all duration-300 safe-area-inset-bottom ${
           isExpanded 
             ? "h-[50vh] sm:h-[55vh] md:h-[60vh] lg:h-[65vh]" 
             : "h-14 sm:h-16"

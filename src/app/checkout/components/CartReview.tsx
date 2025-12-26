@@ -59,8 +59,11 @@ export default function CartReview({ onNext }: CartReviewProps) {
                   <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
                 {/* Image */}
-                <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-lfg overflow-hidden flex-shrink-0 bg-gray-100">
-                  {product.image ? (
+                <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex-shrink-0 bg-gray-100">
+                  {product.image &&
+                  product.image !== "undefined" &&
+                  product.image !== "null" &&
+                  product.image.trim() !== "" ? (
                     <Image
                       src={product.image}
                       alt={product.name}

@@ -373,6 +373,27 @@ export default function ProductPage() {
   const handleAddToCart = () => {
     if (!product) return;
 
+    // Get valid image using proper validation
+    let productImageUrl = "";
+    if (
+      product.images &&
+      Array.isArray(product.images) &&
+      product.images.length > 0 &&
+      product.images[0] &&
+      product.images[0] !== "undefined" &&
+      product.images[0] !== "null" &&
+      product.images[0].trim() !== ""
+    ) {
+      productImageUrl = product.images[0];
+    } else if (
+      product.image &&
+      product.image !== "undefined" &&
+      product.image !== "null" &&
+      product.image.trim() !== ""
+    ) {
+      productImageUrl = product.image;
+    }
+
     dispatch(
       addProductToCart({
         id: product.id,
@@ -381,7 +402,7 @@ export default function ProductPage() {
         cost: product.cost || product.price,
         brand: product.brand || "Kaya Beauty",
         detail: product.detail || "",
-        image: product.image || product.images?.[0] || "",
+        image: productImageUrl,
         measurement: product.measurement || null,
         unit: product.unit || "piece",
         stock: product.stock || 10,

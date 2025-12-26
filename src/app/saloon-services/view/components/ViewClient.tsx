@@ -384,13 +384,6 @@ const View = () => {
   const handleAccept = () => {
     setAccepted(true);
     setShowModal(false);
-    // After accepting terms, check if policy modal should be shown
-    if (!policyAccepted) {
-      // Small delay to ensure state updates
-      setTimeout(() => {
-        setShowPolicyModal(true);
-      }, 100);
-    }
   };
 
   // Get user display name
@@ -446,17 +439,9 @@ const View = () => {
   };
 
   // Handle policy acceptance
-  const handlePolicyAccept = async () => {
-    console.log("Policy accepted");
+  const handlePolicyAccept = () => {
     setPolicyAccepted(true);
     setShowPolicyModal(false);
-    
-    // Set location to null by default (no location required)
-    const location = { latitude: null, longitude: null };
-    setUserLocation(location);
-    
-    // Now proceed with booking
-    await proceedWithBooking(location);
   };
 
   // Proceed with booking after policy acceptance
@@ -598,6 +583,10 @@ const View = () => {
     setAccepted(e.target.checked);
   };
 
+  const handleCancellationPolicyCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPolicyAccepted(e.target.checked);
+  };
+
   // Handle comment change and save to Redux
   const handleCommentChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -637,9 +626,15 @@ const View = () => {
       return;
     }
 
-    // If terms not accepted, show terms modal
+    // Check if all policies checkbox is checked
     if (!accepted) {
       setShowModal(true);
+      return;
+    }
+
+    // Check if cancellation policy checkbox is checked
+    if (!policyAccepted) {
+      setShowPolicyModal(true);
       return;
     }
 
@@ -668,13 +663,6 @@ const View = () => {
     if (!tempToken && !user) {
       toastError("You must be logged in to book an appointment.");
       dispatch(openModal("login"));
-      return;
-    }
-
-    // Show policy acceptance modal first (if not already accepted)
-    if (!policyAccepted) {
-      console.log("Showing policy acceptance modal");
-      setShowPolicyModal(true);
       return;
     }
 
@@ -1188,36 +1176,55 @@ const View = () => {
             </div>
             {/* Policy and Button Card */}
             <div className="bg-white/90 rounded-2xl p-6 border-2 shadow-lg border-[#F28C8C]/30 hidden md:block">
-              <div className="flex items-start space-x-3 mb-4">
-                <input
-                  type="checkbox"
-                  id="policyCheck"
-                  checked={accepted}
-                  onChange={handleCheckbox}
-                  className="mt-1 w-4 h-4 text-[#B11C5F] border-[#F28C8C]/30 rounded focus:ring-[#B11C5F]"
-                />
-                <label
-                  htmlFor="policyCheck"
-                  className="text-sm text-[#444444] font-lato">
-                  I have read and accept{" "}
-                  <button
-                    type="button"
-                    onClick={handleOpenModal}
-                    className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors">
-                    all policies
-                  </button>
-                  {" "}and{" "}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowPolicyModal(true);
-                    }}
-                    className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors">
-                    cancellation policy
-                  </button>
-                  .
-                </label>
+              <div className="space-y-3 mb-4">
+                {/* First Checkbox - All Policies */}
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="checkbox"
+                    id="policyCheck"
+                    checked={accepted}
+                    onChange={handleCheckbox}
+                    className="mt-1 w-4 h-4 text-[#B11C5F] border-[#F28C8C]/30 rounded focus:ring-[#B11C5F]"
+                  />
+                  <label
+                    htmlFor="policyCheck"
+                    className="text-sm text-[#444444] font-lato">
+                    I have read and accept{" "}
+                    <button
+                      type="button"
+                      onClick={handleOpenModal}
+                      className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors">
+                      all policies
+                    </button>
+                    .
+                  </label>
+                </div>
+
+                {/* Second Checkbox - Cancellation Policy */}
+                <div className="flex items-start space-x-3">
+                  <input
+                    type="checkbox"
+                    id="cancellationPolicyCheck"
+                    checked={policyAccepted}
+                    onChange={handleCancellationPolicyCheckbox}
+                    className="mt-1 w-4 h-4 text-[#B11C5F] border-[#F28C8C]/30 rounded focus:ring-[#B11C5F]"
+                  />
+                  <label
+                    htmlFor="cancellationPolicyCheck"
+                    className="text-sm text-[#444444] font-lato">
+                    I have read and accept{" "}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowPolicyModal(true);
+                      }}
+                      className="text-[#C59D5F] hover:text-[#B11C5F] hover:underline transition-colors">
+                      cancellation policy
+                    </button>
+                    .
+                  </label>
+                </div>
               </div>
 
               <button
@@ -1250,16 +1257,16 @@ const View = () => {
         {showModal && (
           <>
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40" />
-            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-              <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl border-2 border-[#F28C8C]/30">
-                <div className="p-6 pb-3 border-b-2 border-[#F28C8C]/20">
-                  <h5 className="text-xl font-playfair font-bold text-[#B11C5F]">
+            <div className="fixed inset-0 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+              <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-2xl w-full h-[90vh] sm:h-auto sm:max-h-[80vh] flex flex-col shadow-2xl border-2 border-[#F28C8C]/30">
+                <div className="p-4 sm:p-6 pb-3 border-b-2 border-[#F28C8C]/20 flex-shrink-0">
+                  <h5 className="text-lg sm:text-xl font-playfair font-bold text-[#B11C5F]">
                     Terms and Conditions
                   </h5>
                 </div>
 
-                <div className="p-6 max-h-96 overflow-y-auto">
-                  <div className="space-y-4 text-[#444444] font-lato">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6 min-h-0">
+                  <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-[#444444] font-lato">
                     <p>
                       <strong className="text-[#B11C5F]">
                         1. Booking Policy:
@@ -1292,14 +1299,14 @@ const View = () => {
                   </div>
                 </div>
 
-                <div className="p-6 border-t-2 border-[#F28C8C]/20 bg-[#FFF6F8] flex justify-end space-x-3">
+                <div className="p-4 sm:p-6 border-t-2 border-[#F28C8C]/20 bg-[#FFF6F8] flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 sm:space-x-3 flex-shrink-0">
                   <button
-                    className="px-6 py-2 border-2 border-[#F28C8C]/30 rounded-xl text-[#B11C5F] hover:bg-[#F28C8C]/10 transition-colors font-lato font-medium"
+                    className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2 border-2 border-[#F28C8C]/30 rounded-xl text-[#B11C5F] hover:bg-[#F28C8C]/10 transition-colors font-lato font-medium text-sm sm:text-base"
                     onClick={() => setShowModal(false)}>
                     Cancel
                   </button>
                   <button
-                    className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato"
+                    className="w-full sm:w-auto bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-4 sm:px-6 py-2.5 sm:py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato text-sm sm:text-base"
                     onClick={handleAccept}>
                     Accept
                   </button>
@@ -1312,7 +1319,9 @@ const View = () => {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-49">
         <BookingBottomBar
           accepted={accepted}
-          handleCheckboxChange={() => setAccepted(!accepted)}
+          policyAccepted={policyAccepted}
+          handleCheckboxChange={(e) => setAccepted(e.target.checked)}
+          handleCancellationPolicyCheckboxChange={(e) => setPolicyAccepted(e.target.checked)}
           handleOpenPolicyModal={() => setShowModal(true)}
           handleOpenCancellationPolicyModal={() => setShowPolicyModal(true)}
           handleBookAppointment={handleConfirmation}
@@ -1330,17 +1339,17 @@ const View = () => {
       {showPolicyModal && (
         <>
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]" />
-          <div className="fixed inset-0 flex items-center justify-center z-[101] p-4">
-            <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden shadow-2xl border-2 border-[#F28C8C]/30">
-              <div className="p-6 pb-3 border-b-2 border-[#F28C8C]/20 flex items-center justify-between">
-                <h5 className="text-xl font-playfair font-bold text-[#B11C5F]">
+          <div className="fixed inset-0 flex items-end sm:items-center justify-center z-[101] p-0 sm:p-4">
+            <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-2xl w-full h-[90vh] sm:h-auto sm:max-h-[80vh] flex flex-col shadow-2xl border-2 border-[#F28C8C]/30">
+              <div className="p-4 sm:p-6 pb-3 border-b-2 border-[#F28C8C]/20 flex items-center justify-between flex-shrink-0">
+                <h5 className="text-lg sm:text-xl font-playfair font-bold text-[#B11C5F]">
                   Cancellation Policy
                 </h5>
                 <button
                   onClick={() => setShowPolicyModal(false)}
-                  className="text-gray-500 hover:text-[#B11C5F] transition-colors">
+                  className="text-gray-500 hover:text-[#B11C5F] transition-colors p-1">
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24">
@@ -1354,17 +1363,17 @@ const View = () => {
                 </button>
               </div>
 
-              <div className="p-6 max-h-96 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto p-4 sm:p-6 min-h-0">
                 {bookingSummaryState.loading ? (
                   <div className="flex items-center justify-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#F28C8C] border-t-transparent mr-2"></div>
                     <span className="font-lato text-gray-600">Loading policy details...</span>
                   </div>
                 ) : bookingSummaryState.data ? (
-                  <div className="space-y-4 text-[#444444] font-lato whitespace-pre-line">
+                  <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-[#444444] font-lato whitespace-pre-line">
                     {bookingSummaryState.data.acceptance_message || (
                       <>
-                        <p className="text-lg font-semibold">
+                        <p className="text-base sm:text-lg font-semibold">
                           Dear {getUserDisplayName()},
                         </p>
 
@@ -1431,24 +1440,24 @@ const View = () => {
                   </div>
                 ) : bookingSummaryState.error ? (
                   <div className="text-center py-8">
-                    <p className="text-red-600 font-lato">{bookingSummaryState.error}</p>
-                    <p className="text-sm text-gray-500 mt-2">Please try again later.</p>
+                    <p className="text-red-600 font-lato text-sm sm:text-base">{bookingSummaryState.error}</p>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-2">Please try again later.</p>
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-600 font-lato">No policy information available.</p>
+                    <p className="text-gray-600 font-lato text-sm sm:text-base">No policy information available.</p>
                   </div>
                 )}
               </div>
 
-              <div className="p-6 border-t-2 border-[#F28C8C]/20 bg-[#FFF6F8] flex justify-end space-x-3">
+              <div className="p-4 sm:p-6 border-t-2 border-[#F28C8C]/20 bg-[#FFF6F8] flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 sm:space-x-3 flex-shrink-0">
                 <button
-                  className="px-6 py-2 border-2 border-[#F28C8C]/30 rounded-xl text-[#B11C5F] hover:bg-[#F28C8C]/10 transition-colors font-lato font-medium"
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-2 border-2 border-[#F28C8C]/30 rounded-xl text-[#B11C5F] hover:bg-[#F28C8C]/10 transition-colors font-lato font-medium text-sm sm:text-base"
                   onClick={() => setShowPolicyModal(false)}>
                   Cancel
                 </button>
                 <button
-                  className="bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-6 py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato"
+                  className="w-full sm:w-auto bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] hover:from-[#B11C5F] hover:to-[#F28C8C] text-white font-semibold px-4 sm:px-6 py-2.5 sm:py-2 rounded-xl transition-all duration-300 min-w-[100px] font-lato text-sm sm:text-base"
                   onClick={handlePolicyAccept}>
                   Accept
                 </button>

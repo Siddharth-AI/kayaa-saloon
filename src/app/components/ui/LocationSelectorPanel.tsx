@@ -217,7 +217,7 @@ export default function LocationSelectorPanel({
 
       {/* Location Selection Panel */}
       {showLocationPanel && (
-        <div className="fixed inset-0 h-dvh w-screen z-50 flex justify-end">
+        <div className="fixed inset-0 h-dvh w-screen z-[100] flex justify-end">
           <div
             ref={locationPanelRef}
             className="bg-gradient-to-br from-[#FFF6F8] to-white backdrop-blur-md shadow-2xl max-w-sm w-full h-dvh flex flex-col border border-[#F28C8C]/20">

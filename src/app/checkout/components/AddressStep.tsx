@@ -11,7 +11,6 @@ import {
   setSelectedShipping,
 } from "@/store/slices/addressSlice";
 import { Plus, Edit2, Trash2, Check, ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
 import { toastSuccess, toastError } from "@/components/common/toastService";
 import AddressModal from "./AddressModal";
 
@@ -121,11 +120,9 @@ export default function AddressStep({ onNext, onBack }: AddressStepProps) {
       {/* Address List */}
       <div className="space-y-4 mb-6">
         {addresses.map((address: any) => (
-          <motion.div
+          <div
             key={address.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+            className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
               selectedId === address.id
                 ? "border-[#F28C8C] bg-[#FFF6F8]"
                 : "border-gray-200 hover:border-[#F28C8C]/50"
@@ -173,7 +170,7 @@ export default function AddressStep({ onNext, onBack }: AddressStepProps) {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
 

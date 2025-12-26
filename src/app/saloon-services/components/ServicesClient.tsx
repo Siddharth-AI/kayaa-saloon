@@ -11,8 +11,6 @@ import {
 import Image, { StaticImageData } from "next/image";
 // import LeftPanel from "@/components/leftPanel/LeftPanel";
 import ServicesBottomCart from "@/components/leftPanel/ServicesBottomCart";
-
-import BookingBottomBar from "@/saloon-services/BookingBottomBar";
 import { setSelectedSlot } from "@/store/slices/uiSlice";
 import serviceImage from "@/assets/kayaa-home/Kaya-Beauty.png";
 import { IoCart } from "react-icons/io5";
@@ -399,8 +397,8 @@ export default function Services() {
           />
         </div>
 
-     {/* Animated Gradient Overlays */}
-     <div className="absolute inset-0 z-[2] animate-pulse-slow" />
+        {/* Animated Gradient Overlays */}
+        <div className="absolute inset-0 z-[2] animate-pulse-slow" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent z-[3]" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent z-[4]" />
 

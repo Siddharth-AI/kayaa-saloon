@@ -60,7 +60,7 @@ const ProductsBottomCart = () => {
     <>
       {/* Bottom Fixed Cart */}
       <div
-        className={`fixed bottom-0 left-0 right-0 bg-white border-t-2 border-pink-400 shadow-2xl z-50 transition-all duration-300 ${
+        className={`fixed bottom-0 left-0 right-0 bg-white border-t-2 border-pink-400 shadow-2xl z-40 transition-all duration-300 ${
           isExpanded ? "h-[70vh]" : "h-16"
         }`}>
         {/* Collapsed View - Summary Bar */}
