@@ -314,7 +314,7 @@ export default function Page() {
 
       <div className="overflow-x-hidden">
         {/* Hero Section */}
-        <section className="relative h-screen overflow-hidden">
+        <section className="relative h-[70vh] sm:h-[75vh] md:h-[80vh] lg:h-screen overflow-hidden">
           <Swiper
             modules={[Autoplay, EffectFade, Navigation, Pagination]}
             effect="fade"
@@ -345,17 +345,17 @@ export default function Page() {
                     src={slide.image}
                     alt={slide.title}
                     fill
-                    className="object-cover"
+                    className="object-cover object-center"
                     priority={index === 0}
                     quality={90}
                     sizes="100vw"
                   />
-                  <div className="absolute inset-0 bg-black/40" />
+                  <div className="absolute inset-0 bg-black/50 sm:bg-black/40" />
                 </div>
 
                 {/* Content */}
-                <div className="relative z-10 h-full flex items-end justify-center pb-12 sm:pb-20 md:pb-24 lg:pb-32">
-                  <div className="container mx-auto px-4">
+                <div className="relative z-10 h-full flex items-end justify-center pb-8 sm:pb-12 md:pb-20 lg:pb-24 xl:pb-32">
+                  <div className="container mx-auto px-4 sm:px-6">
                     <div className="max-w-4xl mx-auto text-center text-white">
                       <AnimatePresence mode="wait">
                         <motion.div
@@ -376,7 +376,7 @@ export default function Page() {
                               duration: 0.8,
                               ease: "easeOut",
                             }}
-                            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-wide"
+                            className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 md:mb-6 tracking-wide px-2"
                             style={{
                               textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
                             }}>
@@ -392,7 +392,7 @@ export default function Page() {
                               duration: 0.8,
                               ease: "easeOut",
                             }}
-                            className="text-lg md:text-xl lg:text-2xl mb-8 leading-relaxed max-w-3xl mx-auto"
+                            className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl mb-4 sm:mb-6 md:mb-8 leading-relaxed max-w-3xl mx-auto px-2"
                             style={{
                               textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
                             }}>
@@ -415,7 +415,7 @@ export default function Page() {
                                 boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
                               }}
                               whileTap={{ scale: 0.98 }}
-                              className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-4 px-8 rounded-full text-lg transition-all duration-300 shadow-lg">
+                              className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-semibold py-2.5 px-6 sm:py-3 sm:px-7 md:py-4 md:px-8 rounded-full text-sm sm:text-base md:text-lg transition-all duration-300 shadow-lg">
                               Book Your Service
                             </motion.button>
                           </motion.div>
@@ -430,46 +430,46 @@ export default function Page() {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 0.1, scale: 1 }}
                   transition={{ delay: 0.8, duration: 1 }}
-                  className="absolute top-10 right-10 w-32 h-32 border-2 border-white rounded-full hidden md:block"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 md:top-10 md:right-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 border-2 border-white rounded-full hidden sm:block"
                 />
                 <motion.div
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 0.1, scale: 1 }}
                   transition={{ delay: 1, duration: 1 }}
-                  className="absolute bottom-20 left-10 w-20 h-20 border-2 border-white rounded-full hidden md:block"
+                  className="absolute bottom-12 left-4 sm:bottom-16 sm:left-6 md:bottom-20 md:left-10 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 border-2 border-white rounded-full hidden sm:block"
                 />
               </SwiperSlide>
             ))}
           </Swiper>
 
           {/* Custom Navigation Buttons */}
-          <div className="hidden sm:block swiper-button-prev-custom absolute left-4 top-1/2 transform -translate-y-1/2 z-20">
+          <div className="hidden md:block swiper-button-prev-custom absolute left-2 md:left-4 top-1/2 transform -translate-y-1/2 z-20">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className=" backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 group">
-              <ArrowLeft className="w-6 h-6 text-white group-hover:text-gray-200" />
+              className="backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-2 md:p-3 group">
+              <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:text-gray-200" />
             </motion.button>
           </div>
 
-          <div className="hidden sm:block swiper-button-next-custom absolute right-4 top-1/2 transform -translate-y-1/2 z-20">
+          <div className="hidden md:block swiper-button-next-custom absolute right-2 md:right-4 top-1/2 transform -translate-y-1/2 z-20">
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className=" backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-3 group">
-              <ArrowRight className="w-6 h-6 text-white group-hover:text-gray-200" />
+              className="backdrop-blur-sm hover:bg-white/30 transition-all duration-300 rounded-full p-2 md:p-3 group">
+              <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:text-gray-200" />
             </motion.button>
           </div>
 
           {/* Custom Pagination */}
-          <div className="swiper-pagination-custom absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20"></div>
+          <div className="swiper-pagination-custom absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-20"></div>
 
           {/* Scroll Indicator */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.8 }}
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+            className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 z-30 hidden md:block">
             <motion.div
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -490,7 +490,7 @@ export default function Page() {
         </section>
 
         {/* KAYA BEAUTY SPA Section */}
-        <section className="relative px-1 py-36 bg-gradient-to-br from-[#fefaf4] to-pink-50 min-h-screen flex items-center justify-center overflow-hidden">
+        <section className="relative px-1 py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-br from-[#fefaf4] to-pink-50 min-h-screen flex items-center justify-center overflow-hidden">
           {/* Background floral images */}
           <SafeImage
             src={Flawors}
@@ -518,10 +518,10 @@ export default function Page() {
           <div className="flex flex-col items-center justify-center gap-20">
             <motion.div
               className="relative text-center max-w-4xl"
-              initial={{ opacity: 0, y: 80 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}>
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}>
               <h3 className="text-[#C59D5F] text-sm md:text-2xl font-medium mb-4 font-playfair leading-snug italic">
                 WELCOME TO KAYA BEAUTY SPA!
               </h3>
@@ -545,12 +545,12 @@ export default function Page() {
               {services.map((service, idx) => (
                 <motion.div
                   key={`service-${idx}`}
-                  initial={{ opacity: 0, y: 80 }}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
+                  viewport={{ once: true, amount: 0.1 }}
                   transition={{
-                    duration: 0.8,
-                    delay: idx * 0.2,
+                    duration: 0.4,
+                    delay: idx * 0.1,
                     ease: "easeOut",
                   }}
                   className="relative overflow-hidden rounded-lg shadow-lg group">
@@ -605,12 +605,12 @@ export default function Page() {
                 {SaunaServices.map((service, idx) => (
                   <motion.div
                     key={`sauna-service-${idx}`}
-                    initial={{ opacity: 0, y: 80 }}
+                    initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.3 }}
+                    viewport={{ once: true, amount: 0.1 }}
                     transition={{
-                      duration: 0.8,
-                      delay: idx * 0.2,
+                      duration: 0.4,
+                      delay: idx * 0.1,
                       ease: "easeOut",
                     }}
                     className="flex flex-col items-center">
@@ -640,10 +640,15 @@ export default function Page() {
         </section>
 
         {/* We are expert - WITH SWIPER LIBRARY */}
-        <section className="relative pb-36 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
+        <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
           <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-14 items-center justify-between px-6">
             {/* LEFT: Swiper Image Slider */}
-            <div className="relative w-full h-[550px] overflow-hidden">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.4 }}
+              className="relative w-full h-[550px] overflow-hidden">
               <Swiper
                 modules={[Autoplay, EffectFade, Navigation, Pagination]}
                 effect="fade"
@@ -683,10 +688,14 @@ export default function Page() {
 
               {/* Custom Pagination Dots */}
               <div className="facial-slider-pagination absolute bottom-4 right-4 flex gap-1 z-10"></div>
-            </div>
+            </motion.div>
 
             {/* RIGHT: Text Content (unchanged) */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.4 }}>
               <h1 className="md:text-xl text-lg font-semibold text-[#C59D5F] mb-2">
                 WE ARE EXPERTS
               </h1>
@@ -715,14 +724,19 @@ export default function Page() {
                 onClick={servicePageRoute}>
                 Book Service
               </button>
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* Specialty Services Section */}
-        <section className="pb-28 bg-gradient-to-br from-[#fefaf4] to-pink-50 relative overflow-hidden">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-br from-[#fefaf4] to-pink-50 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-12">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.4 }}
+              className="text-center mb-12">
               <h2 className="md:text-5xl text-4xl font-playfair font-bold text-[#B11C5F] mb-4">
                 Advanced Treatments
               </h2>
@@ -732,16 +746,16 @@ export default function Page() {
                 salon in Somerville, Massachusetts. We plan on being here to
                 help YOU look and feel more beautiful than you already are!
               </p>
-            </div>
+            </motion.div>
 
             <div className="grid lg:grid-cols-3 gap-8">
               {Blissspa.map((service, index) => (
                 <motion.div
                   key={`bliss-spa-${index}`}
-                  initial={{ y: 50, opacity: 0 }}
+                  initial={{ y: 30, opacity: 0 }}
                   whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  viewport={{ once: true, amount: 0.1 }}
                   className="text-center bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 group">
                   <div className="w-20 h-20 mx-auto mb-6 rounded-full overflow-hidden">
                     <SafeImage
@@ -766,7 +780,7 @@ export default function Page() {
 
         {/* Testimonials Section with Photos */}
         {/* Testimonials Section with Photos - WITH SWIPER LIBRARY */}
-        <section className="pb-20 pt-10 bg-gradient-to-tr from-[#fefaf4] to-pink-50 relative overflow-hidden">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-tr from-[#fefaf4] to-pink-50 relative overflow-hidden">
           <div className="max-w-4xl mx-auto px-6 text-center">
             <Swiper
               modules={[Autoplay, EffectFade, Pagination]}
@@ -788,9 +802,9 @@ export default function Page() {
               {testimonials.map((testimonial, index) => (
                 <SwiperSlide key={`testimonial-slide-${index}`}>
                   <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
                     className="bg-white rounded-3xl p-12 shadow-xl">
                     <blockquote className="text-2xl cormorant italic text-gray-700 mb-8 leading-relaxed">
                       "{testimonial.text}"
@@ -826,10 +840,14 @@ export default function Page() {
         </section>
 
         {/* Team Section */}
-        <section className="relative pb-36 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
+        <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
           <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-14 items-center justify-between px-6">
             {/* RIGHT: Text Content */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.4 }}>
               <h1 className="md:text-xl text-lg font-semibold text-[#C59D5F] mb-2">
                 EXPERIENCED BEAUTY EXPERTS
               </h1>
@@ -842,9 +860,14 @@ export default function Page() {
                 Keratin Treatments, Threading, and Henna for Hair using AVEDA®,
                 GlyMed Plus®, and Dermalogica® products.
               </p>
-            </div>
+            </motion.div>
             {/* LEFT: Profile Specialist Image */}
-            <div className="relative w-full h-[550px] overflow-hidden">
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.4 }}
+              className="relative w-full h-[550px] overflow-hidden">
               <div className="relative w-full h-full rounded-lg shadow-xl group">
                 <SafeImage
                   src={OwnerImg}
@@ -856,20 +879,20 @@ export default function Page() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#C59D5F]/30 to-transparent"></div>
               </div>
-            </div>
+            </motion.div>
 
            
           </div>
         </section>
 
         {/* Video Section */}
-        <section className="pb-20 pt-10 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
           <div className="max-w-6xl mx-auto px-6 text-center">
             <motion.div
-              initial={{ y: 50, opacity: 0 }}
+              initial={{ y: 30, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}>
+              transition={{ duration: 0.4 }}
+              viewport={{ once: true, amount: 0.1 }}>
               <div className="text-sm font-lato text-[#C59D5F] font-semibold mb-2 tracking-widest">
                 KAYA BEAUTY SPA
               </div>
@@ -913,15 +936,15 @@ export default function Page() {
         </section>
 
         {/* Skills Section with Progress Bars */}
-        <section className="md:py-20 pt-0 pb-20 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
+        <section className="py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-tr from-[#fefaf4] to-pink-50">
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex justify-between items-center sm:flex-nowrap flex-wrap gap-16">
               {/* Left side - Image */}
               <motion.div
-                initial={{ x: -50, opacity: 0 }}
+                initial={{ x: -30, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                viewport={{ once: true, amount: 0.1 }}
                 className="flex-shrink-0">
                 <SafeImage
                   src={beauty_excellence}
@@ -935,10 +958,10 @@ export default function Page() {
 
               {/* Right side - Skills */}
               <motion.div
-                initial={{ x: 50, opacity: 0 }}
+                initial={{ x: 30, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
+                transition={{ duration: 0.4 }}
+                viewport={{ once: true, amount: 0.1 }}
                 className="flex-grow">
                 <div className="md:text-xl text-lg font-lato text-[#C59D5F] font-bold mb-1 tracking-widest">
                   OUR EXPERTISE
@@ -968,8 +991,8 @@ export default function Page() {
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: "95%" }}
-                        transition={{ duration: 1.5, delay: 0.5 }}
-                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
+                        viewport={{ once: true, amount: 0.1 }}
                         className="bg-gradient-to-r from-[#F28C8C] to-[#F28C8C] h-2 rounded-full"></motion.div>
                     </div>
                   </div>
@@ -985,8 +1008,8 @@ export default function Page() {
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: "92%" }}
-                        transition={{ duration: 1.5, delay: 0.7 }}
-                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                        viewport={{ once: true, amount: 0.1 }}
                         className="bg-gradient-to-r from-[#F28C8C] to-[#F28C8C] h-2 rounded-full"></motion.div>
                     </div>
                   </div>
@@ -1002,8 +1025,8 @@ export default function Page() {
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: "88%" }}
-                        transition={{ duration: 1.5, delay: 0.9 }}
-                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.4 }}
+                        viewport={{ once: true, amount: 0.1 }}
                         className="bg-gradient-to-r from-[#F28C8C] to-[#F28C8C] h-2 rounded-full"></motion.div>
                     </div>
                   </div>
