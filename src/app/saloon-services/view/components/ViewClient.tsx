@@ -127,15 +127,6 @@ const View = () => {
     ];
   }, [services, items]);
 
-  // Check if cart is empty and redirect to services page
-  useEffect(() => {
-    if (isInitialized && !isLoadingProfile && cart.length === 0) {
-      toastError("Please add services first");
-      router.push("/saloon-services");
-      return;
-    }
-  }, [isInitialized, isLoadingProfile, cart.length, router]);
-
   // NEW: Check both services and legacy items
   useEffect(() => {
     if (cart.length === 0) return;

@@ -43,17 +43,17 @@ export default function CategoryDropdown({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 bg-white/95 backdrop-blur-xl  shadow-2xl hover:bg-[#FFF6F8] transition-all duration-300 font-lato"
+        className="w-full flex items-center justify-between p-3 sm:p-4 bg-white/95 backdrop-blur-xl shadow-2xl hover:bg-[#FFF6F8] transition-all duration-300 font-lato"
         aria-haspopup="listbox"
         aria-expanded={isOpen}>
-        <div className="flex items-center gap-3">
-          <div className="w-2 h-2 bg-[#F28C8C] rounded-full"></div>
-          <span className="text-[#B11C5F] font-semibold">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#F28C8C] rounded-full flex-shrink-0"></div>
+          <span className="text-[#B11C5F] font-semibold text-sm sm:text-base truncate">
             {activeCategory ? activeCategory.name : "All Categories"}
           </span>
         </div>
         <ChevronDown
-          className={`w-5 h-5 text-[#C59D5F] transition-transform duration-300 ${
+          className={`w-4 h-4 sm:w-5 sm:h-5 text-[#C59D5F] transition-transform duration-300 flex-shrink-0 ${
             isOpen ? "rotate-180" : ""
           }`}
         />
@@ -62,7 +62,7 @@ export default function CategoryDropdown({
       {/* Dropdown Menu */}
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-2 z-50">
-          <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 shadow-2xl overflow-hidden">
+          <div className="bg-white/95 backdrop-blur-xl border-2 border-[#F28C8C]/30 shadow-2xl overflow-hidden rounded-lg">
             <div className="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100">
               {categories.map((category) => {
                 const isActive = selectedCategory === category.slug;
@@ -74,16 +74,16 @@ export default function CategoryDropdown({
                       setSelectedCategory(category.slug);
                       setIsOpen(false);
                     }}
-                    className={`w-full flex items-center gap-3 p-4 transition-all duration-300 font-lato text-left ${
+                    className={`w-full flex items-center gap-2 sm:gap-3 p-3 sm:p-4 transition-all duration-300 font-lato text-left text-sm sm:text-base ${
                       isActive
                         ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white font-semibold shadow-lg"
                         : "text-[#444444] hover:bg-[#FFF6F8] hover:text-[#B11C5F] hover:scale-[1.02]"
                     }`}>
                     <div
-                      className={`w-2 h-2 rounded-full ${
+                      className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full flex-shrink-0 ${
                         isActive ? "bg-white" : "bg-[#F28C8C]"
                       }`}></div>
-                    <span>{category.name}</span>
+                    <span className="truncate">{category.name}</span>
                   </button>
                 );
               })}

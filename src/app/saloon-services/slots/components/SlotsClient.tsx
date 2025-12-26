@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
   setCart,
@@ -20,8 +20,9 @@ import {
 } from "@/store/slices/timeSlotsSlice";
 import LeftPanel from "@/components/leftPanel/LeftPanel";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { toastError, toastWarning } from "@/components/common/toastService";
+import { openModal } from "@/store/slices/modalSlice";
 import BookingBottomBar from "@/saloon-services/BookingBottomBar";
 import {
   Skeleton,
@@ -89,11 +90,14 @@ const formatTimeFromDate = (date: Date): string => {
 
 const Slots: React.FC = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { services, products, items } = useAppSelector((state) => state.cart);
   const operatorsState = useAppSelector((state) => state.operators);
   const timeSlotsState = useAppSelector((state) => state.timeSlots);
   const servicesState = useAppSelector((state) => state.services);
+  const { user, tempToken, isInitialized, isLoadingProfile } = useAppSelector((state) => state.auth);
+  const { isOpen: isModalOpen } = useAppSelector((state) => state.modal);
   const { selectedDate, selectedOperator, selectedSlot } = useAppSelector(
     (state) => state.ui
   );
@@ -111,6 +115,8 @@ const Slots: React.FC = () => {
     evening: false,
   });
   const [hasSetDefaultSection, setHasSetDefaultSection] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const wasModalOpenRef = useRef(false);
   const cart = useMemo(() => {
     interface ServiceCartItem {
       id: number | string;
@@ -152,6 +158,34 @@ const Slots: React.FC = () => {
     return cart;
   }, [services, items]);
   const selectedDateObj = new Date(selectedDate);
+
+  // Protect page - check if user is logged in
+  useEffect(() => {
+    // Wait for auth to initialize
+    if (!isInitialized || isLoadingProfile) {
+      return;
+    }
+
+    const isAuthenticated = !!user || !!tempToken;
+
+    // Track previous modal state
+    const wasModalOpen = wasModalOpenRef.current;
+    wasModalOpenRef.current = isModalOpen;
+
+    // If user is not logged in
+    if (!isAuthenticated) {
+      // SCENARIO 1: Modal was open but is now closed - user closed without logging in
+      if (wasModalOpen && !isModalOpen) {
+        router.push("/"); // Redirect to home
+        return;
+      }
+
+      // SCENARIO 2: Modal is not open - user just landed on protected page
+      if (!isModalOpen) {
+        dispatch(openModal("password"));
+      }
+    }
+  }, [user, tempToken, isInitialized, isLoadingProfile, isModalOpen, dispatch, router]);
 
   // Watch for errors when fetching operators
   useEffect(() => {
@@ -304,6 +338,13 @@ const Slots: React.FC = () => {
     setHasSetDefaultSection(false);
   }, [selectedDate]);
 
+  // Reset loading state when pathname changes (navigation completed)
+  useEffect(() => {
+    if (isNavigating && pathname === "/saloon-services/view") {
+      setIsNavigating(false);
+    }
+  }, [pathname, isNavigating]);
+
   // --- NEW: A single handler for when a user clicks a time slot ---
   const handleSlotSelection = (slotTime: string) => {
     // 1. Set the selected slot in the UI (to highlight the button)
@@ -383,12 +424,18 @@ const Slots: React.FC = () => {
   function handleSlotBook() {
     // This function is now simpler. The cart is already updated.
     // It just needs to save and navigate.
+    if (isNavigating) return;
+    setIsNavigating(true);
     if (servicesState.selectedLocationUuid) {
       dispatch(
         saveCartToStorageWithLocation(servicesState.selectedLocationUuid)
       );
     }
     router.push("/saloon-services/view");
+    // Reset loading state after navigation (fallback in case navigation fails)
+    setTimeout(() => {
+      setIsNavigating(false);
+    }, 2000);
   }
 
   const handleContinueClick = () => {
@@ -880,15 +927,22 @@ const Slots: React.FC = () => {
                   </div>
                 </div>
                 <button
-                  className={`group/btn relative w-full mt-4 py-3 rounded-2xl font-bold text-lg transition-all duration-300 font-lato shadow-lg hover:shadow-xl transform  hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden ${
-                    cart.length > 0
-                      ? "bg-[#F28C8C] text-white shadow-lg cursor-pointer"
+                  className={`group/btn relative w-full mt-4 py-3 rounded-2xl font-bold text-lg transition-all duration-300 font-lato shadow-lg hover:shadow-xl transform hover:from-[#B11C5F] hover:to-[#F28C8C] overflow-hidden flex items-center justify-center gap-2 ${
+                    cart.length > 0 && !isNavigating
+                      ? "bg-[#F28C8C] text-white shadow-lg cursor-pointer hover:scale-105"
                       : "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  }`}
-                  disabled={cart.length === 0}
+                  } ${isNavigating ? "opacity-70" : ""}`}
+                  disabled={cart.length === 0 || isNavigating}
                   onClick={handleContinueClick}>
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-                  Continue
+                  {isNavigating ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/30 border-t-white"></div>
+                      <span>Loading...</span>
+                    </>
+                  ) : (
+                    <span>Continue</span>
+                  )}
                 </button>
               </div>
             </div>

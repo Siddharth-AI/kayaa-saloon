@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import { removeServiceFromCart } from "@/store/slices/cartSlice";
 import {
@@ -17,9 +17,11 @@ import { IoCart } from "react-icons/io5";
 
 const ServicesBottomCart = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   // Get cart data from Redux
   const { services: cartServices } = useAppSelector((state) => state.cart);
@@ -31,6 +33,13 @@ const ServicesBottomCart = () => {
       setIsExpanded(false);
     }
   }, [cartServices.length]);
+
+  // Reset loading state when pathname changes (navigation completed)
+  useEffect(() => {
+    if (isNavigating && pathname === "/saloon-services/slots") {
+      setIsNavigating(false);
+    }
+  }, [pathname, isNavigating]);
 
   // Check if mobile menu is open by checking for the menu element or body overflow
   useEffect(() => {
@@ -74,8 +83,13 @@ const ServicesBottomCart = () => {
 
   // Navigate to slots page
   const handleProceedToSlots = () => {
-    if (cartServices.length === 0) return;
+    if (cartServices.length === 0 || isNavigating) return;
+    setIsNavigating(true);
     router.push("/saloon-services/slots");
+    // Reset loading state after navigation (fallback in case navigation fails)
+    setTimeout(() => {
+      setIsNavigating(false);
+    }, 2000);
   };
 
   // If cart is empty, don't show anything
@@ -131,9 +145,21 @@ const ServicesBottomCart = () => {
                 e.stopPropagation();
                 handleProceedToSlots();
               }}
-              className="hidden md:flex items-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg hover:shadow-lg transition-all font-semibold text-sm sm:text-base">
-              <ShoppingBag className="w-4 h-4" />
-              Book Now
+              disabled={isNavigating}
+              className={`hidden md:flex items-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg hover:shadow-lg transition-all font-semibold text-sm sm:text-base ${
+                isNavigating ? "opacity-70 cursor-not-allowed" : "hover:scale-105"
+              }`}>
+              {isNavigating ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>Book Now</span>
+                </>
+              )}
             </button>
 
             {/* Mobile Book Button */}
@@ -142,8 +168,18 @@ const ServicesBottomCart = () => {
                 e.stopPropagation();
                 handleProceedToSlots();
               }}
-              className="md:hidden px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg text-xs sm:text-sm font-semibold">
-              Book
+              disabled={isNavigating}
+              className={`md:hidden px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 ${
+                isNavigating ? "opacity-70 cursor-not-allowed" : ""
+              }`}>
+              {isNavigating ? (
+                <>
+                  <div className="animate-spin rounded-full h-3 w-3 sm:h-3.5 sm:w-3.5 border-2 border-white/30 border-t-white"></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <span>Book</span>
+              )}
             </button>
 
             {/* Expand/Collapse Icon */}

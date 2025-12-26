@@ -23,6 +23,7 @@ import {
   ServiceCardSkeleton,
   CategorySkeleton,
 } from "@/components/common/Skeleton";
+import { motion } from "framer-motion";
 
 // Category images mapping with multiple images per category
 type CategoryImagesType = {
@@ -382,7 +383,7 @@ export default function Services() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fefaf4] to-pink-50 text-[#444444]">
       {/* Header - KEEPING YOUR ORIGINAL HEADER */}
-      <div className="w-full relative py-14 pl-4 sm:pl-6 md:pl-8 lg:pl-11 pt-18 md:pt-20 lg:pt-24 xl:pt-32 overflow-hidden group">
+      <div className="w-full relative py-12 sm:py-14 pl-4 sm:pl-6 md:pl-8 lg:pl-11 pt-12 sm:pt-16 md:pt-20 lg:pt-24 xl:pt-28 overflow-hidden group">
         <div className="absolute inset-0">
           <Image
             src="/images/service/service.webp"
@@ -550,15 +551,19 @@ export default function Services() {
                 </div>
 
                 <ul className="my-1 hidden md:block max-h-70 overflow-y-auto scrollbar-thin scrollbar-thumb-[#F28C8C] scrollbar-track-gray-100 categories_scroll">
-                  {categories.map((cat) => (
-                    <li
+                  {categories.map((cat, idx) => (
+                    <motion.li
                       key={
                         cat.slug !== null && cat.slug !== undefined
                           ? String(cat.slug)
                           : "all"
-                      }>
+                      }
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, amount: 0.1 }}
+                      transition={{ duration: 0.2, delay: idx * 0.02 }}>
                       <button
-                        className={`w-full text-left px-5 py-2 transition-all duration-300 font-lato font-medium ${
+                        className={`w-full text-left px-4 sm:px-5 py-2 transition-all duration-300 font-lato font-medium text-sm sm:text-base ${
                           selectedCategory === cat.slug
                             ? "bg-[#F28C8C] text-white shadow-md"
                             : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F]"
@@ -566,7 +571,7 @@ export default function Services() {
                         onClick={() => setSelectedCategory(cat.slug)}>
                         <span>{String(cat.name)}</span>
                       </button>
-                    </li>
+                    </motion.li>
                   ))}
                 </ul>
               </div>
@@ -577,32 +582,42 @@ export default function Services() {
             </aside>
 
             <div className="flex-1">
-              <h2 className="font-playfair font-bold text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-4 rounded-t-2xl">
+              <motion.h2 
+                initial={{ opacity: 0, y: -20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.2 }}
+                className="font-playfair font-bold text-lg sm:text-xl bg-gradient-to-r from-[#B11C5F] to-[#F28C8C] text-white p-3 sm:p-4 rounded-t-2xl">
                 {selectedCategory === null
                   ? "All Services"
                   : categories.find((c) => c.slug === selectedCategory)?.name ||
                     "Services"}
-              </h2>
-              <div className="flex-1 flex flex-col bg-white p-5">
-                <div className="mb-6">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
+              </motion.h2>
+              <div className="flex-1 flex flex-col bg-white p-4 sm:p-5 lg:p-6">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.1 }}
+                  transition={{ duration: 0.2 }}
+                  className="mb-4 sm:mb-6">
+                  <div className="flex flex-col gap-3 sm:gap-4 sm:flex-row sm:justify-between sm:items-center">
                     <div className="flex-1">
                       <input
                         type="search"
-                        className="border border-[#F28C8C]/30 rounded-lg overflow-hidden bg-white w-full px-4 py-3 outline-none text-[#444444] placeholder:text-[#C59D5F] font-lato focus:ring-2 focus:ring-[#F28C8C]/30 focus:border-[#F28C8C] transition-all duration-200"
+                        className="border border-[#F28C8C]/30 rounded-lg overflow-hidden bg-white w-full px-3 sm:px-4 py-2 sm:py-3 outline-none text-[#444444] placeholder:text-[#C59D5F] font-lato text-sm sm:text-base focus:ring-2 focus:ring-[#F28C8C]/30 focus:border-[#F28C8C] transition-all duration-200"
                         placeholder="Search services..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
                     </div>
 
-                    <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-2">
+                    <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
                       {/* Sort Dropdown */}
-                      <div className="flex-1 sm:flex-initial">
+                      <div className="flex-1 sm:flex-initial min-w-0">
                         <select
                           value={sortBy}
                           onChange={(e) => setSortBy(e.target.value)}
-                          className="w-full min-w-[180px] px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-orange-400 outline-none transition-all duration-200 text-gray-700 font-medium">
+                          className="w-full min-w-[140px] sm:min-w-[180px] px-3 sm:px-4 py-2 sm:py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-[#F28C8C] outline-none transition-all duration-200 text-gray-700 font-medium text-sm sm:text-base">
                           <option value="shuffle">Shuffle (Random)</option>
                           <option value="name">Name A-Z</option>
                           <option value="price-low">Price: Low to High</option>
@@ -611,45 +626,46 @@ export default function Services() {
                       </div>
 
                       {/* View Mode Toggle */}
-                      <div className="flex bg-gray-100 border border-gray-200 rounded-lg overflow-hidden">
+                      <div className="flex bg-gray-100 border border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                         <button
                           onClick={() => setViewMode("grid")}
-                          className={`p-3 sm:p-2.5 transition-all duration-200 ${
+                          className={`p-2 sm:p-2.5 transition-all duration-200 ${
                             viewMode === "grid"
-                              ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
+                              ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-lg"
                               : "text-gray-600 hover:bg-gray-200"
                           }`}>
-                          <Grid className="w-5 h-5" />
+                          <Grid className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                         <button
                           onClick={() => setViewMode("list")}
-                          className={`p-3 sm:p-2.5 transition-all duration-200 ${
+                          className={`p-2 sm:p-2.5 transition-all duration-200 ${
                             viewMode === "list"
-                              ? "bg-gradient-to-r from-orange-400 to-pink-400 text-white shadow-lg"
+                              ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-lg"
                               : "text-gray-600 hover:bg-gray-200"
                           }`}>
-                          <List className="w-5 h-5" />
+                          <List className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                       </div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
 
                 <div
-                  className={`grid gap-6 mb-8 ${
+                  className={`grid gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8 ${
                     viewMode === "grid"
                       ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                       : "grid-cols-1"
                   }`}>
                   {displayedServices.map((service: any, index: any) => (
-                    <div
+                    <motion.div
                       key={service.id}
-                      className={`service-card-animate relative group rounded-3xl bg-gradient-to-br from-white to-[#fefaf4] border border-[#F28C8C]/20 shadow-lg overflow-hidden transform transition-all duration-500 hover:shadow-2xl opacity-100 ${
-                        viewMode === "list" ? "flex" : ""
-                      }`}
-                      style={{
-                        animationDelay: `${index * 100}ms`,
-                      }}>
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.1 }}
+                      transition={{ duration: 0.2, delay: index * 0.02 }}
+                      className={`service-card-animate relative group rounded-2xl sm:rounded-3xl bg-gradient-to-br from-white to-[#fefaf4] border border-[#F28C8C]/20 shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] ${
+                        viewMode === "list" ? "flex flex-col sm:flex-row" : ""
+                      }`}>
                       <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-[#F28C8C]/20 to-transparent rounded-full transform translate-x-10 -translate-y-10 transition-transform duration-700 group-hover:scale-150"></div>
                       <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-[#C59D5F]/20 to-transparent rounded-full transform -translate-x-8 translate-y-8 transition-transform duration-700 group-hover:scale-125"></div>
 
@@ -659,10 +675,10 @@ export default function Services() {
 
                       {/* Image section - UPDATED WITH RANDOM CATEGORY IMAGES */}
                       <div
-                        className={`relative overflow-hidden cursor-pointer ${
+                        className={`relative overflow-hidden cursor-pointer flex-shrink-0 ${
                           viewMode === "list"
-                            ? "w-56 h-56 rounded-l-3xl"
-                            : "rounded-t-3xl h-48 sm:h-56"
+                            ? "w-full sm:w-56 h-48 sm:h-56 rounded-t-2xl sm:rounded-l-3xl sm:rounded-t-none"
+                            : "rounded-t-2xl sm:rounded-t-3xl h-44 sm:h-52 lg:h-56"
                         }`}
                         onClick={() => {
                           const slug = service.service
@@ -688,16 +704,16 @@ export default function Services() {
                           unoptimized
                         />
 
-                        <div className="absolute top-4 right-4 z-20 bg-[#C59D5F] px-1 py-1 rounded-full shadow-lg backdrop-blur-sm border border-white/20">
-                          <span className="font-playfair font-bold text-white text-sm">
-                            Rs {service.price.toFixed(2)}
+                        <div className="absolute top-3 sm:top-4 right-3 sm:right-4 z-20 bg-[#C59D5F] px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg backdrop-blur-sm border border-white/20">
+                          <span className="font-playfair font-bold text-white text-xs sm:text-sm">
+                            ₹{service.price.toFixed(2)}
                           </span>
                         </div>
 
-                        <div className="absolute bottom-4 left-4 z-20 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[#F28C8C]/20 shadow-md">
+                        <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 z-20 bg-white/90 backdrop-blur-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#F28C8C]/20 shadow-md">
                           <div className="flex items-center space-x-1 text-[#B11C5F]">
-                            <div className="w-2 h-2 bg-[#F28C8C] rounded-full animate-pulse"></div>
-                            <span className="text-sm font-medium font-lato">
+                            <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#F28C8C] rounded-full animate-pulse"></div>
+                            <span className="text-xs sm:text-sm font-medium font-lato">
                               {service.service_time} min
                             </span>
                           </div>
@@ -705,8 +721,8 @@ export default function Services() {
                       </div>
 
                       <div
-                        className={`p-5 sm:p-6 flex flex-col justify-between cursor-pointer ${
-                          viewMode === "list" ? "flex-1" : "h-52"
+                        className={`p-4 sm:p-5 lg:p-6 flex flex-col justify-between cursor-pointer flex-1 ${
+                          viewMode === "list" ? "min-h-[200px]" : "min-h-[180px] sm:min-h-[200px]"
                         }`}
                         onClick={() => {
                           const slug = service.service
@@ -717,24 +733,22 @@ export default function Services() {
                             .trim();
                           router.push(`/saloon-services/${slug}`);
                         }}>
-                        <div className="mb-4">
-                          <h3 className="font-playfair font-bold text-xl text-[#B11C5F] mb-2 leading-tight group-hover:text-[#F28C8C] transition-colors duration-300">
-                            {service.service.length > 20
-                              ? `${service.service.slice(0, 20)}...`
-                              : service.service}
+                        <div className="mb-3 sm:mb-4">
+                          <h3 className="font-playfair font-bold text-lg sm:text-xl text-[#B11C5F] mb-2 leading-tight group-hover:text-[#F28C8C] transition-colors duration-300 line-clamp-2">
+                            {service.service}
                           </h3>
 
-                          <div className="flex items-center space-x-2 mb-3">
-                            <div className="w-1 h-4 bg-gradient-to-b from-[#F28C8C] to-[#C59D5F] rounded-full"></div>
-                            <span className="font-cormorant text-[#C59D5F] italic text-base">
+                          <div className="flex items-center space-x-2 mb-2 sm:mb-3">
+                            <div className="w-1 h-3 sm:h-4 bg-gradient-to-b from-[#F28C8C] to-[#C59D5F] rounded-full flex-shrink-0"></div>
+                            <span className="font-cormorant text-[#C59D5F] italic text-sm sm:text-base truncate">
                               {service.subcategory}
                             </span>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-start">
+                        <div className="flex items-center justify-start mt-auto">
                           <button
-                            className={`group/btn relative px-6 py-3 text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-300 overflow-hidden ${
+                            className={`group/btn relative px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 text-white font-lato font-semibold rounded-full shadow-lg hover:shadow-xl transform active:scale-95 transition-all duration-300 overflow-hidden text-sm sm:text-base ${
                               cartServices.some((s: any) => s.id === service.id)
                                 ? "bg-green-500 hover:bg-green-600"
                                 : "bg-[#F28C8C] hover:from-[#B11C5F] hover:to-[#F28C8C]"
@@ -753,7 +767,7 @@ export default function Services() {
                                   ? "Added"
                                   : "Add"}
                               </span>
-                              <div className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center group-hover/btn:rotate-12 transition-transform duration-300">
+                              <div className="w-4 h-4 sm:w-5 sm:h-5 bg-white/20 rounded-full flex items-center justify-center group-hover/btn:rotate-12 transition-transform duration-300">
                                 <IoCart className="text-xs" />
                               </div>
                             </div>
@@ -761,23 +775,28 @@ export default function Services() {
                         </div>
                       </div>
 
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#F28C8C]/0 via-[#F28C8C]/5 to-[#C59D5F]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-3xl"></div>
-                    </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#F28C8C]/0 via-[#F28C8C]/5 to-[#C59D5F]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl sm:rounded-3xl"></div>
+                    </motion.div>
                   ))}
                 </div>
 
                 {/* Pagination or Load More */}
                 {showPagination ? (
-                  <div className="mt-8 flex justify-center items-center gap-2">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.1 }}
+                    transition={{ duration: 0.2 }}
+                    className="mt-6 sm:mt-8 flex justify-center items-center gap-2 flex-wrap">
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className={`md:px-4 px-2 py-2 rounded-full font-lato font-medium transition-all duration-300 ${
+                      className={`px-3 sm:px-4 py-2 rounded-full font-lato font-medium transition-all duration-300 text-sm sm:text-base ${
                         currentPage === 1
                           ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg"
+                          : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg hover:scale-105"
                       }`}>
-                      <FaAnglesLeft />
+                      <FaAnglesLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
 
                     {Array.from({ length: totalPages }, (_, i) => i + 1)
@@ -790,14 +809,14 @@ export default function Services() {
                       .map((page, index, array) => (
                         <React.Fragment key={page}>
                           {index > 0 && array[index - 1] !== page - 1 && (
-                            <span className="px-2 text-[#C59D5F]">...</span>
+                            <span className="px-1 sm:px-2 text-[#C59D5F] text-sm sm:text-base">...</span>
                           )}
                           <button
                             onClick={() => handlePageChange(page)}
-                            className={`md:px-4 px-2 py-1 rounded-full font-lato font-medium transition-all duration-300 ${
+                            className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-full font-lato font-medium transition-all duration-300 text-sm sm:text-base min-w-[36px] sm:min-w-[40px] ${
                               currentPage === page
                                 ? "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white shadow-md"
-                                : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20"
+                                : "bg-white text-[#444444] hover:bg-[#fefaf4] hover:text-[#B11C5F] border border-[#F28C8C]/20 hover:scale-105"
                             }`}>
                             {page}
                           </button>
@@ -807,22 +826,27 @@ export default function Services() {
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className={`md:px-4 px-2 py-2 rounded-full font-lato font-medium transition-all duration-300 ${
+                      className={`px-3 sm:px-4 py-2 rounded-full font-lato font-medium transition-all duration-300 text-sm sm:text-base ${
                         currentPage === totalPages
                           ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg"
+                          : "bg-gradient-to-r from-[#F28C8C] to-[#C59D5F] text-white hover:from-[#B11C5F] hover:to-[#F28C8C] shadow-md hover:shadow-lg hover:scale-105"
                       }`}>
-                      <FaAnglesRight />
+                      <FaAnglesRight className="w-4 h-4 sm:w-5 sm:h-5" />
                     </button>
-                  </div>
+                  </motion.div>
                 ) : showLoadMore ? (
-                  <div className="flex justify-center">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.1 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex justify-center">
                     <button
                       onClick={handleLoadMore}
-                      className="px-8 py-3 rounded-full bg-[#F28C8C] text-white font-lato font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 hover:bg-[#f28c8cd6] ">
+                      className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-[#F28C8C] text-white font-lato font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 hover:bg-[#f28c8cd6] text-sm sm:text-base">
                       Load More
                     </button>
-                  </div>
+                  </motion.div>
                 ) : null}
               </div>
             </div>

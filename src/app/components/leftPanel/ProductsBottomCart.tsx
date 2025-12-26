@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
   removeProductFromCart,
@@ -21,9 +21,11 @@ import { IoCart } from "react-icons/io5";
 
 const ProductsBottomCart = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   // Get cart data from Redux
   const { products } = useAppSelector((state) => state.cart);
@@ -35,6 +37,23 @@ const ProductsBottomCart = () => {
       setIsExpanded(false);
     }
   }, [products.length]);
+
+  // Reset loading state when pathname changes (navigation completed)
+  useEffect(() => {
+    if (isNavigating && pathname === "/checkout") {
+      setIsNavigating(false);
+    }
+  }, [pathname, isNavigating]);
+
+  // Reset loading state after timeout (fallback in case navigation fails)
+  useEffect(() => {
+    if (isNavigating) {
+      const timer = setTimeout(() => {
+        setIsNavigating(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isNavigating]);
 
   // Check if mobile menu is open by checking for the menu element or body overflow
   useEffect(() => {
@@ -106,7 +125,8 @@ const ProductsBottomCart = () => {
 
   // Navigate to checkout
   const handleProceedToCheckout = () => {
-    if (products.length === 0) return;
+    if (products.length === 0 || isNavigating) return;
+    setIsNavigating(true);
     router.push("/checkout");
   };
 
@@ -164,9 +184,21 @@ const ProductsBottomCart = () => {
                 e.stopPropagation();
                 handleProceedToCheckout();
               }}
-              className="hidden md:flex items-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg hover:shadow-lg transition-all font-semibold text-sm sm:text-base">
-              <ShoppingBag className="w-4 h-4" />
-              Checkout
+              disabled={isNavigating}
+              className={`hidden md:flex items-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg hover:shadow-lg transition-all font-semibold text-sm sm:text-base ${
+                isNavigating ? "opacity-70 cursor-not-allowed" : ""
+              }`}>
+              {isNavigating ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <>
+                  <ShoppingBag className="w-4 h-4" />
+                  Checkout
+                </>
+              )}
             </button>
 
             {/* Mobile Checkout Button */}
@@ -175,8 +207,18 @@ const ProductsBottomCart = () => {
                 e.stopPropagation();
                 handleProceedToCheckout();
               }}
-              className="md:hidden px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg text-xs sm:text-sm font-semibold">
-              Checkout
+              disabled={isNavigating}
+              className={`md:hidden px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-lg text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 ${
+                isNavigating ? "opacity-70 cursor-not-allowed" : ""
+              }`}>
+              {isNavigating ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                "Checkout"
+              )}
             </button>
 
             {/* Expand/Collapse Icon */}
